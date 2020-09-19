@@ -29,5 +29,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     implementation 'com.google.android.gms:play-services:11.8.0'
+    implementation 'com.android.support:multidex:2.0.1'
+
+
+
 
 }

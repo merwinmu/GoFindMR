@@ -1,40 +1,48 @@
 package com.example.gofindhololenscompanion;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-
-import java.util.Arrays;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
-    TextView latlong;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        latlong = (TextView) findViewById(R.id.latlong);
 
+        findViewById(R.id.request_location_updates_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ContextCompat.checkSelfPermission(
+                        getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CODE_LOCATION_PERMISSION);
+                    } else{
+                    startLocationService();
+                }
+            }
+        });
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) { // Check permisson to use GPS called from Async Thread
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
-        }
+        findViewById(R.id.remove_updates_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopLocationService();
+            }
+        });
+
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter(); // getting permission to use Bluetooth
         if (mBluetoothAdapter == null) {
@@ -44,49 +52,49 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "PLEASE ENABLE BLUETOOTH", Toast.LENGTH_LONG).show();
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
         }
-        getCurrentLocation();
+
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) { // Again asking for permission and getting location
-        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION) {
-            if (!Arrays.asList(grantResults).contains(PackageManager.PERMISSION_DENIED)){
-                getCurrentLocation();
-            }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0){
+            startLocationService();
+        }else{
+            Toast.makeText(this,"Permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void getCurrentLocation() {
-        LocationRequest locrequest = new LocationRequest();
-        locrequest.setInterval(1000);
-        locrequest.setFastestInterval(3000);
-        locrequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        LocationServices.getFusedLocationProviderClient(MainActivity.this).requestLocationUpdates(locrequest, new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                LocationServices.getFusedLocationProviderClient(MainActivity.this).removeLocationUpdates(this);
-                if (locationResult != null && locationResult.getLocations().size() > 0) {
-                    int latestlocationIndex = locationResult.getLocations().size() - 1;
-                    double latitude = locationResult.getLocations().get(latestlocationIndex).getLatitude();
-                    double longitude = locationResult.getLocations().get(latestlocationIndex).getLongitude();
-
-                    Log.d("GPS",String.valueOf(latitude) + String.valueOf(longitude));
-                    latlong.setText( String.format("Latitude: %s\nLongitude: %s", latitude, longitude));
+    private boolean isLocationServiceRunning(){
+        ActivityManager activityManager =
+                (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if(activityManager != null){
+            for(ActivityManager.RunningServiceInfo service: activityManager.getRunningServices(Integer.MAX_VALUE)){
+                if(LocationService.class.getName().equals(service.service.getClassName())){
+                    return true;
                 }
+
             }
+        }
+        return false;
+    }
 
-        }, Looper.getMainLooper());
 
+    private void startLocationService(){
+        if(!isLocationServiceRunning()){
+            Intent intent = new Intent(getApplicationContext(), LocationService.class);
+            intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
+            startService(intent);
+            Toast.makeText(this, "Location service started", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void stopLocationService(){
+        if (isLocationServiceRunning()){
+            Intent intent = new Intent(getApplicationContext(),LocationService.class);
+            intent.setAction(Constants.Action_STOP_LOCATION_SERVICE);
+            startService(intent);
+            Toast.makeText(this,"Location service stopped", Toast.LENGTH_SHORT).show();
+        }
     }
 }
