@@ -7,6 +7,8 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +18,10 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
+    BluetoothAdapter mBAdapter;
+    BluetoothManager mBManager;
+    BluetoothLeAdvertiser mBLEAdvertiser;
+    static final int BEACON_ID = 1775;
 
 
     @Override
@@ -53,6 +59,31 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
         }
 
+        mBManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+        mBAdapter = mBManager.getAdapter();
+        mBLEAdvertiser = mBAdapter.getBluetoothLeAdvertiser();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mBAdapter == null || !mBAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(enableBtIntent);
+            finish();
+            return;
+        }
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, "No LE support on this device", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        if (!mBAdapter.isMultipleAdvertisementSupported()) {
+            Toast.makeText(this, "No advertising support on this device", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        Toast.makeText(this,"BlE and Advertismment supported",Toast.LENGTH_SHORT).show();
     }
 
     @Override

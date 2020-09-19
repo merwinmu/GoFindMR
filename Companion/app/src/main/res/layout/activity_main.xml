@@ -48,5 +48,15 @@
             android:layout_marginRight="144dp"
             android:layout_marginBottom="411dp"
             android:text="REMOVE GPS" />
+
+        <Button
+            android:id="@+id/ble_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="156dp"
+            android:layout_marginBottom="221dp"
+            android:text="BLE" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
