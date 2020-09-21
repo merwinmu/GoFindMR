@@ -8,26 +8,61 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
-public class MainActivity extends AppCompatActivity {
+
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class MainActivity extends AppCompatActivity{
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     BluetoothAdapter mBAdapter;
     BluetoothManager mBManager;
     BluetoothLeAdvertiser mBLEAdvertiser;
-    static final int BEACON_ID = 1775;
+    Button advertiseButton;
+    int count = 0;
+    public Timer myTimer;
+    boolean isAdvertismentRunning = false;
+    public static double LATITUDE = 0;
+    public static double LONGITUDE = 0;
+    private static final int CUSTOM_ID = 24;
+
+
+    AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
+        @Override
+        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            super.onStartSuccess(settingsInEffect);
+        }
+
+        @Override
+        public void onStartFailure(int errorCode) {
+            if (errorCode != ADVERTISE_FAILED_ALREADY_STARTED) {
+                String msg = "Service failed to start: " + errorCode;
+            } else {
+                restartAdvertising();
+            }
+        }
+    };
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         findViewById(R.id.request_location_updates_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,32 +94,39 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
         }
 
+        if( !BluetoothAdapter.getDefaultAdapter().isMultipleAdvertisementSupported() ) {
+            Toast.makeText( this, "Multiple advertisement not supported", Toast.LENGTH_SHORT ).show();
+            advertiseButton.setEnabled( false );
+        }
+
+        findViewById(R.id.ble_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                advertise();
+
+            }
+        });
+
         mBManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         mBAdapter = mBManager.getAdapter();
-        mBLEAdvertiser = mBAdapter.getBluetoothLeAdvertiser();
+
+        myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(isAdvertismentRunning){
+                    stopAdvertising();
+                    advertise();
+                }
+                else {
+                    advertise();
+                    isAdvertismentRunning=true;
+
+                }
+            }
+        },0,1000);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mBAdapter == null || !mBAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enableBtIntent);
-            finish();
-            return;
-        }
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, "No LE support on this device", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        if (!mBAdapter.isMultipleAdvertisementSupported()) {
-            Toast.makeText(this, "No advertising support on this device", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        Toast.makeText(this,"BlE and Advertismment supported",Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -95,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Permission denied", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private boolean isLocationServiceRunning(){
         ActivityManager activityManager =
@@ -128,4 +171,56 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Location service stopped", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void advertise(){
+        mBLEAdvertiser = mBAdapter.getBluetoothLeAdvertiser();
+
+        AdvertiseSettings settings = new AdvertiseSettings.Builder()
+                .setAdvertiseMode( AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY )
+                .setTxPowerLevel( AdvertiseSettings.ADVERTISE_TX_POWER_HIGH )
+                .setConnectable( false )
+                .build();
+
+
+        byte[] lat = ByteBuffer.allocate(8).putDouble(LATITUDE).array();
+        byte[] lon = ByteBuffer.allocate(8).putDouble(LONGITUDE).array();
+
+        byte[] payload = new byte[lat.length + lon.length];
+        System.arraycopy(lat, 0, payload, 0, lat.length);
+        System.arraycopy(lon, 0, payload, lat.length, lon.length);
+
+
+        AdvertiseData data = new AdvertiseData.Builder()
+                .setIncludeDeviceName( true )
+                .addManufacturerData(CUSTOM_ID,payload)
+           //     .addServiceData( pUuid, "Data".getBytes( Charset.forName( "UTF-8" ) ) )
+                .build();
+
+        Log.d("Location: Latitude:",LATITUDE + ", "+ " Longitude "+ LONGITUDE);
+        Log.d("PAYLOAD IN BINARY", Arrays.toString(payload));
+        Log.d("PAYLOAD IN HEX", byteArrayToHex(payload));
+
+
+        mBLEAdvertiser.startAdvertising( settings, data, advertisingCallback );
+        count++;
+        Log.e("COUNT","count: " + count);
+    }
+
+    private void stopAdvertising() {
+        if (mBLEAdvertiser == null) return;
+        mBLEAdvertiser.stopAdvertising(advertisingCallback);
+    }
+
+    private void restartAdvertising() {
+        stopAdvertising();
+        advertise();
+    }
+
+    public static String byteArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 2);
+        for(byte b: a)
+            sb.append(String.format("%02x", b));
+        return sb.toString();
+    }
+
 }

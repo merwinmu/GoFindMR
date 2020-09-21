@@ -19,6 +19,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import static com.example.gofindhololenscompanion.MainActivity.LATITUDE;
+import static com.example.gofindhololenscompanion.MainActivity.LONGITUDE;
+
 public class LocationService extends Service {
 
     private LocationCallback locationCallback = new LocationCallback(){
@@ -28,7 +31,8 @@ public class LocationService extends Service {
             if(locationResult != null && locationResult.getLastLocation() !=null){
                 double latitude = locationResult.getLastLocation().getLatitude();
                 double longitude = locationResult.getLastLocation().getLongitude();
-                Log.d("Location: Latitude:",latitude + ", "+ " Longitude "+ longitude);
+                LATITUDE = latitude;
+                LONGITUDE = longitude;
             }
         }
     };
