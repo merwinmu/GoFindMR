@@ -676,7 +676,7 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: gofindtest
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: C:\Users\Merwin\Documents\gofind-mr\goFind\Assets\WSATestCertificate.pfx
+  metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DBIS
   metroCertificateIssuer: DBIS
