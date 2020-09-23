@@ -10,7 +10,7 @@
     <PackageArchitecture>x86</PackageArchitecture>
     <PackageIdentityName>9cd9bc14-b7b9-463b-9614-36372ca3cb5e</PackageIdentityName>
     <PackageIdentityPublisher>CN=Merwin</PackageIdentityPublisher>
-    <IntermediateOutputPath>C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\obj\x86\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\obj\x86\Debug\</IntermediateOutputPath>
     <RemoteDeploymentType>
     </RemoteDeploymentType>
     <PackageRegistrationPath>
@@ -18,7 +18,7 @@
     <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
-    <LayoutDir>C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\AppX</LayoutDir>
+    <LayoutDir>C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\AppX</LayoutDir>
     <RegisteredManifestChecksum>856EBF337EC567DD40D8EB990E16E4F8DA14A9F8F82D8718FF68A862BCE7C9FD</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>9cd9bc14-b7b9-463b-9614-36372ca3cb5e_1.0.0.0_x86__5jz7azgj2r118</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>9cd9bc14-b7b9-463b-9614-36372ca3cb5e_5jz7azgj2r118!App</RegisteredUserModeAppID>
@@ -27,16 +27,16 @@
     <RegisteredVersion>1.0.0.0</RegisteredVersion>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\Core\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-09-22T23:26:04.300</Modified>
+      <Modified>2020-09-23T10:59:57.789</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.exe">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.exe">
       <PackagePath>entrypoint\BLEScanner.exe</PackagePath>
-      <Modified>2020-09-22T23:26:03.291</Modified>
+      <Modified>2020-09-23T10:59:56.606</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UWPNuGetPackages\runtime.win10-x86.microsoft.netcore.universalwindowsplatform\6.2.10\runtimes\win10-x86\lib\uap10.0.15138\System.Runtime.dll">
       <PackagePath>System.Runtime.dll</PackagePath>
@@ -46,67 +46,67 @@
       <PackagePath>Microsoft.UI.Xaml.Markup.winmd</PackagePath>
       <Modified>2019-03-18T16:36:56.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Properties\Default.rd.xml">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
-      <Modified>2020-09-22T20:59:40.329</Modified>
+      <Modified>2020-09-22T23:30:14.452</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
-      <Modified>2020-09-21T19:16:01.336</Modified>
+      <Modified>2020-09-22T23:30:14.409</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-09-21T19:16:01.341</Modified>
+      <Modified>2020-09-22T23:30:14.411</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-09-21T19:16:01.342</Modified>
+      <Modified>2020-09-22T23:30:14.412</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-09-21T19:16:01.343</Modified>
+      <Modified>2020-09-22T23:30:14.413</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-09-21T19:16:01.344</Modified>
+      <Modified>2020-09-22T23:30:14.413</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-09-21T19:16:01.345</Modified>
+      <Modified>2020-09-22T23:30:14.414</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-09-21T19:16:01.346</Modified>
+      <Modified>2020-09-22T23:30:14.415</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.xr.xml">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.xr.xml">
       <PackagePath>BLEScanner.xr.xml</PackagePath>
       <Modified>2020-09-22T21:48:32.824</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\App.xbf">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\App.xbf">
       <PackagePath>App.xbf</PackagePath>
-      <Modified>2020-09-22T22:56:05.070</Modified>
+      <Modified>2020-09-23T10:59:56.345</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\MainPage.xbf">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\MainPage.xbf">
       <PackagePath>MainPage.xbf</PackagePath>
-      <Modified>2020-09-22T22:56:05.070</Modified>
+      <Modified>2020-09-23T10:59:56.345</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.18362.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
       <Modified>2019-03-18T15:33:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\resources.pri">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2020-09-22T21:41:54.741</Modified>
+      <Modified>2020-09-22T23:30:14.566</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\Core\BLEScanner.exe">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\Core\BLEScanner.exe">
       <PackagePath>BLEScanner.exe</PackagePath>
-      <Modified>2020-09-22T23:26:04.258</Modified>
+      <Modified>2020-09-23T10:59:57.745</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

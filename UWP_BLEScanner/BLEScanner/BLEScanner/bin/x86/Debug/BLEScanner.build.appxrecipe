@@ -10,22 +10,22 @@
     <PackageArchitecture>x86</PackageArchitecture>
     <PackageIdentityName>9cd9bc14-b7b9-463b-9614-36372ca3cb5e</PackageIdentityName>
     <PackageIdentityPublisher>CN=Merwin</PackageIdentityPublisher>
-    <IntermediateOutputPath>C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\obj\x86\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\obj\x86\Debug\</IntermediateOutputPath>
     <RemoteDeploymentType></RemoteDeploymentType>
     <PackageRegistrationPath></PackageRegistrationPath>
     <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
-    <LayoutDir>C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\AppX</LayoutDir>
+    <LayoutDir>C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\AppX</LayoutDir>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\Core\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.exe">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.exe">
       <PackagePath>entrypoint\BLEScanner.exe</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UWPNuGetPackages\runtime.win10-x86.microsoft.netcore.universalwindowsplatform\6.2.10\runtimes\win10-x86\lib\uap10.0.15138\System.Runtime.dll">
@@ -34,52 +34,52 @@
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\bin\10.0.18362.0\XamlCompiler\Microsoft.UI.Xaml.Markup.winmd">
       <PackagePath>Microsoft.UI.Xaml.Markup.winmd</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Properties\Default.rd.xml">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.xr.xml">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\BLEScanner.xr.xml">
       <PackagePath>BLEScanner.xr.xml</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\App.xbf">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\App.xbf">
       <PackagePath>App.xbf</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\MainPage.xbf">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\MainPage.xbf">
       <PackagePath>MainPage.xbf</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.18362.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\resources.pri">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Merwin\source\repos\BLEScanner\BLEScanner\bin\x86\Debug\Core\BLEScanner.exe">
+    <AppxPackagedFile Include="C:\Users\Merwin\Documents\gofind-mr\UWP_BLEScanner\BLEScanner\BLEScanner\bin\x86\Debug\Core\BLEScanner.exe">
       <PackagePath>BLEScanner.exe</PackagePath>
     </AppxPackagedFile>
   </ItemGroup>

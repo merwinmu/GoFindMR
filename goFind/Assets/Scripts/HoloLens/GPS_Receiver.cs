@@ -1,4 +1,5 @@
-﻿using HoloLens;
+﻿using System;
+using HoloLens;
 using TMPro;
 using UnityEngine; 
 #if NETFX_CORE 
@@ -8,7 +9,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 public class GPS_Receiver : MonoBehaviour
 {
-    
+    TextMeshPro textMeshPro;
+    public static double latitude;
 
     
 #if NETFX_CORE
@@ -18,8 +20,14 @@ public static ushort BEACON_ID = 24;
 
     private EventProcessor eventProcessor;
 
+    private void Start()
+    {
+        latitude = 0.2;
+    }
+
     void Awake()
     {
+        textMeshPro = GetComponent<TextMeshPro>();
        
         
         eventProcessor = (EventProcessor)FindObjectOfType(typeof(EventProcessor));
@@ -39,10 +47,16 @@ watcher.Start();
             ushort identifier = args.Advertisement.ManufacturerData[0].CompanyId;
             byte[] data = args.Advertisement.ManufacturerData[0].Data.ToArray();
             eventProcessor.QueueEvent(() => { });
-            double latitude = BitConverter.ToDouble(data, 0);
-            Debug.Log(latitude);
+            latitude = BitConverter.ToDouble(data, 0);
+           
             
         }
 #endif
+    }
+    
+    void Update()
+    {
+        textMeshPro.text = latitude.ToString();
+
     }
 }
