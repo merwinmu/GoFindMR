@@ -1968,11 +1968,7 @@
             <e p="TemporalRangeFilter.cs" t="Include" />
           </e>
           <e p="HoloLens" t="Include">
-            <e p="EventProcessor.cs" t="Include" />
             <e p="GPS_Receiver.cs" t="Include" />
-            <e p="GPSUpdate.cs" t="Include" />
-            <e p="test.cs" t="Include" />
-            <e p="test2.cs" t="Include" />
           </e>
           <e p="IO" t="Include">
             <e p="HeadingDictionary.cs" t="Include" />

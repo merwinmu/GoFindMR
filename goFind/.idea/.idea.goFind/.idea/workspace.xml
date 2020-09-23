@@ -20,20 +20,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e7553b4a-94ef-4be4-b505-42b5903e568e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/MainPage.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/MainPage.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/App.xbf" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/App.xbf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/App.xbf" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/App.xbf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/MainPage.xbf" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/MainPage.xbf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/entrypoint/BLEScanner.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/entrypoint/BLEScanner.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/vs.appxrecipe" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/AppX/vs.appxrecipe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/BLEScanner.build.appxrecipe" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/BLEScanner.build.appxrecipe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/BLEScanner.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/BLEScanner.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/MainPage.xbf" beforeDir="false" afterPath="$PROJECT_DIR$/../UWP_BLEScanner/BLEScanner/BLEScanner/bin/x86/Debug/MainPage.xbf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.goFind/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.goFind/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.goFind/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.goFind/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.goFind/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.goFind/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/EventProcessor.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/EventProcessor.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPSUpdate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPSUpdate.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPS_Receiver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPS_Receiver.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/test.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/test.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPS_Receiver.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPS_Receiver.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/test.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/test.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/test2.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HoloLens/test2.cs.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,9 +43,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/HoloLens/test.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/HoloLens/GPS_Receiver.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/HoloLens/test2.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -58,9 +55,9 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPSUpdate.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HoloLens/Event_Processor.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HoloLens/Detetector.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPS_Receiver.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HoloLens/test.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/HoloLens/test2.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/HoloLens/GPS_Receiver.cs" />
       </list>
     </option>
   </component>
@@ -106,6 +103,7 @@
       <option name="presentableId" value="Default" />
       <updated>1600802526349</updated>
       <workItem from="1600802564439" duration="22142000" />
+      <workItem from="1600898352275" duration="1167000" />
     </task>
     <servers />
   </component>
@@ -124,6 +122,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
