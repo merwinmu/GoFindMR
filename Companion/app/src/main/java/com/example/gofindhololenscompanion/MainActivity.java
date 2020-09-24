@@ -169,29 +169,28 @@ public class MainActivity extends AppCompatActivity{
         mBLEAdvertiser = mBAdapter.getBluetoothLeAdvertiser();
 
         AdvertiseSettings settings = new AdvertiseSettings.Builder()
-                .setAdvertiseMode( AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY )
-                .setTxPowerLevel( AdvertiseSettings.ADVERTISE_TX_POWER_HIGH )
+                .setAdvertiseMode( AdvertiseSettings.ADVERTISE_MODE_BALANCED )
+                .setTxPowerLevel( AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM )
                 .setConnectable( false )
+                .setTimeout(0)
                 .build();
 
-
+        byte[] payload = new byte[16];
         byte[] lat = ByteBuffer.allocate(8).putDouble(LATITUDE).array();
+        for(int i = 0, j = 7; i < 8; i++, j--) payload[i] = lat[j];
         byte[] lon = ByteBuffer.allocate(8).putDouble(LONGITUDE).array();
-
-        byte[] payload = new byte[lat.length + lon.length];
-        System.arraycopy(lat, 0, payload, 0, lat.length);
-        System.arraycopy(lon, 0, payload, lat.length, lon.length);
+        for(int i = 8, j = 7; i < 16; i++, j--) payload[i] = lon[j];
 
 
         AdvertiseData data = new AdvertiseData.Builder()
-                .setIncludeDeviceName( true )
                 .addManufacturerData(CUSTOM_ID,payload)
-           //     .addServiceData( pUuid, "Data".getBytes( Charset.forName( "UTF-8" ) ) )
                 .build();
+
 
         Log.d("Location: Latitude:",LATITUDE + ", "+ " Longitude "+ LONGITUDE);
         Log.d("PAYLOAD IN BINARY", Arrays.toString(payload));
         Log.d("PAYLOAD IN HEX", byteArrayToHex(payload));
+        Log.d("ORGINAL PAYLOAD: ",data.toString());
 
 
         mBLEAdvertiser.startAdvertising( settings, data, advertisingCallback );
