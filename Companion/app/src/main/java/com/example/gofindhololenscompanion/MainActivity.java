@@ -99,13 +99,6 @@ public class MainActivity extends AppCompatActivity{
             advertiseButton.setEnabled( false );
         }
 
-        findViewById(R.id.ble_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                advertise();
-
-            }
-        });
 
         mBManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         mBAdapter = mBManager.getAdapter();

@@ -25,18 +25,6 @@
             android:layout_marginBottom="480dp"
             android:text="GET GPS" />
 
-        <TextView
-            android:id="@+id/latlong"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="175dp"
-            android:layout_marginRight="175dp"
-            android:layout_marginBottom="315dp"
-            android:text="TextView" />
-
         <Button
             android:id="@+id/remove_updates_button"
             android:layout_width="wrap_content"
@@ -47,16 +35,7 @@
             android:layout_marginEnd="144dp"
             android:layout_marginRight="144dp"
             android:layout_marginBottom="411dp"
-            android:text="REMOVE GPS" />
+            android:text="STOP BLE ADV" />
 
-        <Button
-            android:id="@+id/ble_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="156dp"
-            android:layout_marginBottom="221dp"
-            android:text="BLE" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
