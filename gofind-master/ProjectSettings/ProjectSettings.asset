@@ -143,7 +143,7 @@ PlayerSettings:
       minimumSupportedHeadTracking: 0
       maximumSupportedHeadTracking: 1
     hololens:
-      depthFormat: 0
+      depthFormat: 1
       depthBufferSharingEnabled: 0
     lumin:
       depthFormat: 0
@@ -676,11 +676,11 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: UnityProject
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: 
+  metroCertificatePath: C:\Users\hololensdev\Documents\Test3\Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
+  metroCertificateSubject: DBIS
+  metroCertificateIssuer: DBIS
+  metroCertificateNotAfter: 805cb4f2acb4d701
   metroApplicationDescription: UnityProject
   wsaImages: {}
   metroTileShortName: 
@@ -711,8 +711,8 @@ PlayerSettings:
       HumanInterfaceDevice: False
       InputInjectionBrokered: False
       InternetClient: True
-      InternetClientServer: True
-      Location: True
+      InternetClientServer: False
+      Location: False
       LowLevelDevices: False
       Microphone: True
       MusicLibrary: False
@@ -720,7 +720,7 @@ PlayerSettings:
       OfflineMapsManagement: False
       PhoneCall: False
       PhoneCallHistoryPublic: False
-      PicturesLibrary: True
+      PicturesLibrary: False
       PointOfService: False
       PrivateNetworkClientServer: False
       Proximity: False
@@ -735,7 +735,7 @@ PlayerSettings:
       UserNotificationListener: False
       VideosLibrary: False
       VoipCall: False
-      WebCam: True
+      WebCam: False
   metroTargetDeviceFamilies:
     Desktop: False
     Holographic: False
@@ -791,9 +791,9 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 4b581a06-5134-4b49-bd55-5a3dcd13f870
+  cloudProjectId: 2008efd7-8dc3-4d62-b22a-7ace64968dad
   framebufferDepthMemorylessMode: 0
-  projectName: Go Find! (2)
+  projectName: Go Find! (4)
   organizationId: merwin-3458708
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
