@@ -16,11 +16,10 @@ public class GPSReceiver : MonoBehaviour
     BluetoothLEAdvertisementWatcher watcher;
     public static ushort BEACON_ID = 24;
 #endif
-    private TextMeshPro tmp;
+   
 
     private void Awake()
     {
-        tmp = GetComponent<TextMeshPro>();
 #if WINDOWS_UWP
         watcher = new BluetoothLEAdvertisementWatcher();
         var manufacturerData = new BluetoothLEManufacturerData
