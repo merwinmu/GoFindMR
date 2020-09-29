@@ -16,7 +16,7 @@ public class GPSReceiver : MonoBehaviour
     BluetoothLEAdvertisementWatcher watcher;
     public static ushort BEACON_ID = 24;
 #endif
-    public TextMeshPro tmp;
+    private TextMeshPro tmp;
 
     private void Awake()
     {
@@ -55,6 +55,5 @@ public class GPSReceiver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        tmp.text = latitude.ToString();
     }
 }

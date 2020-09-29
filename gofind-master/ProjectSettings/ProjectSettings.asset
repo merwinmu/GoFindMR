@@ -676,7 +676,7 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: UnityProject
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: C:\Users\hololensdev\Documents\Test3\Assets\WSATestCertificate.pfx
+  metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DBIS
   metroCertificateIssuer: DBIS
