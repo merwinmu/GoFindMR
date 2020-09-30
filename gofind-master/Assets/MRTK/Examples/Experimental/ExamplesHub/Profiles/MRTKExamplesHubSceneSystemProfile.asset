@@ -37,8 +37,8 @@ MonoBehaviour:
     BuildIndex: -1
     Tag: Untagged
     Asset: {fileID: 102900000, guid: 63a00118e809c754f9c7911bb85d635f, type: 3}
-  - Name: HandInteractionExamples
-    Path: Assets/HoloLens/Scenes/HandInteractionExamples.unity
+  - Name: QueryMenu
+    Path: Assets/HoloLens/Scenes/QueryMenu.unity
     Included: 1
     BuildIndex: 0
     Tag: Untagged

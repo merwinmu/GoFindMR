@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LocationHandler : MonoBehaviour
+public class HQueryBuilder : MonoBehaviour
 {
+    
+    public void AddQbE()
+    {
+        HDeviceCam cam;
+        
+    }
     // Start is called before the first frame update
     void Start()
     {
