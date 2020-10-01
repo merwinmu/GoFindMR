@@ -12,6 +12,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 public class GPSReceiver : MonoBehaviour
 {
     public double latitude = 0;
+    public double longitude = 0;
+    private TextMeshPro tmp;
 #if WINDOWS_UWP
     BluetoothLEAdvertisementWatcher watcher;
     public static ushort BEACON_ID = 24;
@@ -20,6 +22,8 @@ public class GPSReceiver : MonoBehaviour
 
     private void Awake()
     {
+        tmp = GetComponent<TextMeshPro>();
+
 #if WINDOWS_UWP
         watcher = new BluetoothLEAdvertisementWatcher();
         var manufacturerData = new BluetoothLEManufacturerData
@@ -42,17 +46,19 @@ public class GPSReceiver : MonoBehaviour
         byte[] data = args.Advertisement.ManufacturerData[0].Data.ToArray();
         // Updates to Unity UI don't seem to work nicely from this callback so just store a reference to the data for later processing.
         latitude = BitConverter.ToDouble(data, 0);
+        longitude = BitConverter.ToDouble(data,8);
         Debug.Log(latitude.ToString());
     }
 #endif
 
     void Start()
     {
-
+       
     }
 
     // Update is called once per frame
     void Update()
     {
+        tmp.text = latitude.ToString() + " " + longitude.ToString();
     }
 }

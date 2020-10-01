@@ -11,7 +11,7 @@ public class HDeviceCam : MonoBehaviour
 
     bool isRunning = false;
 
-    void Start()
+    public void Start()
     {
         StartCoroutine(StartCameraCapture());
     }
