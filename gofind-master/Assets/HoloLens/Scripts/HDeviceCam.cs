@@ -7,7 +7,8 @@ using UnityEngine.Windows.WebCam;
 
 
 public class HDeviceCam : MonoBehaviour
-{private WebCamTexture cam;
+{
+    private WebCamTexture cam;
  
    public RawImage image;
    public AspectRatioFitter fitter; // Required: Mode Envelop Parent, Ratio: 1.501182

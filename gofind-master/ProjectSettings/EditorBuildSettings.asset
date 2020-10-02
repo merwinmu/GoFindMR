@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/HoloLens/Scenes/QueryMenu.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
   - enabled: 1
-    path: Assets/HoloLens/Scenes/CameraMenu.unity
-    guid: c705b7544e1f20440b125d73a2ce344c
+    path: Assets/HoloLens/Scenes/TestCamera.unity
+    guid: c8422032d70af964cb72889607fe3ebe
   m_configObjects: {}

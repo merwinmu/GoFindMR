@@ -112,7 +112,7 @@ public class HQueryBuilder : MonoBehaviour
             QbEDisplay disp = qbe.GetComponent<QbEDisplay>();
             if (disp != null)
             {
-                disp.builder = this;
+                //disp.builder = this;
                 disp.image.texture = ExampleInput.FromBase64DataUrl(imageDataUrl);
                 // needs to respect the aspect ratio!
             }
@@ -139,7 +139,7 @@ public class HQueryBuilder : MonoBehaviour
             QbLDisplay disp = qbl.GetComponent<QbLDisplay>();
             if (disp != null)
             {
-                disp.builder = this;
+                //disp.builder = this;
                 disp.title.text = "Map Location";
                 disp.DisplayLocation(location.latitude,location.longitude);
             }
@@ -168,7 +168,7 @@ public class HQueryBuilder : MonoBehaviour
             if (disp != null)
             {
                 disp.title.text = "Current Position";
-                disp.builder = this;
+                //disp.builder = this;
                 disp.DisplayLocation(GetCurrentLatitude(), GetCurrentLongitude());
                 SetLocationTerm(GetCurrentLatitude(), GetCurrentLongitude());
             }
@@ -261,7 +261,7 @@ public class HQueryBuilder : MonoBehaviour
             QbTDisplay disp = qbt.GetComponent<QbTDisplay>();
             if (disp != null)
             {
-                disp.builder = this;
+                //disp.builder = this;
             }
         }
 

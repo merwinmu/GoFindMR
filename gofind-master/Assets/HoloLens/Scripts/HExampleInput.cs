@@ -2,14 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Assets.Modules.SimpleLogging;
 using UnityEngine;
+using UnityEngine.Windows.WebCam;
+
 
 namespace Assets.HoloLens.Scripts
 {
     public class HExampleInput : MonoBehaviour
     {
-        public HDeviceCam cam;
+        public PhotoCapture photoCaptureObject = null;
 
         // Start is called before the first frame update
         public bool DebugStoreImage = true;
@@ -38,21 +41,82 @@ namespace Assets.HoloLens.Scripts
             return texture;
         }
 
-        private void OnEnable()
-        {
-            if (cam != null && cam.Cam != null)
-            {
-                cam.Cam.Play();
-            }
-        }
-
 
         private Modules.SimpleLogging.Logger logger;
 
         // Use this for initialization
         void Start()
         {
-            logger = LogManager.GetInstance().GetLogger(GetType());
+        }
+
+        public void TakePhoto()
+        {
+            PhotoCapture.CreateAsync(false, OnPhotoCaptureCreated);
+        }
+
+        void OnPhotoCaptureCreated(PhotoCapture captureObject)
+        {
+            photoCaptureObject = captureObject;
+
+            Resolution cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
+
+            CameraParameters c = new CameraParameters();
+            c.hologramOpacity = 0.0f;
+            c.cameraResolutionWidth = cameraResolution.width;
+            c.cameraResolutionHeight = cameraResolution.height;
+            c.pixelFormat = CapturePixelFormat.BGRA32;
+
+            captureObject.StartPhotoModeAsync(c, OnPhotoModeStarted);
+        }
+
+        private void OnPhotoModeStarted(PhotoCapture.PhotoCaptureResult result)
+        {
+            if (result.success)
+            {
+                string filename = string.Format(@"CapturedImage{0}_n.jpg", Time.time);
+                string filePath = System.IO.Path.Combine(Application.persistentDataPath, filename);
+
+                photoCaptureObject.TakePhotoAsync(filePath, PhotoCaptureFileOutputFormat.JPG, OnCapturedPhotoToDisk);
+            }
+            else
+            {
+                Debug.LogError("Unable to start photo mode!");
+            }
+        }
+
+
+        void OnCapturedPhotoToMemory(PhotoCapture.PhotoCaptureResult result, PhotoCaptureFrame photoCaptureFrame)
+        {
+            if (result.success)
+            {
+                // Create our Texture2D for use and set the correct resolution
+                Resolution cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
+                Texture2D targetTexture = new Texture2D(cameraResolution.width, cameraResolution.height);
+                // Copy the raw image data into our target texture
+                photoCaptureFrame.UploadImageDataToTexture(targetTexture);
+                // Do as we wish with the texture such as apply it to a material, etc.
+            }
+            // Clean up
+            photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);
+        }
+
+        void OnCapturedPhotoToDisk(PhotoCapture.PhotoCaptureResult result)
+        {
+            if (result.success)
+            {
+                Debug.Log("Saved Photo to disk!");
+                photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);
+            }
+            else
+            {
+                Debug.Log("Failed to save Photo to disk");
+            }
+        }
+
+        void OnStoppedPhotoMode(PhotoCapture.PhotoCaptureResult result)
+        {
+            photoCaptureObject.Dispose();
+            photoCaptureObject = null;
         }
 
         // Update is called once per frame
@@ -61,10 +125,6 @@ namespace Assets.HoloLens.Scripts
 
         }
 
-        public void TakePhoto()
-        {
-            StartCoroutine(CapturePhoto());
-        }
 
         private string result;
 
@@ -73,27 +133,7 @@ namespace Assets.HoloLens.Scripts
             return result;
         }
 
-        private IEnumerator<WaitForEndOfFrame> CapturePhoto()
-        {
-            yield return new WaitForEndOfFrame();
-
-            WebCamTexture camera = cam.Cam;
-            Texture2D photo = new Texture2D(camera.width, camera.height);
-            photo.SetPixels32(camera.GetPixels32());
-            photo.Apply();
-
-            result = ToBase64DataUrl(photo);
-            if (DebugStoreImage)
-            {
-                StoreImage(result);
-            }
-
-            logger.Debug("Stored image result as dataurl");
-            if (PhotoCapturedHandler != null)
-            {
-                PhotoCapturedHandler.Invoke(result);
-            }
-        }
+        
 
         public const string DATA_URL_PREFIX = "data:";
         public const string IMAGE_PNG = "image/png;";
