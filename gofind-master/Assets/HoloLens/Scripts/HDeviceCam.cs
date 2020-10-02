@@ -2,90 +2,111 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 using UnityEngine.Windows.WebCam;
 
 
 public class HDeviceCam : MonoBehaviour
-{
-     PhotoCapture photoCaptureObject = null;
-
-    bool isRunning = false;
-
-    public void Start()
-    {
-        StartCoroutine(StartCameraCapture());
-    }
-
-    public IEnumerator StartCameraCapture()
-    {
-        if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
-        {
-            yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
-        }
-        if (Application.HasUserAuthorization(UserAuthorization.WebCam))
-        {
-            Debug.Log("Creating PhotoCapture");
-            PhotoCapture.CreateAsync(false, OnPhotoCaptureCreated);
-        }
-        else
-        {
-            Debug.Log("Webcam Permission not granted");
-        }
-    }
-
-    private void Update()
-    {
-        if (isRunning)
-        {
-            photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
-        }
-    }
-
-    void OnPhotoCaptureCreated(PhotoCapture captureObject)
-    {
-        photoCaptureObject = captureObject;
-
-        IEnumerable<Resolution> availableResolutions = PhotoCapture.SupportedResolutions;
-
-        foreach (var res in availableResolutions)
-        {
-            Debug.Log("PhotoCapture Resolution: " + res.width + "x" + res.height);
-        }
-
-        Resolution cameraResolution = availableResolutions.OrderByDescending((res) => res.width * res.height).First();
-
-        CameraParameters c = new CameraParameters();
-        c.hologramOpacity = 0.0f;
-        c.cameraResolutionWidth = cameraResolution.width;
-        c.cameraResolutionHeight = cameraResolution.height;
-        c.pixelFormat = CapturePixelFormat.BGRA32;
-
-        captureObject.StartPhotoModeAsync(c, OnPhotoModeStarted);
-    }
-
-    private void OnPhotoModeStarted(PhotoCapture.PhotoCaptureResult result)
-    {
-        if (result.success)
-        {
-            isRunning = true;
-            photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
-        }
-    }
-
-    void OnCapturedPhotoToMemory(PhotoCapture.PhotoCaptureResult result, PhotoCaptureFrame frame)
-    {
-        if (result.success)
-        {
-            if (frame.TryGetCameraToWorldMatrix(out Matrix4x4 cameraToWorldMatrix))
-            {
-                Debug.Log("Successfully obtained CameraToWorldMatrix: " + cameraToWorldMatrix.ToString());
-
-            }
-            else
-            {
-                Debug.Log("Failed to obtain CameraToWorldMatrix");
-            }
-        }
-        frame.Dispose();
-    }
+{private WebCamTexture cam;
+ 
+   public RawImage image;
+   public AspectRatioFitter fitter; // Required: Mode Envelop Parent, Ratio: 1.501182
+ 
+   private bool active = true;
+ 
+   private new bool enabled = true;
+ 
+   // Use this for initialization
+   void Start()
+   {
+     if (WebCamTexture.devices.Length == 0)
+     {
+       active = false;
+       Debug.Log("Could not find a cam");
+       return;
+     }
+ 
+     cam = new WebCamTexture(
+       (int) 0.8f * Screen.width, (int) 0.8f * Screen.height, 30); //desired width, height and fps
+ 
+     if (cam == null)
+     {
+       Debug.Log("Cam could not be initialized");
+       active = false;
+     }
+ 
+     //cam.Play(); //Dont start until externally called!
+     image.texture = cam;
+ 
+     if (Application.isEditor)
+     {
+       this.enabled = false;
+     }
+   }
+ 
+   public void StartCam()
+   {
+     if (this.enabled)
+     {
+       if (cam != null && !cam.isPlaying)
+       {
+         cam.Play();
+       }
+     }
+   }
+ 
+   public void StopCam()
+   {
+     if (this.enabled)
+     {
+       if (cam != null && cam.isPlaying)
+       {
+         cam.Stop();
+       }
+     }
+   }
+ 
+   // Update is called once per frame
+   void Update()
+   {
+     if (!this.enabled)
+     {
+       return;
+     }
+ 
+     if (!active)
+     {
+       return;
+     }
+ 
+     float ratio = (float) cam.width / (float) cam.height;
+ 
+     fitter.aspectRatio = ratio; // TODO Investigate why null
+ 
+     float scaleY = cam.videoVerticallyMirrored ? -1f : 1f;
+     image.rectTransform.localScale = new Vector3(1f, scaleY, 1f);
+ 
+     int orientation = -cam.videoRotationAngle;
+ 
+     image.rectTransform.localEulerAngles = new Vector3(0, 0, orientation);
+   }
+ 
+   void OnApplicationFocus(bool focus)
+   {
+     if (!focus)
+     {
+       StopCam();
+     }
+   }
+ 
+   void OnApplicationQuit()
+   {
+     StopCam();
+   }
+ 
+ 
+   public WebCamTexture Cam
+   {
+     get { return cam; }
+   }
 }
