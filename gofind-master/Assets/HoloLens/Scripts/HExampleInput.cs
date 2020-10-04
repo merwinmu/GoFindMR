@@ -95,10 +95,14 @@ namespace Assets.HoloLens.Scripts
                 // Copy the raw image data into our target texture
                 photoCaptureFrame.UploadImageDataToTexture(targetTexture);
                 // Do as we wish with the texture such as apply it to a material, etc.
+                this.result = ToBase64DataUrl(targetTexture);
             }
             // Clean up
             photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);
         }
+
+        
+        // ======= DEBUG STORE IMAGE =========
 
         void OnCapturedPhotoToDisk(PhotoCapture.PhotoCaptureResult result)
         {
@@ -139,47 +143,7 @@ namespace Assets.HoloLens.Scripts
         public const string IMAGE_PNG = "image/png;";
         public const string IMAGE_JPEG = "image/jpeg;";
         public const string DATA_URL_POST_IMAGE_SEQUENCE = "base64,";
-
-
-
-        // ======= DEBUG STORE IMAGE =========
-        private void StoreImage(string img)
-        {
-            PrepareWriter();
-            writer.WriteLine(img);
-            writer.Flush();
-            writer.Close();
-        }
-
-        private string imgPath;
-
-        private void PrepareWriter()
-        {
-            if (Application.isEditor)
-            {
-                imgPath = Application.dataPath;
-            }
-            else
-            {
-                imgPath = Application.persistentDataPath;
-            }
-
-            fileName = CreateImageFileName();
-            if (fileName != null)
-            {
-                FileStream fs = File.Create(Path.Combine(imgPath, fileName));
-                writer = new StreamWriter(fs);
-            }
-        }
-
-        private StreamWriter writer = null;
-        private string fileName;
-        private readonly string EXTENSION = ".txt";
-
-        private string CreateImageFileName()
-        {
-            return DateTime.Now.ToString("image-yyyy-MM-ddTHH-mm-ss-fff") + EXTENSION;
-        }
+        
     }
 }
 
