@@ -41,9 +41,7 @@ QualitySettings:
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
     customRenderPipeline: {fileID: 0}
-    excludedTargetPlatforms:
-    - Standalone
-    - Windows Store Apps
+    excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Fast
     pixelLightCount: 0
@@ -231,7 +229,9 @@ QualitySettings:
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
     customRenderPipeline: {fileID: 0}
-    excludedTargetPlatforms: []
+    excludedTargetPlatforms:
+    - Standalone
+    - Windows Store Apps
   m_PerPlatformDefaultQuality:
     Android: 2
     Nintendo 3DS: 5

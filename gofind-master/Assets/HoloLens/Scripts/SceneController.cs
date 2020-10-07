@@ -22,12 +22,14 @@ public class SceneController : MonoBehaviour
         currentScene = SceneManager.GetActiveScene().buildIndex;
         sceneStack.Push(currentScene);
         SceneManager.LoadScene(sceneToLoad);
+        Debug.Log("New Scene Loaded");
     }
 
     private void LoadLastScene()
     {
         lastScene = sceneStack.Pop();
         SceneManager.LoadScene(lastScene);
+        Debug.Log("Last Scene Loaded");
     }
 
     public void backScene()
