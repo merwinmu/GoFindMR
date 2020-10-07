@@ -48,6 +48,11 @@ namespace Assets.HoloLens.Scripts
         void Start()
         {
         }
+        
+        /*
+         * https://docs.microsoft.com/en-us/windows/mixed-reality/develop/unity/locatable-camera-in-unity
+         * Offical Microsoft Doc
+         */
 
         public void TakePhoto()
         {

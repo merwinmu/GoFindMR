@@ -9,42 +9,47 @@ using Windows.Devices.Bluetooth.Advertisement;
 using System.Runtime.InteropServices.WindowsRuntime;
 #endif
 
+/*
+ * Official Microsoft DOC
+ * https://docs.microsoft.com/en-us/windows/uwp/devices-sensors/ble-beacon
+ */
+
 public class GPSReceiver : MonoBehaviour
 {
+    public static ushort ANDROID_ID = 24;
     public double latitude = 0;
     public double longitude = 0;
-    private TextMeshPro tmp;
+    private TextMeshPro BLE_Text;
 #if WINDOWS_UWP
-    BluetoothLEAdvertisementWatcher watcher;
-    public static ushort BEACON_ID = 24;
+    BluetoothLEAdvertisementWatcher watcher; //Loading Bluetooth Low Energy Advertisment Driver
 #endif
    
 
     private void Awake()
     {
-        tmp = GetComponent<TextMeshPro>();
+        BLE_Text = GetComponent<TextMeshPro>(); 
 
 #if WINDOWS_UWP
-        watcher = new BluetoothLEAdvertisementWatcher();
-        var manufacturerData = new BluetoothLEManufacturerData
+        watcher = new BluetoothLEAdvertisementWatcher(); //Instating BLE Driver
+        var manufacturerData = new BluetoothLEManufacturerData  // Matching ID with ANDROID Device
         {
-        CompanyId = BEACON_ID
+        CompanyId = ANDROID_ID 
         };
-        watcher.AdvertisementFilter.Advertisement.ManufacturerData.Add(manufacturerData);
-        watcher.ScanningMode = BluetoothLEScanningMode.Active;
-        watcher.Received += Watcher_Received;
+        watcher.AdvertisementFilter.Advertisement.ManufacturerData.Add(manufacturerData); // Filtering Manuf. Data with ID
+        watcher.ScanningMode = BluetoothLEScanningMode.Active; // Function required for HOLOLENS2 
+        watcher.Received += Watcher_Received; 
         watcher.Start();
-        latitude = 5;
         Debug.Log("Started watching");
 #endif
     }
 
 #if WINDOWS_UWP
+    /*
+     * Reading Data and translating to required values.
+     */
     private async void Watcher_Received(BluetoothLEAdvertisementWatcher sender, BluetoothLEAdvertisementReceivedEventArgs args)
     {
-        ushort identifier = args.Advertisement.ManufacturerData[0].CompanyId;
         byte[] data = args.Advertisement.ManufacturerData[0].Data.ToArray();
-        // Updates to Unity UI don't seem to work nicely from this callback so just store a reference to the data for later processing.
         latitude = BitConverter.ToDouble(data, 0);
         longitude = BitConverter.ToDouble(data,8);
         Debug.Log(latitude.ToString());
@@ -53,12 +58,12 @@ public class GPSReceiver : MonoBehaviour
 
     void Start()
     {
-       
+        BLE_Text.text = "Waiting for GPS Advertisment from Android_ID: " + ANDROID_ID;
     }
 
     // Update is called once per frame
     void Update()
     {
-        tmp.text = latitude.ToString() + " " + longitude.ToString();
+        BLE_Text.text = latitude.ToString() + " " + longitude.ToString();
     }
 }
