@@ -15,10 +15,16 @@ import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.nio.ByteBuffer;
@@ -26,7 +32,7 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     BluetoothAdapter mBAdapter;
@@ -34,11 +40,17 @@ public class MainActivity extends AppCompatActivity{
     BluetoothLeAdvertiser mBLEAdvertiser;
     Button advertiseButton;
     int count = 0;
+    EditText latitude_text;
+    EditText longitude_text;
     public Timer myTimer;
     boolean isAdvertismentRunning = false;
     public static double LATITUDE = 0;
     public static double LONGITUDE = 0;
     private static final int CUSTOM_ID = 24;
+
+    // device sensor manager
+    private SensorManager mSensorManager;
+    private static float HEADING = 0f;
 
 
     AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
@@ -63,6 +75,19 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        latitude_text = (EditText)findViewById(R.id.latitude);
+        longitude_text = (EditText)findViewById(R.id.longitude);
+
+
+        findViewById(R.id.set_payload).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LATITUDE = Double.parseDouble(latitude_text.getText().toString());
+                LONGITUDE = Double.parseDouble(longitude_text.getText().toString());
+                Toast.makeText(MainActivity.this, "PAYLOAD SET", Toast.LENGTH_LONG).show();
+
+            }
+        });
 
         findViewById(R.id.request_location_updates_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,8 +143,33 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         },0,1000);
+
+        // initialize android device sensor capabilities
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // for the system's orientation sensor registered listeners
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        HEADING = Math.round(sensorEvent.values[0]);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -140,7 +190,6 @@ public class MainActivity extends AppCompatActivity{
                 if(LocationService.class.getName().equals(service.service.getClassName())){
                     return true;
                 }
-
             }
         }
         return false;
@@ -175,27 +224,28 @@ public class MainActivity extends AppCompatActivity{
                 .setTimeout(0)
                 .build();
 
-        byte[] payload = new byte[16];
+        byte[] payload = new byte[20];
+
         byte[] lat = ByteBuffer.allocate(8).putDouble(LATITUDE).array();
         for(int i = 0, j = 7; i < 8; i++, j--) payload[i] = lat[j];
+
         byte[] lon = ByteBuffer.allocate(8).putDouble(LONGITUDE).array();
         for(int i = 8, j = 7; i < 16; i++, j--) payload[i] = lon[j];
+
+        byte[] hed = ByteBuffer.allocate(4).putFloat(HEADING).array();
+        for(int i = 16, j = 3; i < 20; i++, j--) payload[i] = hed[j];
 
 
         AdvertiseData data = new AdvertiseData.Builder()
                 .addManufacturerData(CUSTOM_ID,payload)
                 .build();
 
-
-        Log.d("Location: Latitude:",LATITUDE + ", "+ " Longitude "+ LONGITUDE);
-        Log.d("PAYLOAD IN BINARY", Arrays.toString(payload));
-        Log.d("PAYLOAD IN HEX", byteArrayToHex(payload));
-        Log.d("ORGINAL PAYLOAD: ",data.toString());
-
+//        Log.d("Location: Latitude:",LATITUDE + ", "+ " Longitude "+ LONGITUDE + " HEADING "+ HEADING);
+//        Log.d("PAYLOAD IN BINARY", Arrays.toString(payload));
+//        Log.d("PAYLOAD IN HEX", byteArrayToHex(payload));
+//        Log.d("ORGINAL PAYLOAD: ",data.toString());
 
         mBLEAdvertiser.startAdvertising( settings, data, advertisingCallback );
-        count++;
-        Log.e("COUNT","count: " + count);
     }
 
     private void stopAdvertising() {
@@ -214,5 +264,4 @@ public class MainActivity extends AppCompatActivity{
             sb.append(String.format("%02x", b));
         return sb.toString();
     }
-
 }

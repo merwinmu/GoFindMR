@@ -37,5 +37,39 @@
             android:layout_marginBottom="411dp"
             android:text="STOP BLE ADV" />
 
+        <EditText
+            android:id="@+id/latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="99dp"
+            android:layout_marginBottom="263dp"
+            android:ems="10"
+            android:hint="LATITUDE"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="98dp"
+            android:layout_marginBottom="201dp"
+            android:ems="10"
+            android:hint="LONGITUDE"
+            android:inputType="numberDecimal" />
+
+        <Button
+            android:id="@+id/set_payload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="149dp"
+            android:layout_marginBottom="73dp"
+            android:text="SET PAYLOAD" />
+
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
