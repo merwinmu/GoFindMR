@@ -13,6 +13,7 @@ namespace Assets.HoloLens.Scripts
     public class HExampleInput : MonoBehaviour
     {
         public PhotoCapture photoCaptureObject = null;
+        public GameObject Result;
 
         // Start is called before the first frame update
         public bool DebugStoreImage = true;
@@ -100,6 +101,12 @@ namespace Assets.HoloLens.Scripts
                 // Copy the raw image data into our target texture
                 photoCaptureFrame.UploadImageDataToTexture(targetTexture);
                 // Do as we wish with the texture such as apply it to a material, etc.
+                
+                Result.GetComponent<Renderer>().material.mainTexture = targetTexture;
+                
+                Instantiate(Result, Camera.main.transform.position , Camera.main.transform.rotation );
+                
+                
                 this.result = ToBase64DataUrl(targetTexture);
             }
             // Clean up
