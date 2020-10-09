@@ -14,6 +14,8 @@ namespace Assets.HoloLens.Scripts
     {
         public PhotoCapture photoCaptureObject = null;
         public GameObject Result;
+        public static Texture2D data;
+        public static Queue<Vector3> vectorstack = new Queue<Vector3>(); 
 
         // Start is called before the first frame update
         public bool DebugStoreImage = true;
@@ -30,6 +32,8 @@ namespace Assets.HoloLens.Scripts
         public const string PNG_DATA_PREFIX = DATA_URL_PREFIX + IMAGE_PNG + DATA_URL_POST_IMAGE_SEQUENCE;
 
         public static Texture2D FromBase64DataUrl(string data)
+
+        
         {
             if (data.StartsWith(PNG_DATA_PREFIX))
             {
@@ -82,7 +86,8 @@ namespace Assets.HoloLens.Scripts
                 string filename = string.Format(@"CapturedImage{0}_n.jpg", Time.time);
                 string filePath = System.IO.Path.Combine(Application.persistentDataPath, filename);
 
-                photoCaptureObject.TakePhotoAsync(filePath, PhotoCaptureFileOutputFormat.JPG, OnCapturedPhotoToDisk);
+                //photoCaptureObject.TakePhotoAsync(filePath, PhotoCaptureFileOutputFormat.JPG, OnCapturedPhotoToDisk);
+                photoCaptureObject.TakePhotoAsync(OnCapturedPhotoToMemory);
             }
             else
             {
@@ -100,15 +105,19 @@ namespace Assets.HoloLens.Scripts
                 Texture2D targetTexture = new Texture2D(cameraResolution.width, cameraResolution.height);
                 // Copy the raw image data into our target texture
                 photoCaptureFrame.UploadImageDataToTexture(targetTexture);
+                
+                Result  = Instantiate(Result, Camera.main.transform.position,Camera.main.transform.rotation);
+                Result.GetComponent<Renderer>().material.mainTexture = targetTexture;
+
                 // Do as we wish with the texture such as apply it to a material, etc.
                 
-                Result.GetComponent<Renderer>().material.mainTexture = targetTexture;
-                
-                Instantiate(Result, Camera.main.transform.position , Camera.main.transform.rotation );
-                
+                //Result.GetComponent<Renderer>().material.mainTexture = targetTexture;
                 
                 this.result = ToBase64DataUrl(targetTexture);
             }
+
+            
+
             // Clean up
             photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);
         }
@@ -138,7 +147,6 @@ namespace Assets.HoloLens.Scripts
         // Update is called once per frame
         void Update()
         {
-
         }
 
 

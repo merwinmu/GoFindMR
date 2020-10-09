@@ -32,9 +32,6 @@ public class CompassHeadingDisplay : MonoBehaviour {
 	            textObject.text = string.Format("{0} ({1})", RoundOff(Input.compass.magneticHeading, targetHeading));
 	        }
         }
-
-	    
-
 	}
 
     public static int RoundOff(double d, int accuracy = 10) {
