@@ -9,12 +9,18 @@ public class SceneController : MonoBehaviour
     private static int lastScene;
     private int mainScene = 1;
     private int currentScene;
+    public Canvas GameObjectcanvas;
 
     public static Stack<int> sceneStack = new Stack<int>();
 
     private void Awake()
     {
         currentScene = SceneManager.GetActiveScene().buildIndex;
+    }
+
+    private void Start()
+    {
+        GameObjectcanvas.enabled = false;
     }
 
     private void LoadNewScene(int sceneToLoad)
@@ -54,6 +60,6 @@ public class SceneController : MonoBehaviour
 
     public void temporalQuery()
     {
-        LoadNewScene(4);
+        GameObjectcanvas.enabled = !GameObjectcanvas.enabled;
     }
 }

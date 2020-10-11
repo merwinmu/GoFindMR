@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class spawner : MonoBehaviour
+public class ResultViewSpawner : MonoBehaviour
 {
     public Transform result1;
     public int resultNr = 10;
@@ -27,7 +27,7 @@ public class spawner : MonoBehaviour
     public void createStartVectors()
     {   ResultPositions.Add(startVector);
         
-        float offset = 0.3f;
+        float offset = 0.5f;
         
         Vector3 currentPos = startVector;
       
@@ -42,10 +42,6 @@ public class spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey("up"))
-        {
-            createStartVectors();
-        }
     }
 
     public void OnClickListView()

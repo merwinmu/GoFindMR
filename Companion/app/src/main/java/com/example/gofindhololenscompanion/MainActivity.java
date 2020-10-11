@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 .build();
 
 //        Log.d("Location: Latitude:",LATITUDE + ", "+ " Longitude "+ LONGITUDE + " HEADING "+ HEADING);
-//        Log.d("PAYLOAD IN BINARY", Arrays.toString(payload));
+        Log.d("PAYLOAD IN BINARY", Arrays.toString(payload));
 //        Log.d("PAYLOAD IN HEX", byteArrayToHex(payload));
 //        Log.d("ORGINAL PAYLOAD: ",data.toString());
 

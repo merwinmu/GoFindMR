@@ -19,6 +19,7 @@ public class GPSReceiver : MonoBehaviour
     public static ushort ANDROID_ID = 24;
     public double latitude = 0;
     public double longitude = 0;
+    public double heading = 0f;
     private TextMeshPro BLE_Text;
 #if WINDOWS_UWP
     BluetoothLEAdvertisementWatcher watcher; //Loading Bluetooth Low Energy Advertisment Driver
@@ -52,18 +53,19 @@ public class GPSReceiver : MonoBehaviour
         byte[] data = args.Advertisement.ManufacturerData[0].Data.ToArray();
         latitude = BitConverter.ToDouble(data, 0);
         longitude = BitConverter.ToDouble(data,8);
+        heading  = BitConverter.ToFloat(data,16);
         Debug.Log(latitude.ToString());
     }
 #endif
 
     void Start()
     {
-        BLE_Text.text = "Waiting for GPS Advertisment from Android_ID: " + ANDROID_ID;
+        BLE_Text.text = "Waiting for GPS and heading Advertisment from Android_ID: " + ANDROID_ID;
     }
 
     // Update is called once per frame
     void Update()
     {
-        BLE_Text.text = latitude.ToString() + " " + longitude.ToString();
+        BLE_Text.text =" Latitude: " +  latitude.ToString() + " Longitude: " + longitude.ToString() + " Heading: " + heading;
     }
 }
