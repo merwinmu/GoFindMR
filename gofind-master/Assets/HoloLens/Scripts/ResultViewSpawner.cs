@@ -6,6 +6,11 @@ public class ResultViewSpawner : MonoBehaviour
 {
     public Transform result1;
     public int resultNr = 10;
+
+    public string url =
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Universit%C3%A4t_Basel_2018_logo.svg/800px-Universit%C3%A4t_Basel_2018_logo.svg.png";
+
+    public Renderer thisRenderer;
     
     Vector3 startVector = new Vector3(-0.5f,0.0f,2);
     
@@ -16,8 +21,17 @@ public class ResultViewSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+       // StartCoroutine(LoadFromLikeCouroutine());
+        thisRenderer.material.color = Color.red;
     }
+
+    // private IEnumerator LoadFromLikeCouroutine()
+    // {
+    //     WWW wwloader = WWW(url);
+    //     yield return wwloader;
+    //     this.thisRenderer.material.color = Color.white;
+    //     this.thisRenderer.material.mainTexture = wwloader.texture;
+    // }
 
     public void fieldOfView()
     {

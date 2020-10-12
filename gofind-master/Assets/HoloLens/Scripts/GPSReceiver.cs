@@ -53,9 +53,11 @@ public class GPSReceiver : MonoBehaviour
         byte[] data = args.Advertisement.ManufacturerData[0].Data.ToArray();
         latitude = BitConverter.ToDouble(data, 0);
         longitude = BitConverter.ToDouble(data,8);
-        heading  = BitConverter.ToFloat(data,16);
+        heading  = BitConverter.ToSingle(data,16);
         Debug.Log(latitude.ToString());
     }
+    
+
 #endif
 
     void Start()
