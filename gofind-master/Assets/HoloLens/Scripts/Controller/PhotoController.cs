@@ -11,14 +11,12 @@ namespace Assets.HoloLens.Scripts.Controller
     }
     public class PhotoController: MonoBehaviour, IPhotoController
     {
-        private GameObject IO_System;
         // Keep references to the model and view
         private static  IPhotoModel model;
         private static  IPhotoView view;
 
         private void Awake()
         {
-            IO_System = GameObject.FindWithTag("IOSystem");
 
         }
 
@@ -26,7 +24,8 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             model = new PhotoModel();
             model.Photo  = new Texture2D(100,100);
-            view = IO_System.GetComponent<PhotoView>();
+            view =  transform.GetChild(0).GetComponent<PhotoView>();
+
             
         
             // Listen to input from the view

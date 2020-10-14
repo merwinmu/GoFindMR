@@ -27,39 +27,40 @@ namespace Assets.HoloLens.Scripts.View
     {
         event EventHandler<YearChangeEventArgs> OnReceived;
         void setGameObject(GameObject gameObject);
+        
+        
     }
     
     
     public class TemporalView: MonoBehaviour, ITemporalView
     {
-        private static GameObject temporalview;
         private static TMP_InputField lowerboundinput;
         private static TMP_InputField upperboundinput;
+        private GameObject button0;
         private Button OKbutton;
+        private Interactable interactable;
         
         public event EventHandler<YearChangeEventArgs> OnReceived  = (sender, e) => { };
 
-        public void setGameObject(GameObject gameObject)
+
+        private void Awake()
         {
-            temporalview = gameObject;
-            GameObject lo = temporalview.transform.GetChild(1).GetChild(0).gameObject;
-            GameObject up = temporalview.transform.GetChild(1).GetChild(1).gameObject;
+            GameObject lo = transform.GetChild(1).GetChild(0).gameObject;
+            GameObject up = transform.GetChild(1).GetChild(1).gameObject;
             lowerboundinput = lo.GetComponent<TMP_InputField>();
             upperboundinput = up.GetComponent<TMP_InputField>();
             
-            setOKButton(temporalview.transform.GetChild(1).GetChild(2).gameObject);
-            
+            button0 = transform.GetChild(1).GetChild(2).gameObject;
+            interactable = button0.GetComponent<Interactable>();
+            Button0_AddOnClick(interactable);
+        }
+
+        public void setGameObject(GameObject gameObject)
+        {
             // Component[] components = inputField.GetComponents(typeof(Component));
             // foreach(Component component in components) {
             //     Debug.Log(component.ToString());
             // }
-        }
-        
-        public void setOKButton(GameObject gameObject)
-        {
-            //get Only the listener of the Button
-            Interactable interactable = gameObject.GetComponent<Interactable>();
-            AddOnClick(interactable);
         }
 
         private void Update()
@@ -75,7 +76,7 @@ namespace Assets.HoloLens.Scripts.View
         }
         
         //INPUT
-        public void AddOnClick(Interactable interactable)
+        public void Button0_AddOnClick(Interactable interactable)
         {
             interactable.OnClick.AddListener((() => debug_input_button()));
         }

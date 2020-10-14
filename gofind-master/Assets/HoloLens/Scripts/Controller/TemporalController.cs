@@ -31,9 +31,7 @@ namespace Assets.HoloLens.Scripts.Controller
         private void Start()
         {
             model = new TemporalModel();
-            view = IO_System.GetComponent<TemporalView>();
-            
-            view.setGameObject(transform.gameObject);
+            view = transform.GetChild(2).GetComponent<TemporalView>();
 
             // Listen to input from the view
             view.OnReceived += HandleInputReceived;
@@ -50,7 +48,7 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             model.LowerBound = e.lowerbound;
             model.UpperBound = e.upperbound;
-            Debug.Log(model.LowerBound+" "+model.UpperBound);
+            Debug.Log("Temporal input: "+model.LowerBound+" "+model.UpperBound);
         }
     }
 }

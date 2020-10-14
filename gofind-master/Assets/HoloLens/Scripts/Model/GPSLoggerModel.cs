@@ -7,7 +7,18 @@ using System;
 // Dispatched when GPS coordinates changes
 public class GPSCoordinatesChangedEventArgs : EventArgs
 {
+    public double latitude { get; private set; }
+    public double longitude { get; private set; }
+    public float heading { get; private set; }
     
+    public GPSCoordinatesChangedEventArgs(double latitude, double longitude, float heading)
+    {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.heading = heading;
+        //Debugging
+        //Debug.Log("Received event from GPS View");
+    }
 }
 
 // Interface for the model
@@ -17,9 +28,10 @@ public interface IGPSLoggerModel
     event EventHandler<GPSCoordinatesChangedEventArgs> OnGPSDataChanged;
     
     // GPS Position
-    double Latitude { get; set; }
-    double Longitude { get; set; }
-    float Heading { get; set; }
+
+    void SetGPSCoordinates(double lat, double lon, float hea);
+
+
 }
 
 // Implementation of the NearMenu model interface
@@ -29,6 +41,7 @@ public class GPSLoggerModel: IGPSLoggerModel
     private double latitude;
     private double longitude;
     private float heading;
+    
 
     public event EventHandler<GPSCoordinatesChangedEventArgs> OnGPSDataChanged = (sender, e) => { };
 
@@ -43,10 +56,6 @@ public class GPSLoggerModel: IGPSLoggerModel
                 // Set new position
                 latitude = value;
             }
-            
-            // Dispatch the 'position changed' event
-            var eventArgs = new GPSCoordinatesChangedEventArgs();
-            OnGPSDataChanged(this, eventArgs);
         }
     }
     
@@ -59,9 +68,6 @@ public class GPSLoggerModel: IGPSLoggerModel
             {
                 longitude = value;
             }
-            
-            var eventArgs = new GPSCoordinatesChangedEventArgs();
-            OnGPSDataChanged(this, eventArgs);
         }
     }
     public float Heading
@@ -73,8 +79,17 @@ public class GPSLoggerModel: IGPSLoggerModel
             {
                 heading = value;
             }
-            var eventArgs = new GPSCoordinatesChangedEventArgs();
-            OnGPSDataChanged(this, eventArgs);
         }
+    }
+
+    public void SetGPSCoordinates(double lat, double lon, float hea)
+    {
+        latitude = lat;
+        longitude = lon;
+        heading = hea;
+        var eventArgs = new GPSCoordinatesChangedEventArgs(latitude,longitude,heading);
+        
+        // Dispatch the 'position changed' event
+        OnGPSDataChanged(this, eventArgs);
     }
 }

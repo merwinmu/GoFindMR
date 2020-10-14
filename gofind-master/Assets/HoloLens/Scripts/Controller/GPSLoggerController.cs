@@ -9,23 +9,19 @@ public interface IGPSLoggerController
 }
 public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
 {
-    private GameObject IO_System;
+    
 
     // Keep references to the model and view
     private static  IGPSLoggerModel model;
     private static  IGPSLoggerView view;
-
-    private void Awake()
-    {
-        IO_System = GameObject.FindWithTag("IOSystem");
-    }
+    private TextMeshPro BLE_Text;
+    
 
     private void Start()
     {
         model = new GPSLoggerModel();
-        view = IO_System.GetComponent<GPSLoggerView>();
-        
-        view.setTextMeshPro(GetComponent<TextMeshPro>());
+        view = transform.GetChild(0).GetComponent<GPSLoggerView>();
+
         // Listen to input from the view
         
         view.OnReceived += HandleGPSReceived;
@@ -40,21 +36,18 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     private void HandleGPSReceived(object sender, GPSDataReceivedEventArgs e)
     {
         // Updating the model
-        model.Latitude = e.latitude;
-        model.Longitude = e.longitude;
-        model.Heading = e.heading;
-        Debug.Log("Event changed "+model.Longitude);
+        model.SetGPSCoordinates(e.latitude,e.longitude,e.heading);
     }
 
     // Called when the model's GPS data changed
     private void HandleGPSChanged(object sender, GPSCoordinatesChangedEventArgs e)
     {
-        DisplayGPSdata();
+        view.setGPSTextMesh(e.latitude,e.longitude,e.heading);
+        //Debug.Log("Display Event changed "+e.longitude);
     }
     
     private void DisplayGPSdata()
     {
-        //Debug.Log("Event changed "+model.Longitude);
-        view.setGPSTextMesh(model.Latitude,model.Longitude,model.Heading);
+        
     }
 }

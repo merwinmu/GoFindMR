@@ -31,8 +31,7 @@ public class GPSDataReceivedEventArgs : EventArgs
 public interface IGPSLoggerView
 {
     event EventHandler<GPSDataReceivedEventArgs> OnReceived;
-
-    void setTextMeshPro(TextMeshPro gameObject);
+    
     void setGPSTextMesh(double latitude, double longitude, float heading);
 
 
@@ -42,8 +41,8 @@ public interface IGPSLoggerView
 public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
 {
     private static ushort ANDROID_ID = 24;
-    private TextMeshPro gps_log;
-  
+    
+    private TextMeshPro BLT_Text;
     public event EventHandler<GPSDataReceivedEventArgs> OnReceived = (sender, e) => { };
     
     
@@ -52,6 +51,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
 #endif
     private void Awake()
     {
+        BLT_Text =  GetComponent<TextMeshPro>(); 
 
 #if WINDOWS_UWP
         watcher = new BluetoothLEAdvertisementWatcher(); //Instating BLE Driver
@@ -78,19 +78,28 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
         
  // Dispatch the 'OnReceived' event
                 var eventArgs = new GPSDataReceivedEventArgs(BitConverter.ToDouble(data, 0),BitConverter.ToDouble(data,8),BitConverter.ToSingle(data,16));
+                //Debug.Log(BitConverter.ToDouble(data, 0));
                 OnReceived(this, eventArgs);
     }
 #endif
 
     //OUTPUT
-    public void setTextMeshPro(TextMeshPro tmp)
-    {
-        gps_log = tmp;
-    }
 
+
+    //Nasty way of updating BLT textmeshpro
+    private bool update_BLT_text;
+    private string Latitide_text;
+    private string Longitude_text;
+    private string heading_text;
     public void setGPSTextMesh(double latitude, double longitude, float heading)
     {
-        gps_log.text = " Latitude: " +  latitude.ToString() + " Longitude: " + longitude.ToString() + " Heading: " + heading;
+        Latitide_text = latitude.ToString();
+        Longitude_text = longitude.ToString();
+        heading_text = heading.ToString();
+
+        update_BLT_text = true;
+        
+        //Debug.Log("SETTING TEXTMESH TO THIS" + latitude );
     }
     
     // Start is called before the first frame update
@@ -100,6 +109,13 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     // Update is called once per frame
     void Update()
     {
+
+        if (update_BLT_text)
+        {
+            BLT_Text.text = " Latitude: " +  Latitide_text + " Longitude: " + Longitude_text + " Heading: " + heading_text;
+            update_BLT_text = false;
+
+        }
         // If the primary mouse button was pressed this frame
         if (Input.GetMouseButtonDown(0))
         {
