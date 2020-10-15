@@ -31,7 +31,7 @@ public class GPSDataReceivedEventArgs : EventArgs
 public interface IGPSLoggerView
 {
     event EventHandler<GPSDataReceivedEventArgs> OnReceived;
-    
+    //
     void setGPSTextMesh(double latitude, double longitude, float heading);
 
 

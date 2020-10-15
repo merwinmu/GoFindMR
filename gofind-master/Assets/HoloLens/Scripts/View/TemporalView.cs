@@ -27,15 +27,14 @@ namespace Assets.HoloLens.Scripts.View
     {
         event EventHandler<YearChangeEventArgs> OnReceived;
         void setGameObject(GameObject gameObject);
-        
-        
+        void MenuVisibility(bool flag);
     }
-    
     
     public class TemporalView: MonoBehaviour, ITemporalView
     {
         private static TMP_InputField lowerboundinput;
         private static TMP_InputField upperboundinput;
+        
         private GameObject button0;
         private Button OKbutton;
         private Interactable interactable;
@@ -53,6 +52,7 @@ namespace Assets.HoloLens.Scripts.View
             button0 = transform.GetChild(1).GetChild(2).gameObject;
             interactable = button0.GetComponent<Interactable>();
             Button0_AddOnClick(interactable);
+            this.transform.gameObject.SetActive(false);
         }
 
         public void setGameObject(GameObject gameObject)
@@ -65,14 +65,7 @@ namespace Assets.HoloLens.Scripts.View
 
         private void Update()
         {
-            // If the primary mouse button was pressed this frame
-            if (Input.GetMouseButtonDown(0))
-            {
-                //Debug
-                //Debug.Log("MouseInput");
-                var eventArgs = new YearChangeEventArgs("1995","2020");
-                OnReceived(this, eventArgs);
-            }
+            
         }
         
         //INPUT
@@ -85,6 +78,12 @@ namespace Assets.HoloLens.Scripts.View
         {
             var eventArgs = new YearChangeEventArgs(upperboundinput.text,lowerboundinput.text);
             OnReceived(this, eventArgs);
+
+        }
+        
+        public void MenuVisibility(bool flag)
+        {
+            this.transform.gameObject.SetActive(flag);
         }
 
         void Destroy()

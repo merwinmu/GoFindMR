@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 using UnityEngine.Windows.WebCam;
 
@@ -20,15 +21,33 @@ namespace Assets.HoloLens.Scripts.View
         }
     }
     
+    public class TakePhotoEventArgs : EventArgs
+    {
+    }
+    
+    public class BackEventArgs : EventArgs
+    {
+    }
+    
     public interface IPhotoView
     {
         event EventHandler<PhotoChangedEventArgs> OnReceived;
+        event EventHandler<TakePhotoEventArgs> OnTakePhoto;
+        event EventHandler<BackEventArgs> OnBack;
+        
+        void MenuVisibility(bool flag);
+
     }
     
     public class PhotoView: MonoBehaviour,IPhotoView
     {
-        public event EventHandler<PhotoChangedEventArgs> OnReceived;
+        public event EventHandler<PhotoChangedEventArgs> OnReceived = (sender, e) => { };
+        public event EventHandler<TakePhotoEventArgs> OnTakePhoto = (sender, e) => { };
+        public event EventHandler<BackEventArgs> OnBack = (sender, e) => { };
+
         
+        
+        private bool MainMenuStatus;
         public PhotoCapture photoCaptureObject = null;
         public GameObject Result;
         public static Texture2D data;
@@ -69,8 +88,42 @@ namespace Assets.HoloLens.Scripts.View
         // Use this for initialization
         void Start()
         {
+            this.transform.gameObject.SetActive(false);
+            
+            take_photo_button = transform.GetChild(2).GetChild(0).gameObject;
+            take_photo_interactable = take_photo_button.GetComponent<Interactable>();
+            take_photo_button_AddOnClick(take_photo_interactable);
+            
+            back_button = transform.GetChild(2).GetChild(1).gameObject;
+            back_interactable = back_button.GetComponent<Interactable>();
+            back_AddOnClick(back_interactable);
+        }
+
+        private void back_AddOnClick(Interactable back_interactable)
+        {
+            back_interactable.OnClick.AddListener((() => OnBackButtonLogic()));
+        }
+
+       
+
+        private void take_photo_button_AddOnClick(Interactable take_photo_interactable)
+        {
+            take_photo_interactable.OnClick.AddListener((() => OnTakePhotoButtonLogic()));
         }
         
+        private void OnTakePhotoButtonLogic()
+        {
+            TakePhoto();
+            var eventArgs = new TakePhotoEventArgs();
+            OnTakePhoto(this, eventArgs);
+        }
+        
+        private void OnBackButtonLogic()
+        {
+            var eventArgs = new BackEventArgs();
+            OnBack(this, eventArgs);
+        }
+
         /*
          * https://docs.microsoft.com/en-us/windows/mixed-reality/develop/unity/locatable-camera-in-unity
          * Offical Microsoft Doc
@@ -169,12 +222,24 @@ namespace Assets.HoloLens.Scripts.View
             return result;
         }
 
-        
-
         public const string DATA_URL_PREFIX = "data:";
         public const string IMAGE_PNG = "image/png;";
         public const string IMAGE_JPEG = "image/jpeg;";
         public const string DATA_URL_POST_IMAGE_SEQUENCE = "base64,";
+        
+        
+        
+        private GameObject take_photo_button;
+        private Interactable take_photo_interactable;
+        
+        private GameObject back_button;
+        private Interactable back_interactable;
+        
+        
+        public void MenuVisibility(bool flag)
+        {
+            this.transform.gameObject.SetActive(flag);
+        }
         
         private void Update()
         {

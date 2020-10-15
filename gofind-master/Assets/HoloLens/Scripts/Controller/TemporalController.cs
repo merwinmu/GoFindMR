@@ -8,6 +8,7 @@ namespace Assets.HoloLens.Scripts.Controller
 {
     public interface ITemporalController
     {
+        ITemporalModel GETItTemporalModel();
     }
     
     public class TemporalController: MonoBehaviour,ITemporalController
@@ -37,6 +38,14 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnReceived += HandleInputReceived;
             // Listen to changes in the model
             model.OnYearchanged += HandleYearChanged;
+            model.VisibilityChange += TextBoxStatusVisibility;
+
+        }
+
+        //Handling views
+        private void TextBoxStatusVisibility(object sender, TemporalMenuChangedEventArgs e)
+        {
+            view.MenuVisibility(e.flag);
         }
 
         private void HandleYearChanged(object sender, SearchYearChangedEventArgs e)
@@ -44,11 +53,22 @@ namespace Assets.HoloLens.Scripts.Controller
             
         }
 
+        //Handling models
         private void HandleInputReceived(object sender, YearChangeEventArgs e)
         {
             model.LowerBound = e.lowerbound;
             model.UpperBound = e.upperbound;
-            Debug.Log("Temporal input: "+model.LowerBound+" "+model.UpperBound);
+            
+            IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
+            model.ChangeVisibility(false);
+            mainMenuModel.ChangeVisibility(true);
+            
+            //Debug.Log("Temporal input: "+model.LowerBound+" "+model.UpperBound);
+        }
+
+        public ITemporalModel GETItTemporalModel()
+        {
+            return model;
         }
     }
 }
