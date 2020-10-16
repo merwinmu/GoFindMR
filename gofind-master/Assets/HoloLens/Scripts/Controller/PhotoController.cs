@@ -32,6 +32,7 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnReceived += HandleInputReceived;
             view.OnTakePhoto += HandleTakePhoto;
             view.OnBack += HandleBack;
+            
             // Listen to changes in the model
             model.OnPictureChanged += HandlePictureChanged;
             model.VisibilityChange += MenuStatusVisibility;
@@ -57,7 +58,6 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void HandlePictureChanged(object sender, Model.PhotoChangedEventArgs e)
         {
-            
         }
 
         private void HandleInputReceived(object sender, PhotoChangedEventArgs e)

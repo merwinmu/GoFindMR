@@ -27,6 +27,8 @@ namespace Assets.HoloLens.Scripts.View
     {
         event EventHandler<YearChangeEventArgs> OnReceived;
         void setGameObject(GameObject gameObject);
+        
+        //Use Class function using this interface functions
         void MenuVisibility(bool flag);
     }
     
@@ -83,7 +85,7 @@ namespace Assets.HoloLens.Scripts.View
         
         public void MenuVisibility(bool flag)
         {
-            this.transform.gameObject.SetActive(flag);
+            transform.gameObject.SetActive(flag);
         }
 
         void Destroy()

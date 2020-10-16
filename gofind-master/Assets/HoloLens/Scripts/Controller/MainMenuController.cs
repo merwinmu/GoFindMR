@@ -62,7 +62,9 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void HandleSpatialSelect(object sender, SpatialEventArgs e)
         {
-            model.Spatial_query();
+            IMapMenuModel mapMenuModel = transform.GetComponent<MapMenuController>().GETMapMenuModel();
+            model.ChangeVisibility(false);
+            mapMenuModel.ChangeVisibility(true);
         }
 
         private void HandleCameraSelect(object sender, CameraEventArgs e)

@@ -101,9 +101,7 @@ namespace Assets.HoloLens.Scripts.View
             Search_interactable = Search_button.GetComponent<Interactable>();
             Search_button_AddOnClick(Search_interactable);
         }
-
         
-
 
         //INPUT
         private void Camera_button_AddOnClick(Interactable cameraInteractable)

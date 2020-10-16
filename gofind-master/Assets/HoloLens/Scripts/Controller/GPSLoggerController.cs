@@ -14,7 +14,6 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     // Keep references to the model and view
     private static  IGPSLoggerModel model;
     private static  IGPSLoggerView view;
-    private TextMeshPro BLE_Text;
     
 
     private void Start()
