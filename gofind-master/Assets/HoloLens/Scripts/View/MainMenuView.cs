@@ -3,6 +3,19 @@ using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
 
+/*
+ * Views are primarly used for Input and Output. It is primarly a Monobehaviour class with the associate functions 
+ * Input actions such as OnClick invoke an event to the controller which then executes a function to model
+ * Output actions are in example rendering gameobjects etc.
+ */
+
+
+
+/*
+ * Various EventArgs has been created so that if an Input occurs , a callback can be
+ * invoked to the controller which then sends it to the model
+ */
+
 namespace Assets.HoloLens.Scripts.View
 {
     public class InputDataEventArgs : EventArgs
@@ -17,6 +30,7 @@ namespace Assets.HoloLens.Scripts.View
         }
     }
     
+    // EventArgs for each Query options
     public class CameraEventArgs : EventArgs
     {
     }
@@ -56,13 +70,15 @@ namespace Assets.HoloLens.Scripts.View
     
     public class MainMenuView : MonoBehaviour, IMainMenuView 
     {
+       
         public event EventHandler<InputDataEventArgs> OnInputDataReceived = (sender, e) => { };
         public event EventHandler<CameraEventArgs> OnCameraSelect= (sender, e) => { };
         public event EventHandler<SpatialEventArgs> OnSpatialSelect= (sender, e) => { };
         public event EventHandler<CPositionEventArgs> OnCPositionSelect= (sender, e) => { };
         public event EventHandler<TemporalEventArgs> OnTemporalSelect= (sender, e) => { };
         public event EventHandler<SearchEventArgs> OnSearchSelect= (sender, e) => { };
-
+        
+        //Init GameObjects
         private GameObject Camera_button;
         private Interactable Camera_interactable;
         
@@ -103,7 +119,7 @@ namespace Assets.HoloLens.Scripts.View
         }
         
 
-        //INPUT
+        //INPUT actions from the user
         private void Camera_button_AddOnClick(Interactable cameraInteractable)
         {
             cameraInteractable.OnClick.AddListener((() => OnCameraButtonLogic()));
@@ -129,6 +145,7 @@ namespace Assets.HoloLens.Scripts.View
             searchInteractable.OnClick.AddListener((() => OnSearchButtonLogic()));
         }
         
+        //funtions to handle User inputs
 
         public void OnCameraButtonLogic()
         {

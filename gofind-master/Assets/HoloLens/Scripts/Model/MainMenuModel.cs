@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Model;
 using UnityEngine;
 
+/*
+ * Various EventArgs has been created so that if changes in the Model has been made, a callback can be
+ * invoked to the controller which then sends it to the view
+ */
 
 public class DataChangedOutputEventArgs : EventArgs
 {
@@ -27,14 +31,19 @@ public class MainMainChangedEventArgs : EventArgs
     }
 }
 
+/*
+ * Models are used to store information of different UI Menus.
+ * Model informations can changed by the controller.
+ * An Interface has been also implemented so that the controller han can access only the interface functions
+ */
 
+
+// Interface for the model
 public interface IMainMenuModel
 {
-    // Dispatched when the position changes
+    // Dispatched when the data changes
     event EventHandler<DataChangedOutputEventArgs> DataOutput;
     event EventHandler<MainMainChangedEventArgs> VisibilityChange;
-
-
     void setData(double data);
     void ChangeVisibility(bool flag);
     void Camera_query();
@@ -42,7 +51,6 @@ public interface IMainMenuModel
     void CPosition_query();
     void Spatial_query();
     void Search_query();
-
 }
 
 public class MainMenuModel: IMainMenuModel
@@ -50,6 +58,7 @@ public class MainMenuModel: IMainMenuModel
     private double Data;
     private bool showHideMenu = true;
     
+    // Dispatched when the position changes
     public event EventHandler<DataChangedOutputEventArgs> DataOutput;
     public event EventHandler<MainMainChangedEventArgs> VisibilityChange;
 
@@ -81,6 +90,10 @@ public class MainMenuModel: IMainMenuModel
         VisibilityChange(this, eventArgs);
     }
 
+    
+    /*
+     * Calling these functions from the controller
+     */
     public void Camera_query()
     {
         Debug.Log("Reached the Model");

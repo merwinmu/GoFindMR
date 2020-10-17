@@ -3,7 +3,10 @@ using UnityEngine;
 
 namespace Assets.HoloLens.Scripts.Model
 {
-    
+    /*
+* Various EventArgs has been created so that if changes in the Model has been made, a callback can be
+* invoked to the controller which then sends it to the view
+*/
     public class PhotoChangedEventArgs : EventArgs
     {
     }
@@ -29,6 +32,11 @@ namespace Assets.HoloLens.Scripts.Model
         // Texture
         Texture Photo { get; set; }
     }
+    /*
+ * Models are used to store information of different UI Menus.
+ * Model informations can changed by the controller.
+ * An Interface has been also implemented so that the controller han can access only the interface functions
+ */
     public class PhotoModel:IPhotoModel
     {
         //Imported from existing code
@@ -39,9 +47,13 @@ namespace Assets.HoloLens.Scripts.Model
         private Texture photo;
 
         private bool showHideMenu;
-
+        
         public event EventHandler<PhotoChangedEventArgs> OnPictureChanged = (sender, e) => { };
         public event EventHandler<PhotoMenuChangedEventArgs> VisibilityChange = (sender, e) => { };
+        /*
+                * Eventhandler is used to to send events
+                 * This method is used for changing the visibility of the menu
+                 */ 
 
         public void ChangeVisibility(bool flag)
         {

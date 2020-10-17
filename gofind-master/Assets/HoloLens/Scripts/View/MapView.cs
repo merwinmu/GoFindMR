@@ -1,5 +1,22 @@
 using System;
+using System.Globalization;
+using Microsoft.Geospatial;
+using Microsoft.Maps.Unity;
+using TMPro;
 using UnityEngine;
+
+/*
+ * Views are primarly used for Input and Output. It is primarly a Monobehaviour class with the associate functions 
+ * Input actions such as OnClick invoke an event to the controller which then executes a function to model
+ * Output actions are in example rendering gameobjects etc.
+ */
+
+
+
+/*
+ * Various EventArgs has been created so that if an Input occurs , a callback can be
+ * invoked to the controller which then sends it to the model
+ */
 
 namespace Assets.HoloLens.Scripts.View
 {
@@ -15,19 +32,61 @@ namespace Assets.HoloLens.Scripts.View
         //Use Class function using this interface functions
         void setGameObjectVisibility(bool flag);
 
+        void setLocationPins();
+
+        void RenderGenerateMapPins();
+
     }
     public class MapView : MonoBehaviour, IMapView
     {
         public event EventHandler<MapInputEventArgs> OnMapInput  = (sender, e) => { };
+        
+        [SerializeField]
+        private MapPinLayer _mapPinLayer;
+        
+        [SerializeField]
+        private MapPin _mapPinPrefab;
+        
+        [SerializeField]
+        private TextAsset _mapPinLocationsCsv;
+        private void Awake()
+        {
+        }
 
         private void Start()
         {
-            throw new NotImplementedException();
+            transform.gameObject.SetActive(false);
         }
 
         public void setGameObjectVisibility(bool flag)
         {
+            transform.gameObject.SetActive(flag);
+        }
+
+        public void setLocationPins()
+        {
             throw new NotImplementedException();
+        }
+
+
+        //Output action triggered by the Controller
+        public void RenderGenerateMapPins()
+        {
+            var lines = _mapPinLocationsCsv.text.Split(new [] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var csvLine in lines)
+            {
+                var csvEntries = csvLine.Split(',');
+
+                var mapPin = Instantiate(_mapPinPrefab);
+                mapPin.Location =
+                    new LatLon(
+                        double.Parse(csvEntries[0], NumberStyles.Number, CultureInfo.InvariantCulture),
+                        double.Parse(csvEntries[1], NumberStyles.Number, CultureInfo.InvariantCulture));
+                _mapPinLayer.MapPins.Add(mapPin);
+
+                mapPin.GetComponentInChildren<TextMeshPro>().text = csvEntries[2].ToLower() == "null" ? "" : csvEntries[2];
+            }
         }
     }
 }

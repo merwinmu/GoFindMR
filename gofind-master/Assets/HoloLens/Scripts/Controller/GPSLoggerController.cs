@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/*
+ * Controllers are used for controlling models and views of various classes
+ * Events are registered in Controllers, once a event occurs, the controller will trigger the associate functions.
+ * Every event must and should be registered in the Controller.
+ * Controllers are can also access other controller functions eg. Interface functions
+ */
 public interface IGPSLoggerController
 {
 }
@@ -15,14 +21,13 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     private static  IGPSLoggerModel model;
     private static  IGPSLoggerView view;
     
-
+    //Initialize Model, view and Listeners
     private void Start()
     {
         model = new GPSLoggerModel();
         view = transform.GetChild(0).GetComponent<GPSLoggerView>();
 
         // Listen to input from the view
-        
         view.OnReceived += HandleGPSReceived;
         // Listen to changes in the model
         model.OnGPSDataChanged += HandleGPSChanged;
@@ -45,6 +50,7 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
         //Debug.Log("Display Event changed "+e.longitude);
     }
     
+    //Not used function
     private void DisplayGPSdata()
     {
         

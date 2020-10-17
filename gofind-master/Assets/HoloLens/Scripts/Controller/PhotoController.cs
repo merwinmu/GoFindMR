@@ -3,9 +3,15 @@ using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
 using PhotoChangedEventArgs = Assets.HoloLens.Scripts.View.PhotoChangedEventArgs;
-
+/*
+ * Controllers are used for controlling models and views of various classes
+ * Events are registered in Controllers, once a event occurs, the controller will trigger the associate functions.
+ * Every event must and should be registered in the Controller.
+ * Controllers are can also access other controller functions eg. Interface functions
+ */
 namespace Assets.HoloLens.Scripts.Controller
 {
+    
     public interface IPhotoController
     {
         IPhotoModel GETPhotoModel();
@@ -22,6 +28,8 @@ namespace Assets.HoloLens.Scripts.Controller
             return model;
         }
 
+        //Initialize Model, view and Listeners
+
         private void Start()
         {
             model = new PhotoModel();
@@ -37,6 +45,8 @@ namespace Assets.HoloLens.Scripts.Controller
             model.OnPictureChanged += HandlePictureChanged;
             model.VisibilityChange += MenuStatusVisibility;
         }
+
+        //Functions to call once an Event occurs
 
         private void HandleBack(object sender, BackEventArgs e)
         {

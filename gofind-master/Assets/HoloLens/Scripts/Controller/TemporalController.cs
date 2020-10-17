@@ -5,7 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.HoloLens.Scripts.Controller
-{
+{/*
+ * Controllers are used for controlling models and views of various classes
+ * Events are registered in Controllers, once a event occurs, the controller will trigger the associate functions.
+ * Every event must and should be registered in the Controller.
+ * Controllers are can also access other controller functions eg. Interface functions
+ */
     public interface ITemporalController
     {
         ITemporalModel GETItTemporalModel();
@@ -28,6 +33,9 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             IO_System = GameObject.FindWithTag("IOSystem");
         }
+        
+        
+        //Initialize Model, view and Listeners
 
         private void Start()
         {
@@ -36,10 +44,19 @@ namespace Assets.HoloLens.Scripts.Controller
 
             // Listen to input from the view
             view.OnReceived += HandleInputReceived;
+            view.MapBackButton += HandleBackButtonOnPress;
             // Listen to changes in the model
             model.OnYearchanged += HandleYearChanged;
             model.VisibilityChange += TextBoxStatusVisibility;
+        }
 
+        //Functions to call once an Event occurs
+
+        private void HandleBackButtonOnPress(object sender, MapBackEventArgs e)
+        {
+            IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
+            model.ChangeVisibility(false);
+            mainMenuModel.ChangeVisibility(true);
         }
 
         //Handling views

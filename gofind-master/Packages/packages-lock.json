@@ -144,6 +144,13 @@
       "dependencies": {},
       "hash": "69d6906265aaebb850be53d948b509444c3147fa"
     },
+    "com.yasirkula.assetusagedetector": {
+      "version": "https://github.com/yasirkula/UnityAssetUsageDetector.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f4129574fb7a5bcb3c1e3b2da353a44ea762ee2d"
+    },
     "nuget.mono-cecil": {
       "version": "0.1.6-preview",
       "depth": 1,

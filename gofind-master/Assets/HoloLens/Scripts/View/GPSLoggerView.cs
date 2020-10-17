@@ -9,6 +9,19 @@ using Windows.Devices.Bluetooth.Advertisement;
 using System.Runtime.InteropServices.WindowsRuntime;
 #endif
 
+/*
+ * Views are primarly used for Input and Output. It is primarly a Monobehaviour class with the associate functions 
+ * Input actions such as OnClick invoke an event to the controller which then executes a function to model
+ * Output actions are in example rendering gameobjects etc.
+ */
+
+
+
+/*
+ * Various EventArgs has been created so that if an Input occurs , a callback can be
+ * invoked to the controller which then sends it to the model
+ */
+
 // Dispatched when GPS received
 public class GPSDataReceivedEventArgs : EventArgs
 {

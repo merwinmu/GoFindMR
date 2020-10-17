@@ -2,7 +2,12 @@ using System;
 using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
-
+/*
+ * Controllers are used for controlling models and views of various classes
+ * Events are registered in Controllers, once a event occurs, the controller will trigger the associate functions.
+ * Every event must and should be registered in the Controller.
+ * Controllers are can also access other controller functions eg. Interface functions
+ */
 namespace Assets.HoloLens.Scripts.Controller
 {
     public interface IMainMenuController
@@ -15,7 +20,7 @@ namespace Assets.HoloLens.Scripts.Controller
         private static  IMainMenuModel model;
         private static  IMainMenuView view;
 
-
+        //Initialize Model, view and Listeners
         private void Start()
         {
             model = new MainMenuModel();
@@ -35,14 +40,17 @@ namespace Assets.HoloLens.Scripts.Controller
             model.VisibilityChange += MainMenuStatusVisibility;
 
             // Set the view's initial state by synching with the model
-
         }
         
+        //An Interface so other controllers can access the model
         public IMainMenuModel GETMainMenuModel()
         {
             return model;
         }
 
+        //Functions to call once an Event occurs
+        
+        //Handling models
         private void HandleSearchSelect(object sender, SearchEventArgs e)
         {
             model.Search_query();
@@ -65,6 +73,10 @@ namespace Assets.HoloLens.Scripts.Controller
             IMapMenuModel mapMenuModel = transform.GetComponent<MapMenuController>().GETMapMenuModel();
             model.ChangeVisibility(false);
             mapMenuModel.ChangeVisibility(true);
+
+            IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
+            model.ChangeVisibility(false);
+            mapModel.ChangeVisibility(true);
         }
 
         private void HandleCameraSelect(object sender, CameraEventArgs e)

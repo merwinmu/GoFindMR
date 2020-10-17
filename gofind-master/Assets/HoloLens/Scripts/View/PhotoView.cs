@@ -5,6 +5,19 @@ using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 using UnityEngine.Windows.WebCam;
 
+/*
+ * Views are primarly used for Input and Output. It is primarly a Monobehaviour class with the associate functions 
+ * Input actions such as OnClick invoke an event to the controller which then executes a function to model
+ * Output actions are in example rendering gameobjects etc.
+ */
+
+
+
+/*
+ * Various EventArgs has been created so that if an Input occurs , a callback can be
+ * invoked to the controller which then sends it to the model
+ */
+
 namespace Assets.HoloLens.Scripts.View
 {
     public class PhotoChangedEventArgs : EventArgs
@@ -99,6 +112,7 @@ namespace Assets.HoloLens.Scripts.View
             back_AddOnClick(back_interactable);
         }
 
+        //Input actions
         private void back_AddOnClick(Interactable back_interactable)
         {
             back_interactable.OnClick.AddListener((() => OnBackButtonLogic()));

@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
+ * Various EventArgs has been created so that if changes in the Model has been made, a callback can be
+ * invoked to the controller which then sends it to the view
+ */
+
 // Dispatched when GPS coordinates changes
 public class GPSCoordinatesChangedEventArgs : EventArgs
 {
@@ -21,6 +26,12 @@ public class GPSCoordinatesChangedEventArgs : EventArgs
     }
 }
 
+/*
+ * Models are used to store information of different UI Menus.
+ * Model informations can changed by the controller.
+ * An Interface has been also implemented so that the controller han can access only the interface functions
+ */
+
 // Interface for the model
 public interface IGPSLoggerModel
 {
@@ -29,12 +40,12 @@ public interface IGPSLoggerModel
     
     // GPS Position
 
-    void SetGPSCoordinates(double lat, double lon, float hea);
+    void SetGPSCoordinates(double lat, double lon, float hea); // Setting new GPS information in this model
 
 
 }
 
-// Implementation of the NearMenu model interface
+// Implementation of the GPSLoggerModel model interface
 public class GPSLoggerModel: IGPSLoggerModel
 {
     // Backing field for the GPS Position
@@ -42,9 +53,13 @@ public class GPSLoggerModel: IGPSLoggerModel
     private double longitude;
     private float heading;
     
+/*
+ * Eventhandler is used to to send events 
+ */
+    public event EventHandler<GPSCoordinatesChangedEventArgs> OnGPSDataChanged = (sender, e) => { }; 
 
-    public event EventHandler<GPSCoordinatesChangedEventArgs> OnGPSDataChanged = (sender, e) => { };
-
+    
+    // Storing informations
     public double Latitude
     {
         get { return latitude; }
@@ -82,6 +97,7 @@ public class GPSLoggerModel: IGPSLoggerModel
         }
     }
 
+    //Setting the information of this model
     public void SetGPSCoordinates(double lat, double lon, float hea)
     {
         latitude = lat;

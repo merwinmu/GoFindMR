@@ -2,6 +2,10 @@ using System;
 
 namespace Assets.HoloLens.Scripts.Model
 {
+    /*
+* Various EventArgs has been created so that if changes in the Model has been made, a callback can be
+* invoked to the controller which then sends it to the view
+*/
     public class SearchYearChangedEventArgs : EventArgs
     {
     }
@@ -16,12 +20,20 @@ namespace Assets.HoloLens.Scripts.Model
         }
     }
     
+    /*
+* Models are used to store information of different UI Menus.
+* Model informations can changed by the controller.
+* An Interface has been also implemented so that the controller han can access only the interface functions
+*/
     public interface ITemporalModel
     {
         // Dispatched when years changes
         event EventHandler<SearchYearChangedEventArgs> OnYearchanged;
         event EventHandler<TemporalMenuChangedEventArgs> VisibilityChange;
-
+        /*
+                 * Eventhandler is used to to send events
+                  * This method is used for changing the visibility of the menu
+                  */ 
         void ChangeVisibility(bool flag);
 
     
@@ -42,6 +54,7 @@ namespace Assets.HoloLens.Scripts.Model
         public event EventHandler<SearchYearChangedEventArgs> OnYearchanged = (sender, e) => { };
         public event EventHandler<TemporalMenuChangedEventArgs> VisibilityChange = (sender, e) => { };
 
+        //Used for Hiding UI Object
         public void ChangeVisibility(bool flag)
         {
             showTextBox = flag;
@@ -51,6 +64,7 @@ namespace Assets.HoloLens.Scripts.Model
             VisibilityChange(this, eventArgs);
         }
 
+        // Saving Upper and Lower Bound Input
         public string UpperBound
         {
             get { return upperBound; }

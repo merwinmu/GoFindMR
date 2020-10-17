@@ -4,6 +4,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * Views are primarly used for Input and Output. It is primarly a Monobehaviour class with the associate functions 
+ * Input actions such as OnClick invoke an event to the controller which then executes a function to model
+ * Output actions are in example rendering gameobjects etc.
+ */
+
+
+
+/*
+ * Various EventArgs has been created so that if an Input occurs , a callback can be
+ * invoked to the controller which then sends it to the model
+ */
+
 namespace Assets.HoloLens.Scripts.View
 {
     // Dispatched when Years received
@@ -23,9 +36,16 @@ namespace Assets.HoloLens.Scripts.View
         }
     }
     
+    public class MapBackEventArgs : EventArgs
+    {
+    }
+
+    
     public interface ITemporalView
     {
         event EventHandler<YearChangeEventArgs> OnReceived;
+        event EventHandler<MapBackEventArgs> MapBackButton;
+
         void setGameObject(GameObject gameObject);
         
         //Use Class function using this interface functions
@@ -41,21 +61,33 @@ namespace Assets.HoloLens.Scripts.View
         private Button OKbutton;
         private Interactable interactable;
         
+        private GameObject button3;
+        private Button backButton;
+        private Interactable backInteractable;
         public event EventHandler<YearChangeEventArgs> OnReceived  = (sender, e) => { };
+        public event EventHandler<MapBackEventArgs> MapBackButton  = (sender, e) => { };
+
 
 
         private void Awake()
         {
-            GameObject lo = transform.GetChild(1).GetChild(0).gameObject;
-            GameObject up = transform.GetChild(1).GetChild(1).gameObject;
+            GameObject lo = transform.GetChild(0).GetChild(0).gameObject;
+            GameObject up = transform.GetChild(0).GetChild(1).gameObject;
             lowerboundinput = lo.GetComponent<TMP_InputField>();
             upperboundinput = up.GetComponent<TMP_InputField>();
             
-            button0 = transform.GetChild(1).GetChild(2).gameObject;
+            button3 = transform.GetChild(0).GetChild(3).gameObject;
+            backInteractable = button3.GetComponent<Interactable>();
+            Button3_AddOnClick(backInteractable);
+            
+            button0 = transform.GetChild(0).GetChild(2).gameObject;
             interactable = button0.GetComponent<Interactable>();
             Button0_AddOnClick(interactable);
+            
             this.transform.gameObject.SetActive(false);
         }
+
+
 
         public void setGameObject(GameObject gameObject)
         {
@@ -65,12 +97,13 @@ namespace Assets.HoloLens.Scripts.View
             // }
         }
 
-        private void Update()
+        
+        //INPUT action from the user
+        private void Button3_AddOnClick(Interactable interactable)
         {
-            
+            interactable.OnClick.AddListener((() => OnBackButtonLogic()));
         }
         
-        //INPUT
         public void Button0_AddOnClick(Interactable interactable)
         {
             interactable.OnClick.AddListener((() => debug_input_button()));
@@ -81,6 +114,12 @@ namespace Assets.HoloLens.Scripts.View
             var eventArgs = new YearChangeEventArgs(upperboundinput.text,lowerboundinput.text);
             OnReceived(this, eventArgs);
 
+        }
+        
+        private void OnBackButtonLogic()
+        {
+            var eventArgs = new MapBackEventArgs();
+            MapBackButton(this, eventArgs);
         }
         
         public void MenuVisibility(bool flag)
