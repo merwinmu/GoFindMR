@@ -41,6 +41,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         backButtonObject = transform.GetChild(0).GetChild(2).GetChild(3).gameObject;
         backInteractable = backButtonObject.GetComponent<Interactable>();
         BackButton_AddOnClick(backInteractable);
+        transform.gameObject.SetActive(false);
+
     }
 
     //Input action from the user
