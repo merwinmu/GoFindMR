@@ -16,7 +16,6 @@ using UnityEngine;
 
 namespace Assets.HoloLens.Scripts.View
 {
-    
     public class BackOneEventArgs : EventArgs
     {
     }
@@ -30,7 +29,6 @@ namespace Assets.HoloLens.Scripts.View
         event EventHandler<BackOneEventArgs> OnOneBack;
         event EventHandler<GeneratePinEventArgs> OnGeneratePin;
         void MenuVisibility(bool flag);
-
     }
     
     public class MapMenuView : MonoBehaviour, IMapMenuView

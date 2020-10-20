@@ -29,6 +29,7 @@ namespace Assets.HoloLens.Scripts.Controller
         private static  ITemporalModel model;
         private static  ITemporalView view;
 
+
         private void Awake()
         {
             IO_System = GameObject.FindWithTag("IOSystem");

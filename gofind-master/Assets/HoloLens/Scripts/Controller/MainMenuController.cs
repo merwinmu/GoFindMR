@@ -53,7 +53,9 @@ namespace Assets.HoloLens.Scripts.Controller
         //Handling models
         private void HandleSearchSelect(object sender, SearchEventArgs e)
         {
-            model.Search_query();
+            IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
+            model.ChangeVisibility(false);
+            resultPanelModel.ChangeResultVisibility(true);
         }
 
         private void HandleTemporalSelect(object sender, TemporalEventArgs e)

@@ -30,10 +30,10 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
     void Start()
     {
         model = new ResultPanelModel();
-        view = transform.GetChild(5).GetComponent<ResultPanelView>();
+        view = transform.GetChild(6).GetComponent<ResultPanelView>();
 
         // Listen to input from the view
-        //view.OnOneBack += HandleBack;
+         view.OnBackButton += HandleBack;
         //view.OnGeneratePin += HandleGeneratePin;
        
         // Listen to changes in the model
@@ -41,13 +41,22 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         model.OnResultVisibility += ResultStatusVisibility;
         //model.OnMapPinGenerate += GenerateMapPins;
     }
-    
+
+    private void HandleBack(object sender, ResultBackEventArgs e)
+    {
+        IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
+        model.ChangeResultVisibility(false);
+        mainMenuModel.ChangeVisibility(true);
+        Debug.Log("Search clicked");
+    }
+
     //Functions to call once an Event occurs
     
     //UI Hide
     private void ResultStatusVisibility(object sender, ResultVisibilityEventArgs e)
     {
         view.Visibility(e.flag);
+        view.RenderPanels();
     }
 
 }

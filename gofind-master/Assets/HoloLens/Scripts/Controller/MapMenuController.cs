@@ -74,7 +74,6 @@ namespace Assets.HoloLens.Scripts.Controller
             mainMenuModel.ChangeVisibility(true);
             IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
             mapModel.ChangeVisibility(false);
-            
         }
     }
 }
