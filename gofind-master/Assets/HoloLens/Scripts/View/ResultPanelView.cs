@@ -29,7 +29,7 @@ public interface IResultPanelView
     event EventHandler<ResultBackEventArgs> OnBackButton;
     void Visibility(bool flag);
 
-    void RenderPanels();
+    void setTextures(List<PictureData> pictureDatasList);
 
 }
 public class ResultPanelView : MonoBehaviour , IResultPanelView
@@ -39,15 +39,15 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public Texture2D texture;
     private GameObject backButtonObject;
     private Interactable backInteractable;
-    
 
-    private MeshRenderer panelRenderer;
+    
+    public GameObject resultObject;
+    private List<PictureData> textureDatas;
+
     private Texture panelTexture;
 
     private void Start()
     {
-        panelRenderer = transform.GetChild(1).GetChild(1).GetComponent<MeshRenderer>();
-        
         //Debug.Log(panelRenderer.material.mainTexture);
 
         backButtonObject = transform.GetChild(0).GetChild(2).GetChild(3).gameObject;
@@ -102,10 +102,84 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             }
         }
     }
-    public async void RenderPanels()
+    public async void setTextures(List<PictureData> pictureDatasList)
     {
-        texture = await GetRemoteTexture( "https://windowsunited.de/wp-content/uploads/sites/3/2019/05/HoloLens2.jpg" );
-        panelRenderer.material.mainTexture = texture;
+        textureDatas = pictureDatasList;
+        int size = textureDatas.Count;
+        string url;
+
+        foreach (var VARIABLE in textureDatas)
+        {
+            url = VARIABLE.getURL();
+            VARIABLE.setData(await GetRemoteTexture(url));
+        }
+        createResultObjects(size);
+    }
+    
+    public void createResultObjects(int v_size)
+    {
+        List<GameObject> ObjectList = new List<GameObject>();
+
+        int horizontal_size = 3;
+        //int vertical_size = t_size/horizontal_size;
+        
+        float init_xpos = -0.4f;
+        
+        float xpos = -0.4f;
+        float ypos = 0f;
+        float zpos = 0.2f;
+        
+        float xpos_offset = 0.4f;
+        float ypos_offset = -0.3f;
+
+        // int count = 0;
+        //
+        //     for (float y = 0; y < vertical_size; y++)
+        //     {
+        //         for (float x = 0; x < horizontal_size; x++)
+        //         {
+        //             ObjectList.Add(Instantiate(resultObject, new Vector3(xpos, ypos, 0), Quaternion.identity));
+        //             xpos = xpos + xpos_offset;
+        //             count++;
+        //         }
+        //         ypos = ypos + ypos_offset;
+        //         xpos = init_xpos;
+        //     }
+
+
+            int counter = 0;
+            ObjectList.Add(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity));
+            //tempObject.gameObject.transform.parent = ScrollableResult.transform.GetChild(0).GetChild(0).transform;
+
+            counter++;
+            while (counter < v_size)
+            {
+                if (counter % horizontal_size != 0)
+                {
+                    xpos = xpos + xpos_offset; // Moving to right with spaces
+                }
+
+                if (counter % horizontal_size == 0) // once horizonal limit reached go to next line and reset xpos
+                {
+                    ypos = ypos + ypos_offset;
+                    xpos = init_xpos;
+                }
+                ObjectList.Add(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity));
+                counter++;
+            }
+            
+            int listcount = 0;
+            foreach (var VARIABLE in textureDatas)
+            {
+                ObjectList[listcount].GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
+                listcount++;
+            }
+
+            foreach (var VARIABLE in ObjectList)
+            {
+                //VARIABLE.gameObject.transform.parent = transform.GetChild(1).transform;
+            }
+        
     }
 
     public void Visibility(bool flag)

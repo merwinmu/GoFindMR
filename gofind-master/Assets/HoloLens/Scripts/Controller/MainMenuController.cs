@@ -55,6 +55,7 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
             model.ChangeVisibility(false);
+            resultPanelModel.renderPicture();
             resultPanelModel.ChangeResultVisibility(true);
         }
 

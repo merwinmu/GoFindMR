@@ -39,7 +39,13 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         // Listen to changes in the model
             
         model.OnResultVisibility += ResultStatusVisibility;
+        model.OnUpdatePictures += HandleUpdatePicture;
         //model.OnMapPinGenerate += GenerateMapPins;
+    }
+
+    private void HandleUpdatePicture(object sender, UpdatePicturesEventArgs e)
+    {
+       view.setTextures(e.getPictureData());
     }
 
     private void HandleBack(object sender, ResultBackEventArgs e)
@@ -56,8 +62,6 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
     private void ResultStatusVisibility(object sender, ResultVisibilityEventArgs e)
     {
         view.Visibility(e.flag);
-        view.RenderPanels();
     }
-
 }
 }
