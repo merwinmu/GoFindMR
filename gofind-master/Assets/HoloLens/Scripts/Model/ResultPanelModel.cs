@@ -36,7 +36,7 @@ public class PictureData
 {
     private string url;
     private int objectID;
-    private Texture2D texture;
+    private Texture texture;
 
     public PictureData(int id, string url)
     {
@@ -44,9 +44,9 @@ public class PictureData
         this.url = url;
     }
 
-    public void setData(Texture2D texture2D)
+    public void setData(Texture texture)
     {
-        this.texture = texture2D;
+        this.texture = texture;
     }
 
     public void setID(int id)

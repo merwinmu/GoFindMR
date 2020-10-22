@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.MixedReality.Toolkit.Experimental.UI;
+using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -40,15 +42,18 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     private GameObject backButtonObject;
     private Interactable backInteractable;
 
-    
     public GameObject resultObject;
     private List<PictureData> textureDatas;
 
     private Texture panelTexture;
 
+    private GameObject scrollObeObjectCollectionGameObject;
+    private ScrollingObjectCollection scrollingObjectCollection;
+
     private void Start()
     {
-        //Debug.Log(panelRenderer.material.mainTexture);
+        scrollObeObjectCollectionGameObject = transform.GetChild(1).GetChild(0).GetChild(1).gameObject;
+        scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
 
         backButtonObject = transform.GetChild(0).GetChild(2).GetChild(3).gameObject;
         backInteractable = backButtonObject.GetComponent<Interactable>();
@@ -71,7 +76,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     
     //Output Actions
 
-    public static async Task<Texture2D> GetRemoteTexture ( string url )
+    public static async Task<Texture> GetRemoteTexture ( string url )
     {
         using( UnityWebRequest www = UnityWebRequestTexture.GetTexture( url ) )
         {
@@ -125,8 +130,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         
         float init_xpos = -0.4f;
         
-        float xpos = -0.4f;
-        float ypos = 0f;
+        float xpos = -1f;
+        float ypos = 0.8f;
         float zpos = 0.2f;
         
         float xpos_offset = 0.4f;
@@ -177,14 +182,24 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
             foreach (var VARIABLE in ObjectList)
             {
-                //VARIABLE.gameObject.transform.parent = transform.GetChild(1).transform;
+                VARIABLE.transform.localScale = new Vector3(-0.4f,-0.2f,0.01f);
+                VARIABLE.gameObject.transform.parent =
+                    transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).transform;
+                var touchable = VARIABLE.AddComponent<NearInteractionTouchableVolume>();
+                touchable.EventsToReceive = TouchableEventType.Touch;
+                
+                var touchhandler = VARIABLE.AddComponent<TouchHandler>();
+                touchhandler.OnTouchCompleted.AddListener((e) => Debug.Log("Touched Photo"));
             }
-        
+            
+            scrollingObjectCollection.UpdateCollection();
+            Debug.Log("achso");
+
     }
 
     public void Visibility(bool flag)
     {
         transform.gameObject.SetActive(flag);
-
     }
+    
 }
