@@ -79,6 +79,7 @@ namespace Assets.HoloLens.Scripts.Controller
             
             IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
             model.ChangeVisibility(false);
+            mainMenuModel.setQueryData(model.LowerBound +" "+ model.UpperBound);
             mainMenuModel.ChangeVisibility(true);
             
             //Debug.Log("Temporal input: "+model.LowerBound+" "+model.UpperBound);

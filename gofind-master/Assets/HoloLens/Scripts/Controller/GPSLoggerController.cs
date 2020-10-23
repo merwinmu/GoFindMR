@@ -12,6 +12,7 @@ using UnityEngine;
  */
 public interface IGPSLoggerController
 {
+    IGPSLoggerModel GETGPSLoggerModel();
 }
 public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
 {
@@ -54,5 +55,10 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     private void DisplayGPSdata()
     {
         
+    }
+
+    public IGPSLoggerModel GETGPSLoggerModel()
+    {
+        return model;
     }
 }

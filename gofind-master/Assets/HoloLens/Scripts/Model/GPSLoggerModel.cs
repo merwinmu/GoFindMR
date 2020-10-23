@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.ComponentModel;
 
 /*
  * Various EventArgs has been created so that if changes in the Model has been made, a callback can be
@@ -37,6 +38,10 @@ public interface IGPSLoggerModel
 {
     // Dispatched when the position changes
     event EventHandler<GPSCoordinatesChangedEventArgs> OnGPSDataChanged;
+
+    List<Double> getRawGPSCoordinates();
+    string getStringGPSCoordinates();
+    
     
     // GPS Position
 
@@ -107,5 +112,18 @@ public class GPSLoggerModel: IGPSLoggerModel
         
         // Dispatch the 'position changed' event
         OnGPSDataChanged(this, eventArgs);
+    }
+
+    public string getStringGPSCoordinates()
+    {
+            return latitude.ToString() + " " + longitude.ToString();
+    }
+
+    public List<Double> getRawGPSCoordinates()
+    {
+        List<Double>coordinates = new List<double>();
+        coordinates.Add(latitude);
+        coordinates.Add(longitude);
+        return coordinates;
     }
 }

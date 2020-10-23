@@ -112,6 +112,8 @@ namespace Assets.HoloLens.Scripts.View
         public void debug_input_button()
         {
             var eventArgs = new YearChangeEventArgs(upperboundinput.text,lowerboundinput.text);
+            upperboundinput.text = ""; //clearing field
+            lowerboundinput.text = "";//clearing field
             OnReceived(this, eventArgs);
 
         }

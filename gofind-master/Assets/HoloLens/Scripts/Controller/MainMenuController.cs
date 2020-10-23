@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
@@ -20,13 +21,16 @@ namespace Assets.HoloLens.Scripts.Controller
         private static  IMainMenuModel model;
         private static  IMainMenuView view;
 
+        private static IAddedQueryOptionModel add_Querymodel;
+
         //Initialize Model, view and Listeners
         private void Start()
         {
             model = new MainMenuModel();
             view = transform.GetChild(1).GetComponent<MainMenuView>();
-            
-            
+
+            add_Querymodel = new QueryOptionModel();
+
             // Listen to input from the view
             view.OnInputDataReceived += HandleInputData;
             view.OnCameraSelect += HandleCameraSelect;
@@ -34,14 +38,16 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnCPositionSelect += HandleCPositionSelect;
             view.OnTemporalSelect += HandleTemporalSelect;
             view.OnSearchSelect += HandleSearchSelect;
+            view.OnRemove += HandleRemoveQuery;
 
             // Listen to changes in the model
             model.DataOutput += HandleOutputData;
             model.VisibilityChange += MainMenuStatusVisibility;
+            model.QueryDataChanged += UpdateQueryStatus;
 
             // Set the view's initial state by synching with the model
         }
-        
+
         //An Interface so other controllers can access the model
         public IMainMenuModel GETMainMenuModel()
         {
@@ -51,6 +57,11 @@ namespace Assets.HoloLens.Scripts.Controller
         //Functions to call once an Event occurs
         
         //Handling models
+        
+        private void HandleRemoveQuery(object sender, RemoveQueryDataArgs e)
+        {
+            model.RemoveQueryOption(e.getID());
+        }
         private void HandleSearchSelect(object sender, SearchEventArgs e)
         {
             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
@@ -66,9 +77,11 @@ namespace Assets.HoloLens.Scripts.Controller
             temporalModel.ChangeVisibility(true);
         }
 
-        private void HandleCPositionSelect(object sender, CPositionEventArgs e)
+        private void HandleCPositionSelect(object sender, QueryOptionEventArgs e)
         {
-            model.CPosition_query();
+            IGPSLoggerModel gpsLoggerModel = transform.GetComponent<GPSLoggerController>().GETGPSLoggerModel();
+            //Needs function to wait until gps signal is available
+            model.setQueryData(gpsLoggerModel.getStringGPSCoordinates());
         }
 
         private void HandleSpatialSelect(object sender, SpatialEventArgs e)
@@ -92,6 +105,10 @@ namespace Assets.HoloLens.Scripts.Controller
         
 
         //Handling views
+        private void UpdateQueryStatus(object sender, AddedQueryOption e)
+        {
+            view.updateQueryButtonData(e.getData());
+        }
         private void MainMenuStatusVisibility(object sender, MainMainChangedEventArgs e)
         {
             view.SetMainMenuVisibility(e.flag);

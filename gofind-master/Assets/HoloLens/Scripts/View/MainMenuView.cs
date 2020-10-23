@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
@@ -18,6 +19,20 @@ using UnityEngine;
 
 namespace Assets.HoloLens.Scripts.View
 {
+    public class RemoveQueryDataArgs : EventArgs
+    {
+        private int id;
+
+        public RemoveQueryDataArgs(int id)
+        {
+            this.id = id;
+        }
+
+        public int getID()
+        {
+            return id;
+        }
+    }
     public class InputDataEventArgs : EventArgs
     {
         public double data { get; private set; }
@@ -39,7 +54,7 @@ namespace Assets.HoloLens.Scripts.View
     {
     }
     
-    public class CPositionEventArgs : EventArgs
+    public class QueryOptionEventArgs : EventArgs
     {
     }
     
@@ -58,14 +73,17 @@ namespace Assets.HoloLens.Scripts.View
         event EventHandler<InputDataEventArgs> OnInputDataReceived;
         event EventHandler<CameraEventArgs> OnCameraSelect;
         event EventHandler<SpatialEventArgs> OnSpatialSelect;
-        event EventHandler<CPositionEventArgs> OnCPositionSelect;
+        event EventHandler<QueryOptionEventArgs> OnCPositionSelect;
         event EventHandler<TemporalEventArgs> OnTemporalSelect;
         event EventHandler<SearchEventArgs> OnSearchSelect;
-
-
+        event EventHandler<RemoveQueryDataArgs> OnRemove;
+        
         void setViewproperties();
 
+        List<GameObject> getQueryButtons();
+
         void SetMainMenuVisibility(bool flag);
+        void updateQueryButtonData(string getData);
     }
     
     public class MainMenuView : MonoBehaviour, IMainMenuView 
@@ -74,10 +92,11 @@ namespace Assets.HoloLens.Scripts.View
         public event EventHandler<InputDataEventArgs> OnInputDataReceived = (sender, e) => { };
         public event EventHandler<CameraEventArgs> OnCameraSelect= (sender, e) => { };
         public event EventHandler<SpatialEventArgs> OnSpatialSelect= (sender, e) => { };
-        public event EventHandler<CPositionEventArgs> OnCPositionSelect= (sender, e) => { };
+        public event EventHandler<QueryOptionEventArgs> OnCPositionSelect= (sender, e) => { };
         public event EventHandler<TemporalEventArgs> OnTemporalSelect= (sender, e) => { };
         public event EventHandler<SearchEventArgs> OnSearchSelect= (sender, e) => { };
-        
+        public event EventHandler<RemoveQueryDataArgs> OnRemove= (sender, e) => { };
+
         //Init GameObjects
         private GameObject Camera_button;
         private Interactable Camera_interactable;
@@ -94,9 +113,21 @@ namespace Assets.HoloLens.Scripts.View
         private GameObject Search_button;
         private Interactable Search_interactable;
 
+        private GameObject query0_button;
+        private Interactable query0_interactable;
+        
+        private GameObject query1_button;
+        private Interactable query1_interactable;
+        
+        private GameObject query2_button;
+        private Interactable query2_interactable;
+
+        private List<GameObject> QueryButtonList;
 
         private void Awake()
         {
+            QueryButtonList = new List<GameObject>();
+            
             Camera_button = transform.GetChild(2).GetChild(0).gameObject;
             Camera_interactable = Camera_button.GetComponent<Interactable>();
             Camera_button_AddOnClick(Camera_interactable);
@@ -116,10 +147,45 @@ namespace Assets.HoloLens.Scripts.View
             Search_button = transform.GetChild(2).GetChild(4).gameObject;
             Search_interactable = Search_button.GetComponent<Interactable>();
             Search_button_AddOnClick(Search_interactable);
+            
+            query0_button = transform.GetChild(2).GetChild(5).gameObject;
+            query0_interactable = query0_button.GetComponent<Interactable>();
+            query1_AddOnClick(query0_interactable);
+            QueryButtonList.Add(query0_button);
+            
+            query1_button = transform.GetChild(2).GetChild(6).gameObject;
+            query1_interactable = query1_button.GetComponent<Interactable>();
+            query2_AddOnClick(query1_interactable);
+            QueryButtonList.Add(query1_button);
+            
+            query2_button = transform.GetChild(2).GetChild(7).gameObject;
+            query2_interactable = query2_button.GetComponent<Interactable>();
+            query3_AddOnClick(query2_interactable);
+            QueryButtonList.Add(query2_button);
+
+            foreach (var VARIABLE in QueryButtonList)
+            {
+                VARIABLE.SetActive(false);
+            }
         }
         
 
         //INPUT actions from the user
+        
+        private void query3_AddOnClick(Interactable query3Interactable)
+        {
+            query3Interactable.OnClick.AddListener((() => RemoveQueryButton2()));
+        }
+
+        private void query2_AddOnClick(Interactable query2Interactable)
+        {
+            query2Interactable.OnClick.AddListener((() => RemoveQueryButton1()));
+        }
+
+        private void query1_AddOnClick(Interactable query1Interactable)
+        {
+            query1Interactable.OnClick.AddListener((() => RemoveQueryButton0()));
+        }
         private void Camera_button_AddOnClick(Interactable cameraInteractable)
         {
             cameraInteractable.OnClick.AddListener((() => OnCameraButtonLogic()));
@@ -146,6 +212,27 @@ namespace Assets.HoloLens.Scripts.View
         }
         
         //funtions to handle User inputs
+        
+        private void RemoveQueryButton2()
+        {
+            var eventArgs = new RemoveQueryDataArgs(2);
+            OnRemove(this, eventArgs);
+            query2_button.SetActive(false);
+        }
+        private void RemoveQueryButton1()
+        {
+            var eventArgs = new RemoveQueryDataArgs(1);
+            OnRemove(this, eventArgs);
+            query1_button.SetActive(false);
+
+        }
+        
+        private void RemoveQueryButton0()
+        {
+            var eventArgs = new RemoveQueryDataArgs(0);
+            OnRemove(this, eventArgs);
+            query0_button.SetActive(false);
+        }
 
         public void OnCameraButtonLogic()
         {
@@ -162,7 +249,7 @@ namespace Assets.HoloLens.Scripts.View
         
         public void OnCPositionButtonLogic()
         {
-            var eventArgs = new CPositionEventArgs();
+            var eventArgs = new QueryOptionEventArgs();
             OnCPositionSelect(this, eventArgs);
         }
         
@@ -187,6 +274,24 @@ namespace Assets.HoloLens.Scripts.View
         public void SetMainMenuVisibility(bool flag)
         {
             this.transform.gameObject.SetActive(flag);
+        }
+
+        public void updateQueryButtonData(string data)
+        {
+            foreach (var VARIABLE in getQueryButtons())
+            {
+                if(!VARIABLE.activeSelf)
+                {
+                    VARIABLE.transform.GetChild(3).GetChild(0).GetComponent<TextMeshPro>().text = data;
+                    VARIABLE.SetActive(true);
+                    return;
+                }
+            }
+        }
+
+        public List<GameObject> getQueryButtons()
+        {
+            return QueryButtonList;
         }
     }
 }

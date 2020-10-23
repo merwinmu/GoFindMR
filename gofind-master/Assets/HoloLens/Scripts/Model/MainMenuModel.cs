@@ -9,6 +9,20 @@ using UnityEngine;
  * invoked to the controller which then sends it to the view
  */
 
+
+public class AddedQueryOption : EventArgs
+{
+    private string data;
+    public AddedQueryOption(string data)
+    {
+        this.data = data;
+    }
+
+    public string getData()
+    {
+        return data;
+    }
+}
 public class DataChangedOutputEventArgs : EventArgs
 {
     public double data { get; private set; }
@@ -44,13 +58,17 @@ public interface IMainMenuModel
     // Dispatched when the data changes
     event EventHandler<DataChangedOutputEventArgs> DataOutput;
     event EventHandler<MainMainChangedEventArgs> VisibilityChange;
+    event EventHandler<AddedQueryOption> QueryDataChanged;
     void setData(double data);
+    void setQueryData(string data);
+
     void ChangeVisibility(bool flag);
     void Camera_query();
     void Temporal_query();
     void CPosition_query();
     void Spatial_query();
     void Search_query();
+    void RemoveQueryOption(int getID);
 }
 
 public class MainMenuModel: IMainMenuModel
@@ -58,9 +76,14 @@ public class MainMenuModel: IMainMenuModel
     private double Data;
     private bool showHideMenu = true;
     
+    private List<string> queryDataList = new List<string>();
+    private int querycount = 0;
+    
     // Dispatched when the position changes
     public event EventHandler<DataChangedOutputEventArgs> DataOutput;
     public event EventHandler<MainMainChangedEventArgs> VisibilityChange;
+    public event EventHandler<AddedQueryOption> QueryDataChanged = (sender, e) => { };
+
 
     double data
     {
@@ -74,6 +97,21 @@ public class MainMenuModel: IMainMenuModel
                 data = value;
             }
         }
+    }
+    
+    public void RemoveQueryOption(int getID)
+    {
+        queryDataList.RemoveAt(getID);
+        Debug.Log("Qdata: "+queryDataList.Count);
+    }
+
+    public void setQueryData(string data)
+    {
+        this.queryDataList.Add(data);
+        var eventArgs = new AddedQueryOption(this.queryDataList[querycount]);
+        // Dispatch the 'position changed' event
+        QueryDataChanged(this, eventArgs);
+        querycount++;
     }
     
     public void setData(double data)
@@ -118,4 +156,6 @@ public class MainMenuModel: IMainMenuModel
     {
         Debug.Log("Reached the Model");
     }
+
+
 }
