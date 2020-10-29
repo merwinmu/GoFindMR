@@ -103,6 +103,7 @@ public class MainMenuModel: IMainMenuModel
     {
         queryDataList.RemoveAt(getID);
         Debug.Log("Qdata: "+queryDataList.Count);
+        querycount--;
     }
 
     public void setQueryData(string data)

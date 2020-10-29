@@ -79,6 +79,7 @@ namespace Assets.HoloLens.Scripts.View
         event EventHandler<RemoveQueryDataArgs> OnRemove;
         
         void setViewproperties();
+        void HideQueryOption(bool flag);
 
         List<GameObject> getQueryButtons();
 
@@ -123,6 +124,7 @@ namespace Assets.HoloLens.Scripts.View
         private Interactable query2_interactable;
 
         private List<GameObject> QueryButtonList;
+        private GameObject OptionBackground;
 
         private void Awake()
         {
@@ -167,6 +169,9 @@ namespace Assets.HoloLens.Scripts.View
             {
                 VARIABLE.SetActive(false);
             }
+
+            OptionBackground = transform.GetChild(4).gameObject;
+            OptionBackground.SetActive(false);
         }
         
 
@@ -232,6 +237,8 @@ namespace Assets.HoloLens.Scripts.View
             var eventArgs = new RemoveQueryDataArgs(0);
             OnRemove(this, eventArgs);
             query0_button.SetActive(false);
+            
+            OptionBackground.SetActive(false); // Set the background panel to false once no options are active
         }
 
         public void OnCameraButtonLogic()
@@ -292,6 +299,11 @@ namespace Assets.HoloLens.Scripts.View
         public List<GameObject> getQueryButtons()
         {
             return QueryButtonList;
+        }
+
+        public void HideQueryOption(bool flag)
+        {
+            OptionBackground.SetActive(flag);
         }
     }
 }

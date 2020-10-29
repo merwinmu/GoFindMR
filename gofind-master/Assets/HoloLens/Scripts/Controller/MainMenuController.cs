@@ -107,6 +107,7 @@ namespace Assets.HoloLens.Scripts.Controller
         //Handling views
         private void UpdateQueryStatus(object sender, AddedQueryOption e)
         {
+            view.HideQueryOption(true);
             view.updateQueryButtonData(e.getData());
         }
         private void MainMenuStatusVisibility(object sender, MainMainChangedEventArgs e)
