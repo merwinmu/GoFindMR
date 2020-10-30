@@ -50,10 +50,17 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     private GameObject scrollObeObjectCollectionGameObject;
     private ScrollingObjectCollection scrollingObjectCollection;
 
+    private GameObject result0;
+    private GameObject result1;
+    private GameObject result2;
     private void Start()
     {
         scrollObeObjectCollectionGameObject = transform.GetChild(1).GetChild(0).GetChild(1).gameObject;
         scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
+
+       // result0 = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
+       // result1 = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
+       // result2 = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
 
         backButtonObject = transform.GetChild(0).GetChild(2).GetChild(3).gameObject;
         backInteractable = backButtonObject.GetComponent<Interactable>();
@@ -120,10 +127,15 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         }
         createResultObjects(size);
     }
-    
     public void createResultObjects(int v_size)
     {
-        List<GameObject> ObjectList = new List<GameObject>();
+
+        GameObject Container = scrollingObjectCollection.transform.GetChild(0).gameObject;
+
+        
+        
+       // List<GameObject> ObjectList = new List<GameObject>();
+        List<PicturePointerData> picturePointerDatasList = new List<PicturePointerData>();
 
         int horizontal_size = 3;
         //int vertical_size = t_size/horizontal_size;
@@ -152,8 +164,9 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         //     }
 
 
-            int counter = 0;
-            ObjectList.Add(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity));
+        int counter = 0;
+            // ObjectList.Add(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity));
+            picturePointerDatasList.Add(new PicturePointerData(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity),counter));
             //tempObject.gameObject.transform.parent = ScrollableResult.transform.GetChild(0).GetChild(0).transform;
 
             counter++;
@@ -169,27 +182,29 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                     ypos = ypos + ypos_offset;
                     xpos = init_xpos;
                 }
-                ObjectList.Add(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity));
+                picturePointerDatasList.Add(new PicturePointerData(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity),counter));
+               // ObjectList.Add(Instantiate(resultObject, new Vector3(xpos, ypos, zpos), Quaternion.identity));
                 counter++;
             }
             
             int listcount = 0;
             foreach (var VARIABLE in textureDatas)
             {
-                ObjectList[listcount].GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
+               // ObjectList[listcount].GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
+                picturePointerDatasList[listcount].getGameObject().GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 listcount++;
             }
 
-            foreach (var VARIABLE in ObjectList)
+            foreach (var VARIABLE in picturePointerDatasList)
             {
-                VARIABLE.transform.localScale = new Vector3(-0.4f,-0.2f,0.01f);
-                VARIABLE.gameObject.transform.parent =
+                VARIABLE.getGameObject().transform.localScale = new Vector3(-0.4f,-0.2f,0.01f);
+                VARIABLE.getGameObject().gameObject.transform.parent =
                     transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).transform;
-                var touchable = VARIABLE.AddComponent<NearInteractionTouchableVolume>();
-                touchable.EventsToReceive = TouchableEventType.Touch;
+                var touchable = VARIABLE.getGameObject().AddComponent<NearInteractionTouchableVolume>();
+                touchable.EventsToReceive = TouchableEventType.Pointer;
                 
-                var touchhandler = VARIABLE.AddComponent<TouchHandler>();
-                touchhandler.OnTouchCompleted.AddListener((e) => Debug.Log("Touched Photo"));
+                var touchhandler = VARIABLE.getGameObject().AddComponent<PointerHandler>();
+                touchhandler.OnPointerUp.AddListener((e) => SearchIDProvider(touchhandler.gameObject,picturePointerDatasList));
             }
             
             scrollingObjectCollection.UpdateCollection();
@@ -197,9 +212,51 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     }
 
+    public void HandlePictureCLick()
+    {
+       
+    }
+
     public void Visibility(bool flag)
     {
         transform.gameObject.SetActive(flag);
     }
+
+    public void SearchIDProvider(GameObject gameObject, List<PicturePointerData> list)
+    {
+        PicturePointerData result = list.Find(x => x.getGameObject() == gameObject);
+        Debug.Log(result.getID() +" ID ");
+    }
     
+}
+
+public class PicturePointerData
+{
+    private GameObject pictureGameObject;
+    private int id;
+
+    public PicturePointerData(int id)
+    {
+        this.id = id;
+    }
+
+    public PicturePointerData(GameObject gameObject)
+    {
+        this.pictureGameObject = gameObject;
+    }
+    public PicturePointerData(GameObject pictureGameObject, int id)
+    {
+        this.id = id;
+        this.pictureGameObject = pictureGameObject;
+    }
+
+    public GameObject getGameObject()
+    {
+        return pictureGameObject;
+    }
+
+    public int getID()
+    {
+        return id;
+    }
 }
