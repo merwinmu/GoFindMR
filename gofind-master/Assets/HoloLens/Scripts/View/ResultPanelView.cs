@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -26,9 +27,24 @@ public class ResultBackEventArgs : EventArgs
 {
 }
 
+public class SelectResultPictureDataArgs : EventArgs
+{
+    private PicturePointerData pointerData;
+    public SelectResultPictureDataArgs(PicturePointerData pointerData)
+    {
+        this.pointerData = pointerData;
+    }
+
+    public PicturePointerData get()
+    {
+        return this.pointerData;
+    }
+}
+
 public interface IResultPanelView
 {
     event EventHandler<ResultBackEventArgs> OnBackButton;
+    event EventHandler<SelectResultPictureDataArgs> OnSelectPicture;
     void Visibility(bool flag);
 
     void setTextures(List<PictureData> pictureDatasList);
@@ -36,8 +52,8 @@ public interface IResultPanelView
 }
 public class ResultPanelView : MonoBehaviour , IResultPanelView
 {
-    public event EventHandler<ResultBackEventArgs> OnBackButton;
-
+    public event EventHandler<ResultBackEventArgs> OnBackButton = (sender, e) => { };
+    public event EventHandler<SelectResultPictureDataArgs> OnSelectPicture = (sender, e) => { };
     public Texture2D texture;
     private GameObject backButtonObject;
     private Interactable backInteractable;
@@ -49,6 +65,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     private GameObject scrollObeObjectCollectionGameObject;
     private ScrollingObjectCollection scrollingObjectCollection;
+
+    private GameObject ShowPictureObject;
 
     private GameObject result0;
     private GameObject result1;
@@ -200,9 +218,13 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                 VARIABLE.getGameObject().transform.localScale = new Vector3(-0.4f,-0.2f,0.01f);
                 VARIABLE.getGameObject().gameObject.transform.parent =
                     transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).transform;
+                
+                VARIABLE.getGameObject().AddComponent<PictureAttribute>();
+                VARIABLE.getGameObject().GetComponent<PictureAttribute>().ID = VARIABLE.getID();
+                VARIABLE.getGameObject().GetComponent<PictureAttribute>().PointerData = VARIABLE;
+                
                 var touchable = VARIABLE.getGameObject().AddComponent<NearInteractionTouchableVolume>();
                 touchable.EventsToReceive = TouchableEventType.Pointer;
-                
                 var touchhandler = VARIABLE.getGameObject().AddComponent<PointerHandler>();
                 touchhandler.OnPointerUp.AddListener((e) => SearchIDProvider(touchhandler.gameObject,picturePointerDatasList));
             }
@@ -221,13 +243,136 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     {
         transform.gameObject.SetActive(flag);
     }
-
+    
+    
+    private GameObject ShowObject;
     public void SearchIDProvider(GameObject gameObject, List<PicturePointerData> list)
     {
         PicturePointerData result = list.Find(x => x.getGameObject() == gameObject);
         Debug.Log(result.getID() +" ID ");
+        
+        var eventArgs = new SelectResultPictureDataArgs(result);
+        OnSelectPicture(this, eventArgs);
+
+        ShowObject = Instantiate(result.getGameObject());
+        ShowObject.GetComponent<PointerHandler>().enabled = false; // Disabling it otherwise other Listener will get Events
+        ShowObject.transform.position = result.getGameObject().transform.position; // This position used for a smooth transition from collection to view
+
+        ShowPictureObject = (GameObject)Resources.Load("Prefab/ShowResult",typeof(GameObject)) ;
+        ShowPictureObject = Instantiate(ShowPictureObject);
+        ShowPictureObject.transform.parent = transform.parent;
+
+        ShowPictureObject.transform.position = ShowObject.transform.position; // Get Original position from colloection for nice smooth transition
+
+        ShowObject.transform.localScale = new Vector3(0.5f,-0.3f,0.0001f); // Setting size
+
+        ShowObject.transform.parent = ShowPictureObject.transform;
+
+        //ShowPictureObject.transform.GetChild(0).transform.position = result.getGameObject().transform.position;
+        //ShowPictureObject.transform.GetChild(0).transform.localScale = new Vector3(0.5f,-0.3f,0.0001f);
+        
+        ShowPictureObject.GetComponent<SolverHandler>().enabled = true;
+        ShowPictureObject.GetComponent<RadialView>().enabled = true;
+
+        RadialView radialView = ShowPictureObject.GetComponent<RadialView>();
+        setImageProperties(radialView);
+        
+setCollectionVisibility(false);        
+        initPictureObject();
+        
     }
+
+    private GameObject close_button;
+    private GameObject anchor_button;
+    private GameObject superimose_button;
+
+    private Interactable closeInteractable;
+    private Interactable anchorInteractable;
+    private Interactable superimoseInteractable;
     
+    public void initPictureObject()
+    {
+         close_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(0).gameObject;
+         anchor_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
+         superimose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(2).gameObject;
+        
+         closeInteractable = close_button.GetComponent<Interactable>();
+         anchorInteractable = anchor_button.GetComponent<Interactable>();
+         superimoseInteractable = superimose_button.GetComponent<Interactable>();
+        
+        closeInteractable.OnClick.AddListener(PictureMenuCloseButton);
+        anchorInteractable.OnClick.AddListener(PictureMenuAnchor);
+        superimoseInteractable.OnClick.AddListener(PictureMenuSuperImose);
+
+    }
+    public void PictureMenuCloseButton()
+    {
+        Debug.Log("Clicked Close Button");
+        Destroy(ShowPictureObject);
+        setCollectionVisibility(true);
+    }
+
+    public void PictureMenuAnchor()
+    {
+        if (ShowPictureObject.GetComponent<RadialView>().enabled)
+        {
+            ShowPictureObject.GetComponent<RadialView>().enabled = false;
+        }
+        else
+        {
+            ShowPictureObject.GetComponent<RadialView>().enabled = true;
+        }
+    }
+
+    public void PictureMenuSuperImose()
+    {
+        GameObject slider = ShowObject.transform.GetChild(1).gameObject;
+        slider.SetActive(true);
+
+        slider.GetComponent<PinchSlider>().OnValueUpdated.AddListener((e) => superimose());
+
+    }
+
+    public void superimose()
+    {
+        Debug.Log("Here");
+    }
+
+    public void setCollectionVisibility(bool flag)
+    {
+        transform.GetChild(0).gameObject.SetActive(flag);
+        transform.GetChild(1).gameObject.SetActive(flag);
+    }
+
+    public void setImageProperties(RadialView radialView)
+    {
+        radialView.MoveLerpTime = 0.5f;
+        radialView.RotateLerpTime = 0.5f;
+        radialView.MinDistance = 0.5f;
+        radialView.MaxDistance = 0.6f;
+        radialView.MaxViewDegrees = 0.0f;
+    }
+
+    public void showPicture(PicturePointerData picturePointerData)
+    {
+        GameObject result = picturePointerData.getGameObject();
+        int id = picturePointerData.getID();
+        Vector3 orginalPosition = result.transform.position;
+
+        GameObject EndResult;
+        
+        GameObject ShowPictureCollection = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
+
+        foreach (Transform VARIABLE in ShowPictureCollection.transform)
+        {
+            if (id == VARIABLE.gameObject.GetComponent<PictureAttribute>().ID)
+            {
+                 EndResult = VARIABLE.gameObject;
+                 EndResult.AddComponent<RadialView>();
+                 break;
+            }
+        }
+    }
 }
 
 public class PicturePointerData

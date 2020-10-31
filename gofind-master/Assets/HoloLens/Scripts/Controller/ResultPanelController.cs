@@ -34,6 +34,7 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
 
         // Listen to input from the view
          view.OnBackButton += HandleBack;
+         view.OnSelectPicture += HandlePictureSelect;
         //view.OnGeneratePin += HandleGeneratePin;
        
         // Listen to changes in the model
@@ -41,6 +42,11 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         model.OnResultVisibility += ResultStatusVisibility;
         model.OnUpdatePictures += HandleUpdatePicture;
         //model.OnMapPinGenerate += GenerateMapPins;
+    }
+
+    private void HandlePictureSelect(object sender, SelectResultPictureDataArgs e)
+    {
+        model.SetCurrentPicture(e.get());
     }
 
     private void HandleUpdatePicture(object sender, UpdatePicturesEventArgs e)

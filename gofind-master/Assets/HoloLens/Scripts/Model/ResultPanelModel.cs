@@ -89,6 +89,8 @@ public interface IResultPanelModel
                  */
     void ChangeResultVisibility(bool flag);
     void renderPicture();
+
+    void SetCurrentPicture(PicturePointerData pointerData);
 }
 
 public class ResultPanelModel : IResultPanelModel
@@ -98,6 +100,8 @@ public class ResultPanelModel : IResultPanelModel
     private bool showResult;
 
     private List<PictureData> pictureDataList;
+
+    private PicturePointerData CurrentPicture;
 
 
     public void renderPicture()
@@ -131,5 +135,10 @@ public class ResultPanelModel : IResultPanelModel
 
         // Dispatch the 'Result changed' event
         OnResultVisibility(this, eventArgs);
+    }
+
+    public void SetCurrentPicture(PicturePointerData pointerData)
+    {
+        this.CurrentPicture = pointerData;
     }
 }
