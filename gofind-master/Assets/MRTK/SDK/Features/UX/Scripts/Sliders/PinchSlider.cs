@@ -33,7 +33,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
             }
         }
 
-        [Range(0, 1)]
+        [Range(0,1)]
         [SerializeField]
         private float sliderValue = 0.5f;
         public float SliderValue
@@ -445,7 +445,8 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 var delta = activePointer.Position - startPointerPosition;
                 var handDelta = Vector3.Dot(SliderTrackDirection.normalized, delta);
 
-                SliderValue = Mathf.Clamp(startSliderValue + handDelta / SliderTrackDirection.magnitude, 0, 1);
+                
+                SliderValue = (Mathf.Clamp(startSliderValue + handDelta / SliderTrackDirection.magnitude, 0, 1)); //Check
 
                 // Mark the pointer data as used to prevent other behaviors from handling input events
                 eventData.Use();

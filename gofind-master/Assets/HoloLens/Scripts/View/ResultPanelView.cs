@@ -6,6 +6,7 @@ using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -50,7 +51,7 @@ public interface IResultPanelView
     void setTextures(List<PictureData> pictureDatasList);
 
 }
-public class ResultPanelView : MonoBehaviour , IResultPanelView
+public class ResultPanelView : MonoBehaviour , IResultPanelView 
 {
     public event EventHandler<ResultBackEventArgs> OnBackButton = (sender, e) => { };
     public event EventHandler<SelectResultPictureDataArgs> OnSelectPicture = (sender, e) => { };
@@ -272,37 +273,37 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         //ShowPictureObject.transform.GetChild(0).transform.localScale = new Vector3(0.5f,-0.3f,0.0001f);
         
         ShowPictureObject.GetComponent<SolverHandler>().enabled = true;
-        ShowPictureObject.GetComponent<RadialView>().enabled = true;
+        ShowPictureObject.GetComponent<RadialView>().enabled = false;
 
         RadialView radialView = ShowPictureObject.GetComponent<RadialView>();
         setImageProperties(radialView);
         
-setCollectionVisibility(false);        
+        setCollectionVisibility(false);        
         initPictureObject();
-        
+        PictureMenuSuperImoseInit();
     }
 
     private GameObject close_button;
     private GameObject anchor_button;
-    private GameObject superimose_button;
+    //private GameObject superimose_button;
 
     private Interactable closeInteractable;
     private Interactable anchorInteractable;
-    private Interactable superimoseInteractable;
+    //private Interactable superimoseInteractable;
     
     public void initPictureObject()
     {
          close_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(0).gameObject;
          anchor_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
-         superimose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(2).gameObject;
+         //superimose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(2).gameObject;
         
          closeInteractable = close_button.GetComponent<Interactable>();
          anchorInteractable = anchor_button.GetComponent<Interactable>();
-         superimoseInteractable = superimose_button.GetComponent<Interactable>();
+         //superimoseInteractable = superimose_button.GetComponent<Interactable>();
         
         closeInteractable.OnClick.AddListener(PictureMenuCloseButton);
         anchorInteractable.OnClick.AddListener(PictureMenuAnchor);
-        superimoseInteractable.OnClick.AddListener(PictureMenuSuperImose);
+        //superimoseInteractable.OnClick.AddListener(PictureMenuSuperImose);
 
     }
     public void PictureMenuCloseButton()
@@ -324,19 +325,146 @@ setCollectionVisibility(false);
         }
     }
 
-    public void PictureMenuSuperImose()
+    public void PictureMenuSuperImoseInit()
     {
-        GameObject slider = ShowObject.transform.GetChild(1).gameObject;
-        slider.SetActive(true);
-
-        slider.GetComponent<PinchSlider>().OnValueUpdated.AddListener((e) => superimose());
-
+        GameObject slider = ShowPictureObject.transform.GetChild(1).gameObject;
+        Material material = initTransperancySettings();
+        
+        slider.GetComponent<PinchSlider>().OnValueUpdated.AddListener((e) => superimose(e.NewValue));
     }
 
-    public void superimose()
+    public Material initTransperancySettings()
     {
-        Debug.Log("Here");
+        GameObject Pic = ShowPictureObject.transform.GetChild(2).gameObject;
+        Material m = Pic.GetComponent<Renderer>().sharedMaterial;
+        m.SetFloat("_Mode", 2.0f);
+        return m;
     }
+
+    public void superimose(float value)
+    {
+        ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0].color = new Color(1,1,1,value);
+        MaterialChanged(ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0],WorkflowMode.Metallic);
+    }
+    
+    private enum WorkflowMode
+    {
+        Specular,
+        Metallic,
+        Dielectric
+    }
+
+    public enum BlendMode
+    {
+        Opaque,
+        Cutout,
+        Fade,   // Old school alpha-blending mode, fresnel does not affect amount of transparency
+        Transparent // Physically plausible transparency mode, implemented as alpha pre-multiply
+    }
+
+    public enum SmoothnessMapChannel
+    {
+        SpecularMetallicAlpha,
+        AlbedoAlpha,
+    }
+    
+     public static void SetupMaterialWithBlendMode(Material material, BlendMode blendMode)
+        {
+            switch (blendMode)
+            {
+                case BlendMode.Opaque:
+                    material.SetOverrideTag("RenderType", "");
+                    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                    material.SetInt("_ZWrite", 1);
+                    material.DisableKeyword("_ALPHATEST_ON");
+                    material.DisableKeyword("_ALPHABLEND_ON");
+                    material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    material.renderQueue = -1;
+                    break;
+                case BlendMode.Cutout:
+                    material.SetOverrideTag("RenderType", "TransparentCutout");
+                    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                    material.SetInt("_ZWrite", 1);
+                    material.EnableKeyword("_ALPHATEST_ON");
+                    material.DisableKeyword("_ALPHABLEND_ON");
+                    material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
+                    break;
+                case BlendMode.Fade:
+                    material.SetOverrideTag("RenderType", "Transparent");
+                    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    material.SetInt("_ZWrite", 0);
+                    material.DisableKeyword("_ALPHATEST_ON");
+                    material.EnableKeyword("_ALPHABLEND_ON");
+                    material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+                    break;
+                case BlendMode.Transparent:
+                    material.SetOverrideTag("RenderType", "Transparent");
+                    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    material.SetInt("_ZWrite", 0);
+                    material.DisableKeyword("_ALPHATEST_ON");
+                    material.DisableKeyword("_ALPHABLEND_ON");
+                    material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                    material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+                    break;
+            }
+        }
+     
+     static SmoothnessMapChannel GetSmoothnessMapChannel(Material material)
+     {
+         int ch = (int)material.GetFloat("_SmoothnessTextureChannel");
+         if (ch == (int)SmoothnessMapChannel.AlbedoAlpha)
+             return SmoothnessMapChannel.AlbedoAlpha;
+         else
+             return SmoothnessMapChannel.SpecularMetallicAlpha;
+     }
+     
+     static void SetMaterialKeywords(Material material, WorkflowMode workflowMode)
+     {
+         // Note: keywords must be based on Material value not on MaterialProperty due to multi-edit & material animation
+         // (MaterialProperty value might come from renderer material property block)
+         SetKeyword(material, "_NORMALMAP", material.GetTexture("_BumpMap") || material.GetTexture("_DetailNormalMap"));
+         if (workflowMode == WorkflowMode.Specular)
+             SetKeyword(material, "_SPECGLOSSMAP", material.GetTexture("_SpecGlossMap"));
+         else if (workflowMode == WorkflowMode.Metallic)
+             SetKeyword(material, "_METALLICGLOSSMAP", material.GetTexture("_MetallicGlossMap"));
+         SetKeyword(material, "_PARALLAXMAP", material.GetTexture("_ParallaxMap"));
+         SetKeyword(material, "_DETAIL_MULX2", material.GetTexture("_DetailAlbedoMap") || material.GetTexture("_DetailNormalMap"));
+
+         // A material's GI flag internally keeps track of whether emission is enabled at all, it's enabled but has no effect
+         // or is enabled and may be modified at runtime. This state depends on the values of the current flag and emissive color.
+         // The fixup routine makes sure that the material is in the correct state if/when changes are made to the mode or color.
+         //MaterialEditor.FixupEmissiveFlag(material);
+         bool shouldEmissionBeEnabled = (material.globalIlluminationFlags & MaterialGlobalIlluminationFlags.EmissiveIsBlack) == 0;
+         SetKeyword(material, "_EMISSION", shouldEmissionBeEnabled);
+
+         if (material.HasProperty("_SmoothnessTextureChannel"))
+         {
+             SetKeyword(material, "_SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A", GetSmoothnessMapChannel(material) == SmoothnessMapChannel.AlbedoAlpha);
+         }
+     }
+     
+     
+     static void MaterialChanged(Material material, WorkflowMode workflowMode)
+     {
+         SetupMaterialWithBlendMode(material, (BlendMode)material.GetFloat("_Mode"));
+
+         SetMaterialKeywords(material, workflowMode);
+     }
+
+     static void SetKeyword(Material m, string keyword, bool state)
+     {
+         if (state)
+             m.EnableKeyword(keyword);
+         else
+             m.DisableKeyword(keyword);
+     }
+
 
     public void setCollectionVisibility(bool flag)
     {
