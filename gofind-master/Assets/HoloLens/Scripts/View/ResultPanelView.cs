@@ -273,13 +273,17 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         //ShowPictureObject.transform.GetChild(0).transform.localScale = new Vector3(0.5f,-0.3f,0.0001f);
         
         ShowPictureObject.GetComponent<SolverHandler>().enabled = true;
-        ShowPictureObject.GetComponent<RadialView>().enabled = false;
+        ShowPictureObject.GetComponent<RadialView>().enabled = true;
 
         RadialView radialView = ShowPictureObject.GetComponent<RadialView>();
         setImageProperties(radialView);
         
-        setCollectionVisibility(false);        
+        setCollectionVisibility(false);   
+        
         initPictureObject();
+        initHandMenuPictureObject();
+
+        HandMenuSuperImoseInit();
         PictureMenuSuperImoseInit();
     }
 
@@ -304,8 +308,31 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         closeInteractable.OnClick.AddListener(PictureMenuCloseButton);
         anchorInteractable.OnClick.AddListener(PictureMenuAnchor);
         //superimoseInteractable.OnClick.AddListener(PictureMenuSuperImose);
-
     }
+    
+    private GameObject HandMenuclose_button;
+    private GameObject HandMenuanchor_button;
+    //private GameObject superimose_button;
+
+    private Interactable HandMenucloseInteractable;
+    private Interactable HandMenuanchorInteractable;
+    //private Interactable superimoseInteractable;
+    
+    public void initHandMenuPictureObject()
+    {
+        HandMenuclose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(0).gameObject;
+        HandMenuanchor_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
+        //superimose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(2).gameObject;
+        
+        HandMenucloseInteractable = HandMenuclose_button.GetComponent<Interactable>();
+        HandMenuanchorInteractable = HandMenuanchor_button.GetComponent<Interactable>();
+        //superimoseInteractable = superimose_button.GetComponent<Interactable>();
+        
+        HandMenucloseInteractable.OnClick.AddListener(PictureMenuCloseButton);
+        HandMenuanchorInteractable.OnClick.AddListener(PictureMenuAnchor);
+        //superimoseInteractable.OnClick.AddListener(PictureMenuSuperImose);
+    }
+    
     public void PictureMenuCloseButton()
     {
         Debug.Log("Clicked Close Button");
@@ -333,9 +360,16 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         slider.GetComponent<PinchSlider>().OnValueUpdated.AddListener((e) => superimose(e.NewValue));
     }
 
+    public void HandMenuSuperImoseInit()
+    {
+        GameObject slider = ShowPictureObject.transform.GetChild(2).GetChild(0).GetChild(2).gameObject;
+        Material material = initTransperancySettings();
+        slider.GetComponent<PinchSlider>().OnValueUpdated.AddListener((e) => superimose(e.NewValue));
+    }
+
     public Material initTransperancySettings()
     {
-        GameObject Pic = ShowPictureObject.transform.GetChild(2).gameObject;
+        GameObject Pic = ShowPictureObject.transform.GetChild(3).gameObject;
         Material m = Pic.GetComponent<Renderer>().sharedMaterial;
         m.SetFloat("_Mode", 2.0f);
         return m;
@@ -343,8 +377,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     public void superimose(float value)
     {
-        ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0].color = new Color(1,1,1,value);
-        MaterialChanged(ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0],WorkflowMode.Metallic);
+        ShowPictureObject.transform.GetChild(3).gameObject.GetComponent<Renderer>().sharedMaterials[0].color = new Color(1,1,1,value);
+        MaterialChanged(ShowPictureObject.transform.GetChild(3).gameObject.GetComponent<Renderer>().sharedMaterials[0],WorkflowMode.Metallic);
     }
     
     private enum WorkflowMode
