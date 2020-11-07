@@ -1,3 +1,4 @@
+using System;
 using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
@@ -21,7 +22,9 @@ namespace Assets.HoloLens.Scripts.Controller
         // Keep references to the model and view
         private static IMapModel model;
         private static IMapView view;
-        
+        private static IMapMenuController mapMenuController;
+
+
         //An Interface so other controllers can access the model
         public IMapModel GETMapModel()
         {
@@ -34,15 +37,26 @@ namespace Assets.HoloLens.Scripts.Controller
             model = new MapModel();
             view =  transform.GetChild(5).GetComponent<MapView>();
             
-            // Listen to input from the view
             
+            
+            // Listen to input from the view
+            ZoomToMapPin.OnMapObject += HandlePOIInput;
             
             // Listen to changes in the model
             model.GeneratePinMap += GeneratePinMaps;
             model.MapVisibility += MainMenuStatusVisibility;
         }
 
-        
+        private void HandlePOIInput(object sender, POIEventArgs e)
+        {
+            model.AddPOILocation(e.GETPoiCoordinatesObject()) ;
+            
+            mapMenuController = transform.GetComponent<MapMenuController>();
+            mapMenuController.AddPOIQuery(e.GETPoiCoordinatesObject());
+            
+        }
+
+
         //Functions to call once an Event occurs
 
         private void GeneratePinMaps(object sender, GeneratePinEventArgs e)

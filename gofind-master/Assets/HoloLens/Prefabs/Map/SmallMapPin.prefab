@@ -263,8 +263,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _location:
-    Latitude: 0
-    Longitude: 0
+    _latitude: 0
+    _longitude: 0
   _altitude: 0
   _altitudeReference: 2
   IsLayerSynchronized: 1

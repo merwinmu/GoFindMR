@@ -16,6 +16,9 @@ public class GPSCoordinatesChangedEventArgs : EventArgs
     public double latitude { get; private set; }
     public double longitude { get; private set; }
     public float heading { get; private set; }
+
+    //private List<pointOfInteresting> pointOfInterestings;
+    
     
     public GPSCoordinatesChangedEventArgs(double latitude, double longitude, float heading)
     {
@@ -38,16 +41,11 @@ public interface IGPSLoggerModel
 {
     // Dispatched when the position changes
     event EventHandler<GPSCoordinatesChangedEventArgs> OnGPSDataChanged;
-
     List<Double> getRawGPSCoordinates();
     string getStringGPSCoordinates();
-    
-    
+
     // GPS Position
-
     void SetGPSCoordinates(double lat, double lon, float hea); // Setting new GPS information in this model
-
-
 }
 
 // Implementation of the GPSLoggerModel model interface
@@ -62,7 +60,6 @@ public class GPSLoggerModel: IGPSLoggerModel
  * Eventhandler is used to to send events 
  */
     public event EventHandler<GPSCoordinatesChangedEventArgs> OnGPSDataChanged = (sender, e) => { }; 
-
     
     // Storing informations
     public double Latitude

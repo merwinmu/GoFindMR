@@ -1,7 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using Assets.HoloLens.Scripts.Model;
+using Assets.HoloLens.Scripts.Properties;
 using Microsoft.Maps.Unity;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -12,6 +16,9 @@ public class ZoomToMapPin : MonoBehaviour
 {
     private MapRenderer _map;
     private MapPin _mapPin;
+    
+    public static event EventHandler<POIEventArgs> OnMapObject  = (sender, e) => { };
+
 
     void Start()
     {
@@ -23,7 +30,28 @@ public class ZoomToMapPin : MonoBehaviour
 
     public void Zoom()
     {
-        var mapScene = new MapSceneOfLocationAndZoomLevel(_mapPin.Location, _map.ZoomLevel + 1.01f);
-        _map.SetMapScene(mapScene);
+        //var mapScene = new MapSceneOfLocationAndZoomLevel(_mapPin.Location, _map.ZoomLevel + 1.01f);
+        //_map.SetMapScene(mapScene);
+        string name = _mapPin.transform.GetChild(0).GetChild(0).gameObject.GetComponent<TextMeshPro>().text;
+        POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(_mapPin.Location.LatitudeInRadians,_mapPin.Location.LatitudeInRadians,name,transform.gameObject);
+        var eventArgs = new POIEventArgs(poiCoordinatesObject);
+        
+        // Dispatch the 'position changed' event
+        OnMapObject(this, eventArgs);
+    }
+}
+
+public class POIEventArgs : EventArgs
+{
+    private GameObject gameObject;
+    private POICoordinatesObject poiCoordinatesObject;
+    public POIEventArgs(POICoordinatesObject poiCoordinatesObject)
+    {
+        this.poiCoordinatesObject = poiCoordinatesObject;
+    }
+
+    public POICoordinatesObject GETPoiCoordinatesObject()
+    {
+        return this.poiCoordinatesObject;
     }
 }

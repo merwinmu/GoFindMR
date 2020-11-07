@@ -1085,6 +1085,76 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
             }
 
         }
+        
+        public void Reset()
+        {
+            ResetInteraction();
+            ResetScrollOffset();
+            UpdateCollection();
+        }
+
+        /// <summary>
+        /// Resets the interaction state of the ScrollingObjectCollection for the next scroll
+        /// </summary>
+        private void ResetInteraction()
+        {
+            TouchEnded?.Invoke(initialFocusedObject);
+
+            // Release the pointer
+            if (currentPointer != null) currentPointer.IsFocusLocked = false;
+            currentPointer = null;
+            initialFocusedObject = null;
+
+            // Clear our states
+            isTouched = false;
+            isEngaged = false;
+            isDragging = false;
+        }
+        
+
+        /// <summary>
+        /// Resets the scroll offset state of the ScrollingObjectCollection
+        /// </summary>
+        private void ResetScrollOffset()
+        {
+            MoveTo(0, false);
+            workingScrollerPos = Vector3.zero;
+            ApplyPosition(workingScrollerPos);
+        }
+        
+        
+        /// <summary>
+        /// Safely adds a child game object to scroll collection.
+        /// </summary>
+        public bool AddItem(GameObject item)
+        {
+            if (!ContainsNode(item.transform, out int nodeIndex))
+            {               
+                item.transform.parent = transform;
+                Reset();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Safely removes a child game object from scroll collection.
+        /// </summary>
+        public bool RemoveItem(GameObject item)
+        {
+            if (ContainsNode(item.transform, out int nodeIndex))
+            {
+                NodeList.RemoveAt(nodeIndex);
+                item.transform.parent = null;
+                Reset();
+
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Gets the cursor position (pointer end point) on the scrollable plane,

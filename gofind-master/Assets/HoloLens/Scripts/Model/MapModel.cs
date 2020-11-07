@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Assets.HoloLens.Scripts.Properties;
+using UnityEngine;
 
 namespace Assets.HoloLens.Scripts.Model
 {
@@ -40,7 +42,9 @@ namespace Assets.HoloLens.Scripts.Model
         event EventHandler<GeneratePinEventArgs> GeneratePinMap;
         void ChangeVisibility(bool flag);
         void GenerateMapPins();
-        void AddPictureLocation(double latitude, double longitude);
+        void AddPOILocation(POICoordinatesObject location);
+
+        void RemovePOI(int id);
     }
     
     public class Location
@@ -68,7 +72,7 @@ namespace Assets.HoloLens.Scripts.Model
         public event EventHandler<MapVisibilityEventArgs> MapVisibility = (sender, e) => { };
         public event EventHandler<GeneratePinEventArgs> GeneratePinMap = (sender, e) => { };
 
-        private List<Location> Pin_locations = new List<Location>();
+        Dictionary<int, POICoordinatesObject> poiLocations = new Dictionary<int, POICoordinatesObject>();
 
         /*
           * Eventhandler is used to to send events
@@ -91,10 +95,17 @@ namespace Assets.HoloLens.Scripts.Model
             GeneratePinMap(this, eventArgs);
         }
 
-        public void AddPictureLocation(double latitude, double longitude)
+        private int POIGameObjectID = 0;
+        public void AddPOILocation(POICoordinatesObject poiCoordinatesObject)
         {
-            Pin_locations.Add(new Location(latitude,longitude));
-            // Dispatch the photochanged event
+            poiLocations.Add(POIGameObjectID,poiCoordinatesObject);
+            POIGameObjectID++;
+        }
+
+        public void RemovePOI(int id)
+        {
+            poiLocations.Remove(id);
+            Debug.Log(poiLocations);
         }
         
         

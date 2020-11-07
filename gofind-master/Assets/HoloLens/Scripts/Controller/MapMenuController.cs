@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Model;
+using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
 using GeneratePinEventArgs = Assets.HoloLens.Scripts.View.GeneratePinEventArgs;
@@ -15,6 +16,8 @@ namespace Assets.HoloLens.Scripts.Controller
     public interface IMapMenuController
     {
         IMapMenuModel GETMapMenuModel();
+
+        void AddPOIQuery(POICoordinatesObject poiCoordinatesObject);
     }
 
     public class MapMenuController : MonoBehaviour, IMapMenuController
@@ -29,6 +32,7 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             return model;
         }
+        
         //Initialize Model, view and Listeners
 
         void Start()
@@ -39,19 +43,30 @@ namespace Assets.HoloLens.Scripts.Controller
             // Listen to input from the view
             view.OnOneBack += HandleBack;
             view.OnGeneratePin += HandleGeneratePin;
+            view.OnPOIRemove += RemoveFromModel;
             // Listen to changes in the model
             
             model.VisibilityChange += MenuStatusVisibility;
             model.OnMapPinGenerate += GenerateMapPins;
         }
-        
-        
+
+        private void RemoveFromModel(object sender, RemoveQueryDataArgs e)
+        {
+            IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
+            mapModel.RemovePOI(e.getID());
+        }
+
+
         //Functions to call once an Event occurs
 
         private void GenerateMapPins(object sender, NotifyMapModel_GenerateEventArgs e)
         {
             throw new System.NotImplementedException();
-           
+        }
+
+        public void AddPOIQuery(POICoordinatesObject poiCoordinatesObject)
+        {
+            view.createSelection(poiCoordinatesObject);
         }
 
 
