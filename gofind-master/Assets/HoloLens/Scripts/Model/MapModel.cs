@@ -45,18 +45,8 @@ namespace Assets.HoloLens.Scripts.Model
         void AddPOILocation(POICoordinatesObject location);
 
         void RemovePOI(int id);
-    }
-    
-    public class Location
-    {
-        private double latitude;
-        private double longitude;
-        
-        public Location(double latitude, double longitude)
-        {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
+
+        void setCurrentLocation(double latitude, double longitude, float heading);
     }
     
 /*
@@ -74,11 +64,22 @@ namespace Assets.HoloLens.Scripts.Model
 
         Dictionary<int, POICoordinatesObject> poiLocations = new Dictionary<int, POICoordinatesObject>();
 
+        private double CurrentLongitude;
+        private double CurrentLatitude;
+        private double currentHeading;
+
         /*
           * Eventhandler is used to to send events
           * This method is used for changing the visibility of the menu
-          */ 
+          */
 
+        public void setCurrentLocation(double latitude, double longitude, float heading)
+        {
+            
+            this.CurrentLatitude = latitude;
+            this.CurrentLongitude = longitude;
+            this.currentHeading = heading;
+        }
         public void ChangeVisibility(bool flag)
         {
             showHideMenu = flag;

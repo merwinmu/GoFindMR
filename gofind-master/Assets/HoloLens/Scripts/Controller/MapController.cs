@@ -14,6 +14,7 @@ namespace Assets.HoloLens.Scripts.Controller
     public interface IMapController
     {
         IMapModel GETMapModel();
+        IMapView GETMapView();
     }
     
     public class MapController : MonoBehaviour, IMapController
@@ -31,6 +32,11 @@ namespace Assets.HoloLens.Scripts.Controller
             return model;
         }
         
+        public IMapView GETMapView()
+        {
+            return view;
+        }
+        
         //Initialize Model, view and Listeners
         private void Start()
         {
@@ -45,6 +51,7 @@ namespace Assets.HoloLens.Scripts.Controller
             // Listen to changes in the model
             model.GeneratePinMap += GeneratePinMaps;
             model.MapVisibility += MainMenuStatusVisibility;
+ 
         }
 
         private void HandlePOIInput(object sender, POIEventArgs e)

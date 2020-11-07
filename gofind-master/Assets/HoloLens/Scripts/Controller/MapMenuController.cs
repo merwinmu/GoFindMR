@@ -44,10 +44,17 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnOneBack += HandleBack;
             view.OnGeneratePin += HandleGeneratePin;
             view.OnPOIRemove += RemoveFromModel;
+            view.OnZoomMap += ZoomMap;
             // Listen to changes in the model
             
             model.VisibilityChange += MenuStatusVisibility;
             model.OnMapPinGenerate += GenerateMapPins;
+        }
+
+        private void ZoomMap(object sender, ZoomMapEventArgs e)
+        {
+            IMapView iMapView = transform.GetComponent<MapController>().GETMapView();
+            iMapView.ZoomMap(e.get());
         }
 
         private void RemoveFromModel(object sender, RemoveQueryDataArgs e)

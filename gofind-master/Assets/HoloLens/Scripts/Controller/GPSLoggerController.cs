@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.GoFindMap.Scripts;
+using Assets.HoloLens.Scripts.Controller;
+using Assets.HoloLens.Scripts.Model;
+using Assets.HoloLens.Scripts.View;
 using TMPro;
 using UnityEngine;
+using MapController = Assets.HoloLens.Scripts.Controller.MapController;
 
 /*
  * Controllers are used for controlling models and views of various classes
@@ -42,6 +47,12 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     {
         // Updating the model
         model.SetGPSCoordinates(e.latitude,e.longitude,e.heading);
+
+        IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
+        mapModel.setCurrentLocation(e.latitude,e.longitude,e.heading);
+
+        IMapView mapView = transform.GetComponent<MapController>().GETMapView();
+        mapView.setCurrentPositionPin(e.latitude,e.longitude,e.heading);
     }
 
     // Called when the model's GPS data changed

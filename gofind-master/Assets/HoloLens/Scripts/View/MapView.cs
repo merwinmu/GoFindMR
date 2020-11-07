@@ -31,11 +31,10 @@ namespace Assets.HoloLens.Scripts.View
         
         //Use Class function using this interface functions
         void setGameObjectVisibility(bool flag);
-
         void setLocationPins();
-
         void RenderGenerateMapPins();
-
+        void ZoomMap(float data);
+        void setCurrentPositionPin(double latitude, double longitude, float heading);
     }
     public class MapView : MonoBehaviour, IMapView
     {
@@ -49,13 +48,25 @@ namespace Assets.HoloLens.Scripts.View
         
         [SerializeField]
         private TextAsset _mapPinLocationsCsv;
-        private void Awake()
-        {
-        }
+        
+        [SerializeField]
+        private MapPin currentMapPin;
 
         private void Start()
         {
             transform.gameObject.SetActive(false);
+            
+            CurrentPositionInit();
+        }
+
+        public void CurrentPositionInit()
+        {
+            currentMapPin = Instantiate(currentMapPin);
+            currentMapPin.transform.parent = transform;
+        }
+        public void setCurrentPositionPin(double latitude, double longitude, float heading)
+        {
+            currentMapPin.Location =  new LatLon(latitude,longitude);
         }
 
         public void setGameObjectVisibility(bool flag)
@@ -66,6 +77,13 @@ namespace Assets.HoloLens.Scripts.View
         public void setLocationPins()
         {
             throw new NotImplementedException();
+        }
+
+        
+        public void ZoomMap(float zoomdata)
+        {
+            MapRenderer renderer = GetComponent<MapRenderer>();
+            renderer.ZoomLevel = zoomdata * 20f;
         }
 
 

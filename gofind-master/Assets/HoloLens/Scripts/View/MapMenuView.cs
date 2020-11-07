@@ -35,21 +35,37 @@ namespace Assets.HoloLens.Scripts.View
     {
         event EventHandler<BackOneEventArgs> OnOneBack;
         event EventHandler<GeneratePinEventArgs> OnGeneratePin;
-        
         event EventHandler<RemoveQueryDataArgs> OnPOIRemove;
+        event EventHandler<ZoomMapEventArgs> OnZoomMap;
+        
         
         void MenuVisibility(bool flag);
 
         void createSelection(POICoordinatesObject poiCoordinatesObject);
     }
-    
+
+    public class ZoomMapEventArgs
+    {
+        private float data;
+
+        public ZoomMapEventArgs(float data)
+        {
+            this.data = data;
+        }
+
+        public float get()
+        {
+            return this.data;
+        }
+    }
+
     public class MapMenuView : MonoBehaviour, IMapMenuView
     {
         public event EventHandler<BackOneEventArgs> OnOneBack = (sender, e) => { };
         public event EventHandler<GeneratePinEventArgs> OnGeneratePin= (sender, e) => { };
         public event EventHandler<RemoveQueryDataArgs> OnPOIRemove= (sender, e) => { };
+        public event EventHandler<ZoomMapEventArgs> OnZoomMap= (sender, e) => { };
 
-        
 
         private bool MainMenuStatus;
          
@@ -83,21 +99,15 @@ namespace Assets.HoloLens.Scripts.View
             back_button = transform.GetChild(2).GetChild(1).gameObject;
             back_interactable = back_button.GetComponent<Interactable>();
             back_AddOnClick(back_interactable);
-            
-            query0_button = transform.GetChild(2).GetChild(2).gameObject;
-            query0_interactable = query0_button.GetComponent<Interactable>();
-            //query0_AddOnClick(query0_interactable);
-            
+
             scrollObeObjectCollectionGameObject = transform.GetChild(4).GetChild(1).gameObject;
             scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
-
             
+            ZoomSliderInit();
         }
 
         //Input actions from the user
-        
-        
-
+   
         private void back_AddOnClick(Interactable back_interactable)
         {
             back_interactable.OnClick.AddListener((() => OnBackButtonLogic()));
@@ -173,10 +183,22 @@ namespace Assets.HoloLens.Scripts.View
             var eventArgs = new BackOneEventArgs();
             OnOneBack(this, eventArgs);
         }
-        
+
         public void MenuVisibility(bool flag)
         {
             transform.gameObject.SetActive(flag);
+        }
+        
+        public void ZoomSliderInit()
+        {
+            GameObject slider = transform.GetChild(5).gameObject;
+            slider.GetComponent<PinchSlider>().OnValueUpdated.AddListener((e) => zoomData(e.NewValue));
+        }
+
+        public void zoomData(float data)
+        {
+            var eventArgs = new ZoomMapEventArgs(data);
+            OnZoomMap(this, eventArgs);
         }
     }
 }
