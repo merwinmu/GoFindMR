@@ -133,7 +133,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
         if (Input.GetMouseButtonDown(0))
         {
             //Debug
-            var eventArgs = new GPSDataReceivedEventArgs(4.3453,5.34676,12.5f);
+            var eventArgs = new GPSDataReceivedEventArgs(47.559601,7.588576,12.5f);
             OnReceived(this, eventArgs);
         }
     }

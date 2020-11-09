@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1593706521355777563}
   - component: {fileID: 5509019263236862935}
   - component: {fileID: 1464204877652164228}
+  - component: {fileID: 5667565761529323613}
   m_Layer: 0
   m_Name: RandomPin
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4195170944820505317}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5945359e-12, y: 0.08370353, z: 0}
+  m_LocalPosition: {x: -8.7512387e-13, y: 0.08370353, z: -1.3329302e-12}
   m_LocalScale: {x: -0.033126473, y: -0.033126473, z: -0.033126473}
   m_Children: []
   m_Father: {fileID: 0}
@@ -137,3 +138,22 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &5667565761529323613
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4195170944820505317}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7f78c9598ad6d7e4ba3286b0a20dc07a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

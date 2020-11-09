@@ -1,7 +1,9 @@
 using System;
 using System.Globalization;
+using Assets.HoloLens.Scripts.Properties;
 using Microsoft.Geospatial;
 using Microsoft.Maps.Unity;
+using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using TMPro;
 using UnityEngine;
 
@@ -106,5 +108,9 @@ namespace Assets.HoloLens.Scripts.View
                 mapPin.GetComponentInChildren<TextMeshPro>().text = csvEntries[2].ToLower() == "null" ? "" : csvEntries[2];
             }
         }
+        
+        
+        
+        
     }
 }

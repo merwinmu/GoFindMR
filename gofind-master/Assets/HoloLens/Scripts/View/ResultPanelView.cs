@@ -510,7 +510,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     {
         radialView.MoveLerpTime = 0.5f;
         radialView.RotateLerpTime = 0.5f;
-        radialView.MinDistance = 0.5f;
+        radialView.MinDistance = 0.8f;
         radialView.MaxDistance = 0.6f;
         radialView.MaxViewDegrees = 0.0f;
     }

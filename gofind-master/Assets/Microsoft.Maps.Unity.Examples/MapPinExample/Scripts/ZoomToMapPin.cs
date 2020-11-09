@@ -33,7 +33,8 @@ public class ZoomToMapPin : MonoBehaviour
         //var mapScene = new MapSceneOfLocationAndZoomLevel(_mapPin.Location, _map.ZoomLevel + 1.01f);
         //_map.SetMapScene(mapScene);
         string name = _mapPin.transform.GetChild(0).GetChild(0).gameObject.GetComponent<TextMeshPro>().text;
-        POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(_mapPin.Location.LatitudeInRadians,_mapPin.Location.LatitudeInRadians,name,transform.gameObject);
+        POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(_mapPin.Location.LatitudeInDegrees,_mapPin.Location.LongitudeInDegrees,name,transform.gameObject,"https://cdn.pixabay.com/photo/2018/09/23/18/30/drop-3698073_960_720.jpg");
+        Debug.Log("zoom: " + poiCoordinatesObject.getCoordinates());
         var eventArgs = new POIEventArgs(poiCoordinatesObject);
         
         // Dispatch the 'position changed' event

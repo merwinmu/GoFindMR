@@ -16,6 +16,7 @@ namespace Assets.HoloLens.Scripts.Controller
     public interface IMapMenuController
     {
         IMapMenuModel GETMapMenuModel();
+        IMapMenuView GETMapMenuView();
 
         void AddPOIQuery(POICoordinatesObject poiCoordinatesObject);
     }
@@ -24,6 +25,7 @@ namespace Assets.HoloLens.Scripts.Controller
     {
         private static IMapMenuModel model;
         private static IMapMenuView view;
+        private static IGPSLoggerController GpsLoggerController;
 
 
    
@@ -32,6 +34,11 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             return model;
         }
+
+        public IMapMenuView GETMapMenuView()
+        {
+            return view;
+        }
         
         //Initialize Model, view and Listeners
 
@@ -39,16 +46,37 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             model = new MapMenuModel();
             view = transform.GetChild(4).GetComponent<MapMenuView>();
+            GpsLoggerController = GetComponentInParent<GPSLoggerController>().GETGpsLoggerController();
+            
 
             // Listen to input from the view
             view.OnOneBack += HandleBack;
             view.OnGeneratePin += HandleGeneratePin;
             view.OnPOIRemove += RemoveFromModel;
             view.OnZoomMap += ZoomMap;
+            view.OnJourney += HandleJourneyStart;
+            view.OnCancelJourney += HandleCancelJourney;
+            
+            //Debug
+            view.OnDebugReceived += GpsLoggerController.HandleGPSReceived;
             // Listen to changes in the model
             
             model.VisibilityChange += MenuStatusVisibility;
             model.OnMapPinGenerate += GenerateMapPins;
+            
+        }
+
+        private void HandleCancelJourney(object sender, BackOneEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void HandleJourneyStart(object sender, BackOneEventArgs e)
+        {
+            IMapModel iMapModel = transform.GetComponent<MapController>().GETMapModel();
+            IMapView iMapView = transform.GetComponent<MapController>().GETMapView();
+            iMapView.setGameObjectVisibility(false);
+            iMapModel.SpatialExploration();
         }
 
         private void ZoomMap(object sender, ZoomMapEventArgs e)
@@ -97,5 +125,13 @@ namespace Assets.HoloLens.Scripts.Controller
             IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
             mapModel.ChangeVisibility(false);
         }
+        
+        //DEBUG
+
+        public void CustomCoordinates()
+        {
+            
+        }
+        
     }
 }

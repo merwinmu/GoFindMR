@@ -18,11 +18,13 @@ using MapController = Assets.HoloLens.Scripts.Controller.MapController;
 public interface IGPSLoggerController
 {
     IGPSLoggerModel GETGPSLoggerModel();
+    IGPSLoggerController GETGpsLoggerController();
+
+    void HandleGPSReceived(object sender, GPSDataReceivedEventArgs e);
 }
 public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
 {
     
-
     // Keep references to the model and view
     private static  IGPSLoggerModel model;
     private static  IGPSLoggerView view;
@@ -32,18 +34,21 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     {
         model = new GPSLoggerModel();
         view = transform.GetChild(0).GetComponent<GPSLoggerView>();
+        
+        //Debug
 
         // Listen to input from the view
         view.OnReceived += HandleGPSReceived;
         // Listen to changes in the model
         model.OnGPSDataChanged += HandleGPSChanged;
         
+        
         // Set the view's initial state by synching with the model
         DisplayGPSdata();
     }
 
     // Called when GPSdata is received
-    private void HandleGPSReceived(object sender, GPSDataReceivedEventArgs e)
+    public void HandleGPSReceived(object sender, GPSDataReceivedEventArgs e)
     {
         // Updating the model
         model.SetGPSCoordinates(e.latitude,e.longitude,e.heading);
@@ -53,6 +58,9 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
 
         IMapView mapView = transform.GetComponent<MapController>().GETMapView();
         mapView.setCurrentPositionPin(e.latitude,e.longitude,e.heading);
+
+        IMapMenuView mapMenuView = transform.GetComponent<MapMenuController>().GETMapMenuView();
+        mapMenuView.setCurrentPositionPin(e.latitude,e.longitude,e.heading);
     }
 
     // Called when the model's GPS data changed
@@ -71,5 +79,10 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     public IGPSLoggerModel GETGPSLoggerModel()
     {
         return model;
+    }
+
+    public IGPSLoggerController GETGpsLoggerController()
+    {
+        return this;
     }
 }
