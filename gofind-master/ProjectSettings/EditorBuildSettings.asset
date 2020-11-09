@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HoloLens/Scenes/QueryMenu.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
+  - enabled: 0
+    path: Assets/MRTK/Examples/Experimental/HandMenuLayout/Scenes/HandMenuLayoutExamples.unity
+    guid: 9e1c6bf44fb90c54dbf82acf2808c16f
   m_configObjects: {}

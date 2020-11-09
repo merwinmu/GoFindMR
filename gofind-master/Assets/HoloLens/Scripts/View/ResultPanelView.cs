@@ -281,9 +281,9 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         setCollectionVisibility(false);   
         
         initPictureObject();
-        initHandMenuPictureObject();
+        //initHandMenuPictureObject();
 
-        HandMenuSuperImoseInit();
+        //HandMenuSuperImoseInit();
         PictureMenuSuperImoseInit();
     }
 
