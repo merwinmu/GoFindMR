@@ -54,11 +54,17 @@ namespace Assets.HoloLens.Scripts.View
         [SerializeField]
         private MapPin currentMapPin;
 
+        private MapRenderer renderer;
+        private Camera camera;
+
         private void Start()
         {
+            camera = Camera.main;
             transform.gameObject.SetActive(false);
             
             CurrentPositionInit();
+            renderer = GetComponent<MapRenderer>();
+
         }
 
         public void CurrentPositionInit()
@@ -81,13 +87,13 @@ namespace Assets.HoloLens.Scripts.View
             throw new NotImplementedException();
         }
 
-        
+
         public void ZoomMap(float zoomdata)
         {
-            MapRenderer renderer = GetComponent<MapRenderer>();
+            renderer = GetComponent<MapRenderer>();
             renderer.ZoomLevel = zoomdata * 20f;
-        }
 
+        }
 
         //Output action triggered by the Controller
         public void RenderGenerateMapPins()
@@ -108,9 +114,44 @@ namespace Assets.HoloLens.Scripts.View
                 mapPin.GetComponentInChildren<TextMeshPro>().text = csvEntries[2].ToLower() == "null" ? "" : csvEntries[2];
             }
         }
+
+        private double temps;
+        private bool click;
+        private bool longClickDone;
         
-        
-        
-        
+        public void getRaycastCoordinates()
+        {
+            var ray = camera.ScreenPointToRay(Input.mousePosition);
+
+            if ( Input.GetMouseButtonDown (0) )
+            {
+                temps = Time.time ;
+                click = true ;
+                longClickDone = false ;
+            }
+            
+ 
+            if ( Input.GetMouseButtonUp(0) )
+            {
+                click = false ;
+                if ( (Time.time - temps) < 0.2 )
+                {
+                    if (renderer.Raycast(ray, out MapRendererRaycastHit hitInfo))
+                    {
+                        var hitpoint = hitInfo.Point;
+                        var mapPin = Instantiate(_mapPinPrefab);
+                        mapPin.Location =
+                            renderer.TransformWorldPointToLatLon(hitpoint);
+                        _mapPinLayer.MapPins.Add(mapPin);
+                        Debug.Log(renderer.TransformWorldPointToLatLon(hitpoint));
+                    }
+                }
+            }
+        }
+
+        private void Update()
+        {
+            getRaycastCoordinates();
+        }
     }
 }
