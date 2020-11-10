@@ -26,9 +26,7 @@ namespace Assets.HoloLens.Scripts.Controller
         private static IMapMenuModel model;
         private static IMapMenuView view;
         private static IGPSLoggerController GpsLoggerController;
-
-
-   
+        
 
         public IMapMenuModel GETMapMenuModel()
         {
@@ -76,7 +74,9 @@ namespace Assets.HoloLens.Scripts.Controller
             IMapModel iMapModel = transform.GetComponent<MapController>().GETMapModel();
             IMapView iMapView = transform.GetComponent<MapController>().GETMapView();
             iMapView.setGameObjectVisibility(false);
-            iMapModel.SpatialExploration();
+            iMapModel.GETPoiCoordinatesObjectsList();
+            view.SpatialExploration();
+            
         }
 
         private void ZoomMap(object sender, ZoomMapEventArgs e)

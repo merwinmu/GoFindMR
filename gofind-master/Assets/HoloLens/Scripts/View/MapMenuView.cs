@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.Properties;
 using Microsoft.Geospatial;
 using Microsoft.Maps.Unity;
@@ -50,6 +53,11 @@ namespace Assets.HoloLens.Scripts.View
         void setCurrentPositionPin(double latitude, double longitude, float heading);
         void RemoveGameObject(POICoordinatesObject poiCoordinatesObject);
 
+        void setPOIList(Dictionary<int, POICoordinatesObject> poiCoordinatesObjects);
+
+        void SpatialExploration();
+
+        void MiniMapRender();
 
     }
 
@@ -80,6 +88,7 @@ namespace Assets.HoloLens.Scripts.View
 
         Dictionary<POICoordinatesObject,GameObject> SpawnedObjects = new Dictionary<POICoordinatesObject,GameObject>();
 
+
         
         [SerializeField]
         private MapPinLayer _mapPinLayer;
@@ -87,9 +96,11 @@ namespace Assets.HoloLens.Scripts.View
         [SerializeField]
         private MapPin currentMapPin;
 
-        public double lat = 47.5569389;
+        public double currentLatitude = 47.5569389;
 
-        public double lon = 7.5888067;
+        public double currentLongitude = 7.5888067;
+        
+        
         
         
 
@@ -117,6 +128,9 @@ namespace Assets.HoloLens.Scripts.View
         private GameObject cancelButton;
         private Interactable cancelInteractable;
         private GameObject miniMap;
+        public MapRenderer MiniMapRenderer;
+
+        private bool journeyStart;
         
 
         private void Start()
@@ -146,6 +160,7 @@ namespace Assets.HoloLens.Scripts.View
             slider = transform.GetChild(5).gameObject;
             POIQuery = transform.GetChild(4).gameObject;
             miniMap = transform.GetChild(8).gameObject;
+            MiniMapRenderer = miniMap.GetComponent<MapRenderer>();
 
 
             
@@ -194,6 +209,8 @@ namespace Assets.HoloLens.Scripts.View
         public void setCurrentPositionPin(double latitude, double longitude, float heading)
         {
             currentMapPin.Location =  new LatLon(latitude,longitude);
+            this.currentLatitude = latitude;
+            this.currentLongitude = longitude;
         }
 
         //Input actions from the user
@@ -324,30 +341,96 @@ namespace Assets.HoloLens.Scripts.View
             SpawnedObjects.Remove(poiCoordinatesObject);
         }
 
-        public void debugCoordinates()
-        {
-            MapRenderer mapRenderer = miniMap.GetComponent<MapRenderer>();
+        public Dictionary<int, POICoordinatesObject> PoiCoordinatesObjects;
+        private List<int> keys;
 
-            currentMapPin.Location = new LatLon(lat,lon);
-            Debug.Log("Here its: " +lat+lon);
+
+        public void setPOIList(Dictionary<int, POICoordinatesObject> poiCoordinatesObjects)
+        {
+            this.PoiCoordinatesObjects = poiCoordinatesObjects;
+            keys = new List<int>(poiCoordinatesObjects.Keys);
+        }
+        
+        public void MiniMapRender()
+        {
+            MiniMapRenderer = miniMap.GetComponent<MapRenderer>();
+
+            currentMapPin.Location = new LatLon(currentLatitude,currentLongitude);
+            Debug.Log("Here its: " +currentLatitude+currentLongitude);
             
-            var mapScene = new MapSceneOfLocationAndZoomLevel(currentMapPin.Location,  mapRenderer.ZoomLevel + 0f);
+            var mapScene = new MapSceneOfLocationAndZoomLevel(currentMapPin.Location,  MiniMapRenderer.ZoomLevel + 0f);
             //_map.SetMapScene(mapScene);
 
-            mapRenderer.SetMapScene(mapScene);
-            
-            var eventArgs = new GPSDataReceivedEventArgs(lat,lon,0f);
-            
-            OnDebugReceived(this, eventArgs);
+            MiniMapRenderer.SetMapScene(mapScene);
+            //
         }
+        
+        
+        public double calculateRadius(double latitude1, double longitude1, double latitude2, double longitude2)
+        {
+            const double r = 6371; // meters
 
+            var sdlat = Math.Sin((latitude2 - latitude1) / 2);
+            var sdlon = Math.Sin((longitude2 - longitude1) / 2);
+            var q = sdlat * sdlat + Math.Cos(latitude1) * Math.Cos(latitude2) * sdlon * sdlon;
+            var d = 2 * r * Math.Asin(Math.Sqrt(q));
+
+            return d;
+        }
+        
+
+        public void SpatialExploration()
+        {
+            this.journeyStart = true;
+            Debug.Log("Jorney Started");
+        }
+        
+        
+        double distance = 100; // 100km radius
+        double inboundthreshold = 2;
+        double outboundthreshold = 4;
+
+        private double lat1;
+        private double lon1;
+        private double lat2;
+        private double lon2;
+
+        private int deleteKey;
+        private bool arrived;
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (journeyStart)
             {
-                debugCoordinates();
-            }
+                foreach (int key in keys)
+                {
+                    lat1 = PoiCoordinatesObjects[key].getCoordinates().getLat();
+                    lon1 = PoiCoordinatesObjects[key].getCoordinates().getLon();
 
+                    distance = calculateRadius(lat1, lon1, currentLatitude, currentLongitude);
+                    DelayLoadLevel();
+                    Debug.Log("Key ID: "+key+"  Current Position: "+currentLatitude+" "+currentLongitude + " Destinaton: "+lat1+" "+lon1+" Distance to Dest "+distance.ToString());
+                    if (distance < inboundthreshold)
+                    {
+                        Debug.Log("Arrived");
+                        RenderGameObject(PoiCoordinatesObjects[key]);
+                        PoiCoordinatesObjects.Remove(key);
+                        distance = 100;
+                        deleteKey = key;
+                        arrived = true;
+                    }
+                }
+
+                if (arrived)
+                {
+                    keys.Remove(deleteKey);
+                    arrived = false;
+                }
+            }
+        }
+        
+        private IEnumerator DelayLoadLevel()
+        {
+            yield return new WaitForSeconds(1f);
         }
     }
 }

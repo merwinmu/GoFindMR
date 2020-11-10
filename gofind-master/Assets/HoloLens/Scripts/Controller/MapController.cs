@@ -43,8 +43,7 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             model = new MapModel();
             view =  transform.GetChild(5).GetComponent<MapView>();
-            spawnObjectOnCoordinateEventArgses = new List<SpawnObjectOnCoordinateEventArgs>();
-            removeSpawnObjectEventArgses = new List<SpawnObjectOnCoordinateEventArgs>();
+           
             
             
             
@@ -55,23 +54,17 @@ namespace Assets.HoloLens.Scripts.Controller
             // Listen to changes in the model
             model.GeneratePinMap += GeneratePinMaps;
             model.MapVisibility += MainMenuStatusVisibility;
-            model.OnSpawnCoordinate += SpawnObjectRealWorld;
-            model.OnRemoveObject += RemoveObjectRealWorld;
+            model.OnPOIGetter += SendPOIListToMapMenu;
+        }
 
+
+
+        private void SendPOIListToMapMenu(object sender, GetPOILocationListEventArgs e)
+        {
+            IMapMenuView mapMenuModel = mapMenuController.GETMapMenuView();
+            mapMenuModel.setPOIList(e.poiLocations);
         }
         
-        private List<SpawnObjectOnCoordinateEventArgs> removeSpawnObjectEventArgses;
-        private void RemoveObjectRealWorld(object sender, SpawnObjectOnCoordinateEventArgs e)
-        {
-            removeSpawnObjectEventArgses.Add(e);
-        }
-
-        private List<SpawnObjectOnCoordinateEventArgs> spawnObjectOnCoordinateEventArgses;
-        private void SpawnObjectRealWorld(object sender, SpawnObjectOnCoordinateEventArgs e)
-        {
-            spawnObjectOnCoordinateEventArgses.Add(e);
-        }
-
         private void HandlePOIInput(object sender, POIEventArgs e)
         {
             model.AddPOILocation(e.GETPoiCoordinatesObject()) ;
@@ -92,30 +85,6 @@ namespace Assets.HoloLens.Scripts.Controller
         private void MainMenuStatusVisibility(object sender, MapVisibilityEventArgs e)
         {
             view.setGameObjectVisibility(e.flag);
-        }
-
-        private void Update()
-        {
-            if (spawnObjectOnCoordinateEventArgses.Count != 0)
-            {
-                IMapMenuView mapMenuView = transform.GetComponent<MapMenuController>().GETMapMenuView();
-                foreach (var VARIABLE in spawnObjectOnCoordinateEventArgses)
-                {
-                    mapMenuView.RenderGameObject(VARIABLE.get());
-                }
-                
-                spawnObjectOnCoordinateEventArgses.Clear();
-            }
-
-            if (removeSpawnObjectEventArgses.Count != 0)
-            {
-                IMapMenuView mapMenuView = transform.GetComponent<MapMenuController>().GETMapMenuView();
-                foreach (var VARIABLE in removeSpawnObjectEventArgses)
-                {
-                    mapMenuView.RemoveGameObject(VARIABLE.get());
-                }
-                removeSpawnObjectEventArgses.Clear();
-            }
         }
     }
 }

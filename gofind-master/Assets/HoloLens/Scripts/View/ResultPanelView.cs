@@ -281,9 +281,9 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         setCollectionVisibility(false);   
         
         initPictureObject();
-        //initHandMenuPictureObject();
+        initHandMenuPictureObject();
 
-        //HandMenuSuperImoseInit();
+        HandMenuSuperImoseInit();
         PictureMenuSuperImoseInit();
     }
 
@@ -320,8 +320,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     
     public void initHandMenuPictureObject()
     {
-        HandMenuclose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(0).gameObject;
-        HandMenuanchor_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
+        HandMenuclose_button = transform.GetChild(2).GetChild(0).GetChild(1).GetChild(0).gameObject;
+        HandMenuanchor_button = transform.GetChild(2).GetChild(0).GetChild(1).GetChild(1).gameObject;
         //superimose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(2).gameObject;
         
         HandMenucloseInteractable = HandMenuclose_button.GetComponent<Interactable>();
@@ -362,14 +362,14 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     public void HandMenuSuperImoseInit()
     {
-        GameObject slider = ShowPictureObject.transform.GetChild(2).GetChild(0).GetChild(2).gameObject;
+        GameObject slider = transform.GetChild(2).GetChild(0).GetChild(2).gameObject;
         Material material = initTransperancySettings();
         slider.GetComponent<PinchSlider>().OnValueUpdated.AddListener((e) => superimose(e.NewValue));
     }
 
     public Material initTransperancySettings()
     {
-        GameObject Pic = ShowPictureObject.transform.GetChild(3).gameObject;
+        GameObject Pic = ShowPictureObject.transform.GetChild(2).gameObject;
         Material m = Pic.GetComponent<Renderer>().sharedMaterial;
         m.SetFloat("_Mode", 2.0f);
         return m;
@@ -377,8 +377,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     public void superimose(float value)
     {
-        ShowPictureObject.transform.GetChild(3).gameObject.GetComponent<Renderer>().sharedMaterials[0].color = new Color(1,1,1,value);
-        MaterialChanged(ShowPictureObject.transform.GetChild(3).gameObject.GetComponent<Renderer>().sharedMaterials[0],WorkflowMode.Metallic);
+        ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0].color = new Color(1,1,1,value);
+        MaterialChanged(ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0],WorkflowMode.Metallic);
     }
     
     private enum WorkflowMode

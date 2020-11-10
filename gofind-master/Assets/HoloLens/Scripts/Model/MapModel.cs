@@ -46,6 +46,12 @@ namespace Assets.HoloLens.Scripts.Model
         
     }
 
+    public class GetPOILocationListEventArgs : EventArgs
+    {
+        public Dictionary<int, POICoordinatesObject> poiLocations;
+
+    }
+
 
     public class GetPictureLocationEventArgs : EventArgs
          {
@@ -69,6 +75,7 @@ namespace Assets.HoloLens.Scripts.Model
         event EventHandler<GeneratePinEventArgs> GeneratePinMap;
         event EventHandler<SpawnObjectOnCoordinateEventArgs> OnSpawnCoordinate;
 
+        event EventHandler<GetPOILocationListEventArgs> OnPOIGetter;
         event EventHandler<SpawnObjectOnCoordinateEventArgs> OnRemoveObject;
         void ChangeVisibility(bool flag);
         void GenerateMapPins();
@@ -79,6 +86,8 @@ namespace Assets.HoloLens.Scripts.Model
         void setCurrentLocation(double latitude, double longitude, float heading);
 
         void SpatialExploration();
+
+        void GETPoiCoordinatesObjectsList();
     }
     
 /*
@@ -95,6 +104,9 @@ namespace Assets.HoloLens.Scripts.Model
         public event EventHandler<GeneratePinEventArgs> GeneratePinMap = (sender, e) => { };
         public event EventHandler<SpawnObjectOnCoordinateEventArgs> OnSpawnCoordinate = (sender, e) => { };
         public event EventHandler<SpawnObjectOnCoordinateEventArgs> OnRemoveObject = (sender, e) => { };
+        public event EventHandler<GetPOILocationListEventArgs> OnPOIGetter = (sender, e) => { };
+
+        
 
 
         Dictionary<int, POICoordinatesObject> poiLocations = new Dictionary<int, POICoordinatesObject>();
@@ -115,6 +127,7 @@ namespace Assets.HoloLens.Scripts.Model
             this.CurrentLongitude = longitude;
             this.currentHeading = heading;
         }
+        
         public void ChangeVisibility(bool flag)
         {
             showHideMenu = flag;
@@ -144,18 +157,14 @@ namespace Assets.HoloLens.Scripts.Model
             Debug.Log(poiLocations);
         }
 
-        private double distance;
-        public double calculateRadius(double latitude1, double longitude1, double latitude2, double longitude2)
+        public void GETPoiCoordinatesObjectsList()
         {
-            const double r = 6371; // meters
-
-            var sdlat = Math.Sin((latitude2 - latitude1) / 2);
-            var sdlon = Math.Sin((longitude2 - longitude1) / 2);
-            var q = sdlat * sdlat + Math.Cos(latitude1) * Math.Cos(latitude2) * sdlon * sdlon;
-            var d = 2 * r * Math.Asin(Math.Sqrt(q));
-
-            return d;
+            var eventArgs = new GetPOILocationListEventArgs();
+            eventArgs.poiLocations = this.poiLocations;
+            OnPOIGetter(this, eventArgs);
         }
+        
+        
 
         public void calulateSpatialDistance(object threadInput)
         {
@@ -169,11 +178,24 @@ namespace Assets.HoloLens.Scripts.Model
             double currentlat = CurrentLatitude;
             double currentlon = CurrentLongitude;
             
+            const double r = 6371; // meters
+            
+            double sdlat;
+            double sdlon;
+            double q;
+            
+            
             Debug.Log(threadInput.GetHashCode()+" Thread started");
             while (distance > inboundthreshold)
             {
-                distance = calculateRadius(lat,lon,currentlat,currentlon);
+                sdlat = Math.Sin((lat - currentlat) / 2);
+                sdlon = Math.Sin((lon - currentlon) / 2);
+                q = sdlat * sdlat + Math.Cos(currentlat) * Math.Cos(lat) * sdlon * sdlon;
+                distance = 2 * r * Math.Asin(Math.Sqrt(q));
+                
+                
                 Debug.Log("Thread ID: "+poi.GetHashCode()+"  Current Position: "+CurrentLatitude+" "+CurrentLongitude + " Destinaton: "+lat+" "+lon+" Distance to Dest "+distance.ToString());
+                Thread.Sleep(1000);
             }
             var eventArgs = new SpawnObjectOnCoordinateEventArgs(poi);
             OnSpawnCoordinate(this, eventArgs);

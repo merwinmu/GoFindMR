@@ -56,6 +56,9 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     private static ushort ANDROID_ID = 24;
     
     private TextMeshPro BLT_Text;
+
+    public double currentLatitude = 47.559601;
+    public double currentLongitude = 7.588576;
     public event EventHandler<GPSDataReceivedEventArgs> OnReceived = (sender, e) => { };
     
     
@@ -133,7 +136,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
         if (Input.GetMouseButtonDown(0))
         {
             //Debug
-            var eventArgs = new GPSDataReceivedEventArgs(47.559601,7.588576,12.5f);
+            var eventArgs = new GPSDataReceivedEventArgs(currentLatitude,currentLongitude,12.5f);
             OnReceived(this, eventArgs);
         }
     }
