@@ -24,7 +24,6 @@ namespace Assets.HoloLens.Scripts.View
 {
     public class MapInputEventArgs : EventArgs
     {
-        
     }
     
     public interface IMapView
@@ -56,6 +55,7 @@ namespace Assets.HoloLens.Scripts.View
 
         private MapRenderer renderer;
         private Camera camera;
+        private MapInteractionController mapInteractionController;
 
         private void Start()
         {
@@ -64,7 +64,15 @@ namespace Assets.HoloLens.Scripts.View
             
             CurrentPositionInit();
             renderer = GetComponent<MapRenderer>();
+            mapInteractionController = GetComponent<MapInteractionController>();
+            mapInteractionController.OnDoubleTap.AddListener(((data ) => GenerateLatLonObject(data)));
+        }
 
+        private void GenerateLatLonObject(LatLonAlt data)
+        {
+            var mapPin = Instantiate(_mapPinPrefab);
+            mapPin.Location = data.LatLon;
+            _mapPinLayer.MapPins.Add(mapPin);
         }
 
         public void CurrentPositionInit()
@@ -115,11 +123,18 @@ namespace Assets.HoloLens.Scripts.View
             }
         }
 
+        public void getRayCastCoordinate()
+        {
+            
+        }
+
         private double temps;
         private bool click;
         private bool longClickDone;
         
-        public void getRaycastCoordinates()
+        
+        //Debug
+        public void getMouseCoordinate()
         {
             var ray = camera.ScreenPointToRay(Input.mousePosition);
 
@@ -139,10 +154,7 @@ namespace Assets.HoloLens.Scripts.View
                     if (renderer.Raycast(ray, out MapRendererRaycastHit hitInfo))
                     {
                         var hitpoint = hitInfo.Point;
-                        var mapPin = Instantiate(_mapPinPrefab);
-                        mapPin.Location =
-                            renderer.TransformWorldPointToLatLon(hitpoint);
-                        _mapPinLayer.MapPins.Add(mapPin);
+                        
                         Debug.Log(renderer.TransformWorldPointToLatLon(hitpoint));
                     }
                 }
@@ -151,7 +163,7 @@ namespace Assets.HoloLens.Scripts.View
 
         private void Update()
         {
-            getRaycastCoordinates();
+            getMouseCoordinate();
         }
     }
 }
