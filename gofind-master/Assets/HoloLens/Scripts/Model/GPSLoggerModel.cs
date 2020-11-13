@@ -46,6 +46,9 @@ public interface IGPSLoggerModel
 
     // GPS Position
     void SetGPSCoordinates(double lat, double lon, float hea); // Setting new GPS information in this model
+
+    double getLatitude();
+    double getLongitude();
 }
 
 // Implementation of the GPSLoggerModel model interface
@@ -109,6 +112,16 @@ public class GPSLoggerModel: IGPSLoggerModel
         
         // Dispatch the 'position changed' event
         OnGPSDataChanged(this, eventArgs);
+    }
+
+    public double getLatitude()
+    {
+        return this.latitude;
+    }
+
+    public double getLongitude()
+    {
+        return this.longitude;
     }
 
     public string getStringGPSCoordinates()

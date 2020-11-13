@@ -43,12 +43,14 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             model = new MapModel();
             view =  transform.GetChild(5).GetComponent<MapView>();
+            
            
             
             
             
             // Listen to input from the view
             ZoomToMapPin.OnMapObject += HandlePOIInput;
+            view.OnPOI += POItoQuery;
             
             
             // Listen to changes in the model
@@ -57,6 +59,11 @@ namespace Assets.HoloLens.Scripts.Controller
             model.OnPOIGetter += SendPOIListToMapMenu;
         }
 
+        private void POItoQuery(object sender, POIEventArgs e)
+        {
+            IQueryMenuController iqQueryMenuController = transform.GetComponent<QueryMenuController>();
+            iqQueryMenuController.addQuery(e.GETPoiCoordinatesObject());
+        }
 
 
         private void SendPOIListToMapMenu(object sender, GetPOILocationListEventArgs e)

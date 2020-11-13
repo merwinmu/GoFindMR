@@ -110,6 +110,9 @@ namespace Assets.HoloLens.Scripts.View
         private GameObject back_button;
         private Interactable back_interactable;
         
+        private GameObject ResetBaselButton;
+        private Interactable resetBaselInteractable;
+        
         private GameObject generate_button;
         private Interactable generate_interactable;
 
@@ -129,6 +132,7 @@ namespace Assets.HoloLens.Scripts.View
         private Interactable cancelInteractable;
         private GameObject miniMap;
         public MapRenderer MiniMapRenderer;
+        public MapRenderer BigMapRenderer;
 
         private bool journeyStart;
         
@@ -146,6 +150,10 @@ namespace Assets.HoloLens.Scripts.View
             back_interactable = back_button.GetComponent<Interactable>();
             back_AddOnClick(back_interactable);
 
+            ResetBaselButton = transform.GetChild(2).GetChild(2).gameObject;
+            resetBaselInteractable = ResetBaselButton.GetComponent<Interactable>();
+            resetBaselAddOnClick(resetBaselInteractable);
+
             journeyButton = transform.GetChild(6).gameObject;
             journeyInteractable = journeyButton.GetComponent<Interactable>();
             journey_AddOnClick(journeyInteractable);
@@ -161,7 +169,8 @@ namespace Assets.HoloLens.Scripts.View
             POIQuery = transform.GetChild(4).gameObject;
             miniMap = transform.GetChild(8).gameObject;
             MiniMapRenderer = miniMap.GetComponent<MapRenderer>();
-
+            miniMap.SetActive(false);
+            BigMapRenderer = transform.parent.GetChild(5).GetComponent<MapRenderer>();
 
             
             ZoomSliderInit();
@@ -223,6 +232,17 @@ namespace Assets.HoloLens.Scripts.View
         private void generate_AddOnClick(Interactable generate_interactable)
         {
             generate_interactable.OnClick.AddListener((() => OnGenerateButtonLogic()));
+        }
+
+        private void resetBaselAddOnClick(Interactable resetBaselInteractable)
+        {
+            resetBaselInteractable.OnClick.AddListener((() => OnResetBasel()));
+        }
+
+        private void OnResetBasel()
+        {
+            var mapScene = new MapSceneOfLocationAndZoomLevel(new LatLon(47.559601,7.588576),  14.74f);
+            BigMapRenderer.SetMapScene(mapScene);
         }
 
         //funtions to handle User inputs

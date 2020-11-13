@@ -29,6 +29,7 @@ namespace Assets.HoloLens.Scripts.View
     public interface IMapView
     {
         event EventHandler<MapInputEventArgs> OnMapInput;
+        event EventHandler<POIEventArgs> OnPOI;
         
         //Use Class function using this interface functions
         void setGameObjectVisibility(bool flag);
@@ -40,6 +41,10 @@ namespace Assets.HoloLens.Scripts.View
     public class MapView : MonoBehaviour, IMapView
     {
         public event EventHandler<MapInputEventArgs> OnMapInput  = (sender, e) => { };
+        public event EventHandler<POIEventArgs> OnPOI  = (sender, e) => { };
+        
+        
+
         
         [SerializeField]
         private MapPinLayer _mapPinLayer;
@@ -73,6 +78,10 @@ namespace Assets.HoloLens.Scripts.View
             var mapPin = Instantiate(_mapPinPrefab);
             mapPin.Location = data.LatLon;
             _mapPinLayer.MapPins.Add(mapPin);
+            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(data.LatitudeInDegrees,data.LongitudeInDegrees);
+            poiCoordinatesObject.setName(data.LatLon.LatitudeInDegrees.ToString()+" "+data.LongitudeInDegrees);
+            var EventArgs = new POIEventArgs(poiCoordinatesObject);
+            OnPOI(this, EventArgs);
         }
 
         public void CurrentPositionInit()
@@ -156,6 +165,10 @@ namespace Assets.HoloLens.Scripts.View
                         var hitpoint = hitInfo.Point;
                         
                         Debug.Log(renderer.TransformWorldPointToLatLon(hitpoint));
+
+                        LatLonAlt latLonAlt = new LatLonAlt(renderer.TransformWorldPointToLatLon(hitpoint).LatitudeInDegrees,renderer.TransformWorldPointToLatLon(hitpoint).LongitudeInDegrees,0);
+
+                        GenerateLatLonObject(latLonAlt);
                     }
                 }
             }

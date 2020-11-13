@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Model;
+using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
 /*
@@ -81,7 +82,12 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             IGPSLoggerModel gpsLoggerModel = transform.GetComponent<GPSLoggerController>().GETGPSLoggerModel();
             //Needs function to wait until gps signal is available
-            model.setQueryData(gpsLoggerModel.getStringGPSCoordinates());
+           // model.setQueryData(gpsLoggerModel.getStringGPSCoordinates());
+
+            QueryMenuController IqueryMenuView = transform.GetComponent<QueryMenuController>();
+            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(gpsLoggerModel.getLatitude(),gpsLoggerModel.getLongitude());
+            poiCoordinatesObject.setName("My Location");
+            IqueryMenuView.addQuery(poiCoordinatesObject);
         }
 
         private void HandleSpatialSelect(object sender, SpatialEventArgs e)

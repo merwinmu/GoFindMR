@@ -1,5 +1,6 @@
 using System;
 using Assets.HoloLens.Scripts.Model;
+using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
 using UnityEngine.UI;
@@ -79,9 +80,13 @@ namespace Assets.HoloLens.Scripts.Controller
             
             IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
             model.ChangeVisibility(false);
-            mainMenuModel.setQueryData(model.LowerBound +" "+ model.UpperBound);
-            mainMenuModel.ChangeVisibility(true);
+            //mainMenuModel.setQueryData(model.LowerBound +" "+ model.UpperBound);
             
+            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(model.LowerBound,model.UpperBound);
+            poiCoordinatesObject.setName("From "+model.LowerBound +" to "+model.UpperBound);
+            mainMenuModel.ChangeVisibility(true);
+            IQueryMenuController iqQueryMenuController = GetComponent<QueryMenuController>();
+            iqQueryMenuController.addQuery(poiCoordinatesObject);
             //Debug.Log("Temporal input: "+model.LowerBound+" "+model.UpperBound);
         }
 
