@@ -124,6 +124,10 @@ namespace Assets.HoloLens.Scripts.Controller
             mainMenuModel.ChangeVisibility(true);
             IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
             mapModel.ChangeVisibility(false);
+            
+            IQueryMenuController IqueryMenuController = transform.GetComponent<QueryMenuController>();
+            Vector3 pos = IqueryMenuController.getview().getInitQueryMenuPosition();
+            IqueryMenuController.getview().setQueryMenuRadialPosition(pos, true);
         }
         
         //DEBUG

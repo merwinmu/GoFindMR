@@ -9,6 +9,7 @@ namespace Assets.HoloLens.Scripts.Controller
     public interface IQueryMenuController
     {
         void addQuery(POICoordinatesObject poiCoordinatesObject);
+        IQueryMenuView getview();
     }
        public class QueryMenuController: MonoBehaviour, IQueryMenuController
     {
@@ -41,6 +42,11 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             view.setVisibility(true);
             view.createSelection(poiCoordinatesObject);
+        }
+
+        public IQueryMenuView getview()
+        {
+            return view;
         }
 
         private void SearchQuery(object sender, QueryCompleteEventArgs e)

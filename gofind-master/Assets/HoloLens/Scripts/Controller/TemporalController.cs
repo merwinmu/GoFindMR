@@ -59,6 +59,10 @@ namespace Assets.HoloLens.Scripts.Controller
             IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
             model.ChangeVisibility(false);
             mainMenuModel.ChangeVisibility(true);
+            
+            IQueryMenuController IqueryMenuController = transform.GetComponent<QueryMenuController>();
+            Vector3 pos = IqueryMenuController.getview().getInitQueryMenuPosition();
+            IqueryMenuController.getview().setQueryMenuRadialPosition(pos, true);
         }
 
         //Handling views
@@ -88,6 +92,8 @@ namespace Assets.HoloLens.Scripts.Controller
             IQueryMenuController iqQueryMenuController = GetComponent<QueryMenuController>();
             iqQueryMenuController.addQuery(poiCoordinatesObject);
             //Debug.Log("Temporal input: "+model.LowerBound+" "+model.UpperBound);
+            Vector3 pos = iqQueryMenuController.getview().getInitQueryMenuPosition();
+            iqQueryMenuController.getview().setQueryMenuRadialPosition(pos, true);
         }
 
         public ITemporalModel GETItTemporalModel()

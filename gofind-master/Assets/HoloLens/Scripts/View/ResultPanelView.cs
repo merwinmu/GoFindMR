@@ -380,6 +380,11 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0].color = new Color(1,1,1,value);
         MaterialChanged(ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0],WorkflowMode.Metallic);
     }
+
+    public void showMap()
+    {
+        
+    }
     
     private enum WorkflowMode
     {

@@ -99,6 +99,10 @@ namespace Assets.HoloLens.Scripts.Controller
             IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
             model.ChangeVisibility(false);
             mapModel.ChangeVisibility(true);
+
+            IQueryMenuController IqueryMenuController = transform.GetComponent<QueryMenuController>();
+            IqueryMenuController.getview().setQueryMenuRadialPosition(new Vector3(0.1f,0,0), false);
+            IqueryMenuController.getview().setQueryMenuPosition(new Vector3(0,0,1f));
         }
 
         private void HandleCameraSelect(object sender, CameraEventArgs e)

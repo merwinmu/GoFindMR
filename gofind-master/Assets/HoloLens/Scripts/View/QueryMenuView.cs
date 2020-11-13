@@ -5,6 +5,7 @@ using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using UnityEngine;
 
 
@@ -25,6 +26,10 @@ public interface IQueryMenuView
 
     void createSelection(POICoordinatesObject poiCoordinatesObject);
     void setVisibility(bool flag);
+    void setQueryMenuRadialPosition(Vector3 pos, bool flag);
+    void setQueryMenuPosition(Vector3 pos);
+
+    Vector3 getInitQueryMenuPosition();
 };
 public class QueryMenuView : MonoBehaviour, IQueryMenuView
 {
@@ -36,6 +41,8 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
     private GameObject querymenu;
     private GameObject scrollObeObjectCollectionGameObject;
     private ScrollingObjectCollection scrollingObjectCollection;
+    private Vector3 queryMenuPosition;
+    private RadialView initRadialView;
    
     private Dictionary<int, GameObject> queryList;
     
@@ -44,9 +51,12 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
     {
         querymenu = transform.gameObject; ;
         transform.gameObject.SetActive(false);
+        queryMenuPosition = GetComponent<SolverHandler>().AdditionalOffset;
+        initRadialView = GetComponent<RadialView>();
         queryList = new Dictionary<int, GameObject>();
         scrollObeObjectCollectionGameObject = querymenu.transform.GetChild(1).gameObject;
         scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
+        
     }
     public void createSelection(POICoordinatesObject poiCoordinatesObject)
     {
@@ -92,8 +102,28 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         //     }
         // }
     }
-   
 
+
+    public void setQueryMenuRadialPosition(Vector3 pos, bool flag)
+    {
+        GetComponent<SolverHandler>().AdditionalOffset = pos;
+        GetComponent<RadialView>().enabled = flag;
+    }
+
+    public void setQueryMenuPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
+    public Vector3 getInitQueryMenuPosition()
+    {
+        GetComponent<RadialView>().MaxDistance = initRadialView.MaxDistance;
+        GetComponent<RadialView>().MinDistance = initRadialView.MinDistance;
+        GetComponent<RadialView>().MaxViewDegrees = initRadialView.MaxViewDegrees;
+        GetComponent<RadialView>().MinViewDegrees = initRadialView.MinViewDegrees;
+
+        return queryMenuPosition;
+    }
     public void setVisibility(bool flag)
     {
         querymenu.SetActive(flag);
