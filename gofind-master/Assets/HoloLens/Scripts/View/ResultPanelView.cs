@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
@@ -10,6 +11,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 /*
  * Views are primarly used for Input and Output. It is primarly a Monobehaviour class with the associate functions 
@@ -46,6 +48,9 @@ public interface IResultPanelView
 {
     event EventHandler<ResultBackEventArgs> OnBackButton;
     event EventHandler<SelectResultPictureDataArgs> OnSelectPicture;
+    event EventHandler<GPSDataReceivedEventArgs> OnShowOnMap; 
+    
+    event EventHandler<CancelEventArgs> OnMapHide; 
     void Visibility(bool flag);
 
     void setTextures(List<PictureData> pictureDatasList);
@@ -55,6 +60,9 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 {
     public event EventHandler<ResultBackEventArgs> OnBackButton = (sender, e) => { };
     public event EventHandler<SelectResultPictureDataArgs> OnSelectPicture = (sender, e) => { };
+    public event EventHandler<GPSDataReceivedEventArgs> OnShowOnMap = (sender, e) => { };
+    public event EventHandler<CancelEventArgs> OnMapHide = (sender, e) => { };
+
     public Texture2D texture;
     private GameObject backButtonObject;
     private Interactable backInteractable;
@@ -81,6 +89,9 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
        // result1 = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
        // result2 = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
 
+       HandMenu = transform.GetChild(2).gameObject;
+       HandMenuMap = transform.GetChild(3).gameObject;
+       HandMenuMap.SetActive(false);
         backButtonObject = transform.GetChild(0).GetChild(2).GetChild(3).gameObject;
         backInteractable = backButtonObject.GetComponent<Interactable>();
         BackButton_AddOnClick(backInteractable);
@@ -97,6 +108,11 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     {
         var eventArgs = new ResultBackEventArgs();
         OnBackButton(this, eventArgs);
+    }
+
+    private void OnARButtonLogic()
+    {
+        
     }
     
     
@@ -211,6 +227,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             {
                // ObjectList[listcount].GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
+                picturePointerDatasList[listcount].getGameObject().AddComponent<PictureAttribute>();
+                picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().setlatlon(VARIABLE.getLat(), VARIABLE.getLon());
                 listcount++;
             }
 
@@ -220,7 +238,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                 VARIABLE.getGameObject().gameObject.transform.parent =
                     transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).transform;
                 
-                VARIABLE.getGameObject().AddComponent<PictureAttribute>();
+                //VARIABLE.getGameObject().AddComponent<PictureAttribute>();
                 VARIABLE.getGameObject().GetComponent<PictureAttribute>().ID = VARIABLE.getID();
                 VARIABLE.getGameObject().GetComponent<PictureAttribute>().PointerData = VARIABLE;
                 
@@ -247,9 +265,13 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     
     
     private GameObject ShowObject;
+    private PictureData showPictureData;
     public void SearchIDProvider(GameObject gameObject, List<PicturePointerData> list)
     {
         PicturePointerData result = list.Find(x => x.getGameObject() == gameObject);
+        
+        PictureAttribute attribute = result.getGameObject().GetComponent<PictureAttribute>();
+        Debug.Log(attribute.latitude + " "+ attribute.longitude);
         Debug.Log(result.getID() +" ID ");
         
         var eventArgs = new SelectResultPictureDataArgs(result);
@@ -281,12 +303,15 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         setCollectionVisibility(false);   
         
         initPictureObject();
-        initHandMenuPictureObject();
+        initHandMenuPictureObject(attribute);
 
         HandMenuSuperImoseInit();
         PictureMenuSuperImoseInit();
     }
 
+    private GameObject HandMenu;
+    private GameObject HandMenuMap;
+    
     private GameObject close_button;
     private GameObject anchor_button;
     //private GameObject superimose_button;
@@ -297,7 +322,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     
     public void initPictureObject()
     {
-         close_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(0).gameObject;
+        close_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(0).gameObject;
          anchor_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(1).gameObject;
          //superimose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(2).gameObject;
         
@@ -312,25 +337,25 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     
     private GameObject HandMenuclose_button;
     private GameObject HandMenuanchor_button;
-    //private GameObject superimose_button;
+    private GameObject showOnMapButton;
 
     private Interactable HandMenucloseInteractable;
     private Interactable HandMenuanchorInteractable;
-    //private Interactable superimoseInteractable;
+    private Interactable showOnMapInteractable;
     
-    public void initHandMenuPictureObject()
+    public void initHandMenuPictureObject(PictureAttribute attribute)
     {
         HandMenuclose_button = transform.GetChild(2).GetChild(0).GetChild(1).GetChild(0).gameObject;
         HandMenuanchor_button = transform.GetChild(2).GetChild(0).GetChild(1).GetChild(1).gameObject;
-        //superimose_button = ShowPictureObject.transform.GetChild(0).GetChild(1).GetChild(2).gameObject;
+        showOnMapButton = transform.GetChild(2).GetChild(0).GetChild(1).GetChild(2).gameObject;
         
         HandMenucloseInteractable = HandMenuclose_button.GetComponent<Interactable>();
         HandMenuanchorInteractable = HandMenuanchor_button.GetComponent<Interactable>();
-        //superimoseInteractable = superimose_button.GetComponent<Interactable>();
+        showOnMapInteractable = showOnMapButton.GetComponent<Interactable>();
         
         HandMenucloseInteractable.OnClick.AddListener(PictureMenuCloseButton);
         HandMenuanchorInteractable.OnClick.AddListener(PictureMenuAnchor);
-        //superimoseInteractable.OnClick.AddListener(PictureMenuSuperImose);
+        showOnMapInteractable.OnClick.AddListener(()=>ShowOnMap(attribute));
     }
     
     public void PictureMenuCloseButton()
@@ -352,6 +377,34 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         }
     }
 
+    public void ShowOnMap(PictureAttribute attribute)
+    {
+        setCollectionVisibility(false);
+        ShowPictureObject.SetActive(false);
+        
+        var EventArgs = new GPSDataReceivedEventArgs(attribute.latitude,attribute.longitude,0);
+        OnShowOnMap(this, EventArgs);
+        HandMenu.SetActive(false);
+        HandMenuMap.SetActive(true);
+        MapMenuInit();
+        Debug.Log("Clicked ShowOnmap");
+    }
+
+    private GameObject MapCloseButton;
+    public void MapMenuInit()
+    { 
+        MapCloseButton = HandMenuMap.transform.GetChild(0).GetChild(1).GetChild(0).gameObject;
+        MapCloseButton.GetComponent<Interactable>().OnClick.AddListener(()=>HideMap());
+    }
+
+    public void HideMap()
+    {
+        var EventArgs = new CancelEventArgs();
+        OnMapHide(this, EventArgs);
+        ShowPictureObject.SetActive(true);
+        HandMenuMap.SetActive(false);
+        
+    }
     public void PictureMenuSuperImoseInit()
     {
         GameObject slider = ShowPictureObject.transform.GetChild(1).gameObject;
@@ -381,10 +434,6 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         MaterialChanged(ShowPictureObject.transform.GetChild(2).gameObject.GetComponent<Renderer>().sharedMaterials[0],WorkflowMode.Metallic);
     }
 
-    public void showMap()
-    {
-        
-    }
     
     private enum WorkflowMode
     {

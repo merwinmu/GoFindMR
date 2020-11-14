@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 
@@ -35,6 +36,8 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         // Listen to input from the view
          view.OnBackButton += HandleBack;
          view.OnSelectPicture += HandlePictureSelect;
+         view.OnShowOnMap += ShowMap;
+         view.OnMapHide += HideMap;
         //view.OnGeneratePin += HandleGeneratePin;
        
         // Listen to changes in the model
@@ -43,6 +46,22 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         model.OnUpdatePictures += HandleUpdatePicture;
         //model.OnMapPinGenerate += GenerateMapPins;
     }
+
+    private void HideMap(object sender, CancelEventArgs e)
+    {
+        IMapController mapController = GetComponent<MapController>();
+        mapController.GETMapView().setGameObjectVisibility(false);
+        mapController.GETMapView().DisableRadial();
+    }
+
+    private void ShowMap(object sender, GPSDataReceivedEventArgs e)
+    {
+        IMapController mapController = GetComponent<MapController>();
+        mapController.GETMapView().setGameObjectVisibility(true);
+        mapController.GETMapView().EnableRadial();
+        mapController.GETMapView().ZoomIntoPoint(e.latitude,e.longitude);
+    }
+    
 
     private void HandlePictureSelect(object sender, SelectResultPictureDataArgs e)
     {

@@ -37,6 +37,12 @@ namespace Assets.HoloLens.Scripts.View
         void RenderGenerateMapPins();
         void ZoomMap(float data);
         void setCurrentPositionPin(double latitude, double longitude, float heading);
+
+        void ZoomIntoPoint(double lat, double lon);
+        void EnableRadial();
+
+        void DisableRadial();
+
     }
     public class MapView : MonoBehaviour, IMapView
     {
@@ -58,6 +64,7 @@ namespace Assets.HoloLens.Scripts.View
         [SerializeField]
         private MapPin currentMapPin;
 
+        private GameObject Map;
         private MapRenderer renderer;
         private Camera camera;
         private MapInteractionController mapInteractionController;
@@ -65,7 +72,8 @@ namespace Assets.HoloLens.Scripts.View
         private void Start()
         {
             camera = Camera.main;
-            transform.gameObject.SetActive(false);
+            Map = transform.gameObject;
+            Map.SetActive(false);
             
             CurrentPositionInit();
             renderer = GetComponent<MapRenderer>();
@@ -94,6 +102,24 @@ namespace Assets.HoloLens.Scripts.View
             currentMapPin.Location =  new LatLon(latitude,longitude);
         }
 
+        public void ZoomIntoPoint(double lat, double lon)
+        {
+            var mapScene = new MapSceneOfLocationAndZoomLevel(new LatLon(lat,lon),  19f);
+            renderer.SetMapScene(mapScene);
+        }
+
+        public void EnableRadial()
+        {
+            Map.GetComponent<RadialView>().enabled = true;
+            Map.GetComponent<SolverHandler>().enabled = true;
+        }
+
+        public void DisableRadial()
+        {
+            Map.GetComponent<RadialView>().enabled = false;
+            Map.GetComponent<SolverHandler>().enabled = false;
+        }
+
         public void setGameObjectVisibility(bool flag)
         {
             transform.gameObject.SetActive(flag);
@@ -109,7 +135,6 @@ namespace Assets.HoloLens.Scripts.View
         {
             renderer = GetComponent<MapRenderer>();
             renderer.ZoomLevel = zoomdata * 20f;
-
         }
 
         //Output action triggered by the Controller
