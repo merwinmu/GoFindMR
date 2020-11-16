@@ -4,10 +4,18 @@ namespace Assets.HoloLens.Scripts.Properties
     {
         private double lat;
         private double lon;
+        private float head;
         public Coordinates(double lat, double lon)
         {
             this.lat = lat;
             this.lon = lon;
+        }
+
+        public Coordinates(double lat, double lon, float head)
+        {
+            this.lat = lat;
+            this.lon = lon;
+            this.head = head;
         }
 
         public double getLat()
@@ -17,6 +25,10 @@ namespace Assets.HoloLens.Scripts.Properties
         public double getLon()
         {
             return this.lon;
+        }
+        public float gethead()
+        {
+            return this.head;
         }
 
         public override string ToString()

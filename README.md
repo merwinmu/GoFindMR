@@ -33,3 +33,13 @@ Desktop development with C++
 14) Enter PIN in Studio, PIN can be found hololens -> Settings -> Updates -> Developer -> Pair
 
 15) Application will launch automatically Hololens
+
+Cineast documentation:
+
+Implement Cineast:
+1) Add manifest.json with "https://github.com/vitrivr/UnityInterface.git#all-dev",
+DoCineastRequest in Controller.cs creates a query object using the QueryBuilder from the CineastApi.
+This query objects gets executed in the CineastWrapper which actually retrieves segments.
+Segments contain all information on a specific media. 
+The resultsegment can help to retrieve the final result data by using the ObjectRegistry.
+With the help of ObjectRegistry we can map the final data to a multimedia object.

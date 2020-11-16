@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using Assets.HoloLens.Scripts.Properties;
 using TMPro;
 using UnityEngine;
 #if WINDOWS_UWP
@@ -56,10 +56,13 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     private static ushort ANDROID_ID = 24;
     
     private TextMeshPro BLT_Text;
+    
 
     public double currentLatitude = 0;
     public double currentLongitude = 0;
-    public double currentheading = 0;
+    public float currentheading = 0;
+    private List<Coordinates> currentCoordinates;
+    private int currentCoordinatesSize;
     public event EventHandler<GPSDataReceivedEventArgs> OnReceived = (sender, e) => { };
     
     
@@ -69,6 +72,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     private void Awake()
     {
         BLT_Text =  GetComponent<TextMeshPro>(); 
+        currentCoordinates = new List<Coordinates>();
 
 #if WINDOWS_UWP
         watcher = new BluetoothLEAdvertisementWatcher(); //Instating BLE Driver
@@ -97,9 +101,9 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
                 currentLatitude = BitConverter.ToDouble(data, 0);
                 currentLongitude = BitConverter.ToDouble(data,8);
                 currentheading = BitConverter.ToSingle(data,16);
-                var eventArgs = new GPSDataReceivedEventArgs(BitConverter.ToDouble(data, 0),BitConverter.ToDouble(data,8),BitConverter.ToSingle(data,16));
+                //var eventArgs = new GPSDataReceivedEventArgs(BitConverter.ToDouble(data, 0),BitConverter.ToDouble(data,8),BitConverter.ToSingle(data,16));
                 //Debug.Log(BitConverter.ToDouble(data, 0));
-                OnReceived(this, eventArgs);
+                currentCoordinates.Add(new Coordinates(currentLatitude,currentLongitude,currentheading));
     }
 #endif
 
@@ -111,6 +115,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     private string Latitide_text;
     private string Longitude_text;
     private string heading_text;
+    
     public void setGPSTextMesh(double latitude, double longitude, float heading)
     {
         Latitide_text = latitude.ToString();
@@ -124,6 +129,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     
     // Start is called before the first frame update
 
+    
     
     //INPUT
     // Update is called once per frame
@@ -142,6 +148,21 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
             //Debug
             var eventArgs = new GPSDataReceivedEventArgs(currentLatitude,currentLongitude,12.5f);
             OnReceived(this, eventArgs);
+        }
+
+        if (currentCoordinates.Count != 0)
+        {
+            this.currentLatitude = this.currentCoordinates[currentCoordinates.Count-1].getLat();
+            this.currentLongitude = this.currentCoordinates[currentCoordinates.Count-1].getLon();
+            this.currentheading = this.currentCoordinates[currentCoordinates.Count-1].gethead();
+
+            var eventArgs = new GPSDataReceivedEventArgs(this.currentLatitude,this.currentLongitude,this.currentheading);
+            OnReceived(this, eventArgs);
+            if (currentCoordinates.Count > 2)
+            {
+                currentCoordinates.RemoveAt(0);
+            }
+
         }
     }
 }
