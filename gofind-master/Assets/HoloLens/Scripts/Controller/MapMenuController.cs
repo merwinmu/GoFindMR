@@ -66,7 +66,9 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void HandleCancelJourney(object sender, BackOneEventArgs e)
         {
-            throw new System.NotImplementedException();
+            view.MenuVisibility(false);
+            IResultPanelView resultPanelView = GetComponent<ResultPanelController>().GETResultPanelView();
+            resultPanelView.setAllResultMenuVisibility(true);
         }
 
         private void HandleJourneyStart(object sender, BackOneEventArgs e)

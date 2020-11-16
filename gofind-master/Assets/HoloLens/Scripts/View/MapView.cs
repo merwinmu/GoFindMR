@@ -86,7 +86,7 @@ namespace Assets.HoloLens.Scripts.View
             var mapPin = Instantiate(_mapPinPrefab);
             mapPin.Location = data.LatLon;
             _mapPinLayer.MapPins.Add(mapPin);
-            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(data.LatitudeInDegrees,data.LongitudeInDegrees);
+            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(data.LatitudeInDegrees,data.LongitudeInDegrees,null);
             poiCoordinatesObject.setName(data.LatLon.LatitudeInDegrees.ToString()+" "+data.LongitudeInDegrees);
             var EventArgs = new POIEventArgs(poiCoordinatesObject);
             OnPOI(this, EventArgs);

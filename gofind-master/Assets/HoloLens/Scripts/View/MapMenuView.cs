@@ -118,17 +118,24 @@ namespace Assets.HoloLens.Scripts.View
 
         private GameObject query0_button;
         private Interactable query0_interactable;
-        
+
         private GameObject journeyButton;
         private Interactable journeyInteractable;
+
+        private GameObject mapMenuButtons;
+        
+        private GameObject stopARMenuButton;
+        private Interactable stopARMenuButtonInteractable;
         
         private GameObject scrollObeObjectCollectionGameObject;
         private ScrollingObjectCollection scrollingObjectCollection;
 
         private GameObject slider;
         private GameObject POIQuery;
-
+        private GameObject mapMenu;
         private GameObject cancelButton;
+        private GameObject mainMenuButtons;
+        
         private Interactable cancelInteractable;
         private GameObject miniMap;
         public MapRenderer MiniMapRenderer;
@@ -162,6 +169,12 @@ namespace Assets.HoloLens.Scripts.View
             cancelInteractable = cancelButton.GetComponent<Interactable>();
             cancel_AddOnClick(cancelInteractable);
 
+            stopARMenuButton = transform.GetChild(10).gameObject;
+            stopARMenuButtonInteractable = stopARMenuButton.GetComponent<Interactable>();
+            stopAR_AddOnclick(stopARMenuButtonInteractable);
+            
+            
+
             scrollObeObjectCollectionGameObject = transform.GetChild(4).GetChild(1).gameObject;
             scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
             
@@ -171,10 +184,19 @@ namespace Assets.HoloLens.Scripts.View
             MiniMapRenderer = miniMap.GetComponent<MapRenderer>();
             miniMap.SetActive(false);
             BigMapRenderer = transform.parent.GetChild(5).GetComponent<MapRenderer>();
-
+            mapMenu = transform.gameObject;
+            mainMenuButtons = transform.GetChild(2).gameObject;
+            
             
             ZoomSliderInit();
         }
+
+        private void stopAR_AddOnclick(Interactable interactable)
+        {
+            interactable.OnClick.AddListener(() => stopSpatialExploration());
+        }
+        
+
 
         private void cancel_AddOnClick(Interactable interactable)
         {
@@ -309,6 +331,7 @@ namespace Assets.HoloLens.Scripts.View
 
         private void OnBackButtonLogic()
         {
+            
             var eventArgs = new BackOneEventArgs();
             OnOneBack(this, eventArgs);
         }
@@ -316,6 +339,8 @@ namespace Assets.HoloLens.Scripts.View
         public void MenuVisibility(bool flag)
         {
             transform.gameObject.SetActive(flag);
+            stopARMenuButton.SetActive(false);
+            mainMenuButtons.SetActive(true);
         }
         
         public void ZoomSliderInit()
@@ -331,16 +356,19 @@ namespace Assets.HoloLens.Scripts.View
         
         public async void RenderGameObject(POICoordinatesObject poiCoordinatesObject)
         {
-            GameObject ShowPicture = transform.GetChild(9).gameObject;
+            GameObject ShowPicture = poiCoordinatesObject.GETGameObject();
             ShowPicture = Instantiate(ShowPicture);
+            ShowPicture.transform.localScale= new Vector3(-0.3f,-0.15f,0.004f);
+            ShowPicture.transform.rotation = Camera.main.transform.rotation;
+            ShowPicture.transform.parent = transform;
             ShowPicture.transform.position = transform.GetChild(9).position;
             ShowPicture.SetActive(true);
             //GameObject ShowPictureOption = (GameObject)Resources.Load("Prefab/ShowResult",typeof(GameObject)) ;
             //ShowPictureOption = Instantiate(ShowPictureOption);
-            Texture texture =  await ResultPanelView.GetRemoteTexture(poiCoordinatesObject.getURL());
+            //Texture texture =  await ResultPanelView.GetRemoteTexture(poiCoordinatesObject.getURL());
 
-            ShowPicture.GetComponent<Renderer>().sharedMaterial.mainTexture = texture;
-            ShowPicture.transform.SetParent(transform);
+            //ShowPicture.GetComponent<Renderer>().sharedMaterial.mainTexture = texture;
+            //ShowPicture.transform.SetParent(transform);
           
             SpawnedObjects.Add(poiCoordinatesObject,ShowPicture);
         }
@@ -353,12 +381,11 @@ namespace Assets.HoloLens.Scripts.View
             {
                 if (VARIABLE.gameObject == gameObject)
                 {
-                    Destroy(VARIABLE);
+                    Destroy(VARIABLE.gameObject);
                     break;
                 }
             }
-            
-            SpawnedObjects.Remove(poiCoordinatesObject);
+            Debug.Log("Deleted Object");
         }
 
         public Dictionary<int, POICoordinatesObject> PoiCoordinatesObjects;
@@ -402,7 +429,37 @@ namespace Assets.HoloLens.Scripts.View
         public void SpatialExploration()
         {
             this.journeyStart = true;
-            Debug.Log("Jorney Started");
+            mapMenu.SetActive(true);
+            miniMap.SetActive(true);
+            CurrentPositionInit();
+            mainMenuButtons.SetActive(false);
+            slider.SetActive(false);
+            stopARMenuButton.SetActive(true);
+            Debug.Log(PoiCoordinatesObjects.Count);
+            Debug.Log("Journey Started");
+        }
+
+        public void stopSpatialExploration()
+        {
+            
+            this.journeyStart = false;
+            miniMap.SetActive(false);
+            flushPOIList();
+            var EventArgs = new BackOneEventArgs();
+            OnCancelJourney(this, EventArgs);
+        }
+
+        public void flushPOIList()
+        {
+            if (SpawnedObjects.Count != 0)
+            {
+                foreach (var VARIABLE in SpawnedObjects)
+                {
+                    RemoveGameObject(VARIABLE.Key);
+                }
+            }
+            
+            //PoiCoordinatesObjects.Clear();
         }
         
         

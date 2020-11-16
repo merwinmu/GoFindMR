@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Assets.HoloLens.Scripts.Model;
+using Assets.HoloLens.Scripts.Properties;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -48,11 +50,12 @@ public interface IResultPanelView
 {
     event EventHandler<ResultBackEventArgs> OnBackButton;
     event EventHandler<SelectResultPictureDataArgs> OnSelectPicture;
-    event EventHandler<GPSDataReceivedEventArgs> OnShowOnMap; 
-    
-    event EventHandler<CancelEventArgs> OnMapHide; 
+    event EventHandler<GPSDataReceivedEventArgs> OnShowOnMap;
+    event EventHandler<CancelEventArgs> OnMapHide;
+    event EventHandler<GetPOILocationListEventArgs> OnARClick;
     void Visibility(bool flag);
 
+    void setAllResultMenuVisibility(bool flag);
     void setTextures(List<PictureData> pictureDatasList);
 
 }
@@ -62,13 +65,18 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public event EventHandler<SelectResultPictureDataArgs> OnSelectPicture = (sender, e) => { };
     public event EventHandler<GPSDataReceivedEventArgs> OnShowOnMap = (sender, e) => { };
     public event EventHandler<CancelEventArgs> OnMapHide = (sender, e) => { };
+    public event EventHandler<GetPOILocationListEventArgs> OnARClick = (sender, e) => { };
 
     public Texture2D texture;
     private GameObject backButtonObject;
     private Interactable backInteractable;
+    private GameObject ExploreButton;
+    private Interactable ExploreInteractable;
 
     public GameObject resultObject;
     private List<PictureData> textureDatas;
+    public Dictionary<int, POICoordinatesObject> PoiCoordinatesObjects;
+
 
     private Texture panelTexture;
 
@@ -92,10 +100,21 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
        HandMenu = transform.GetChild(2).gameObject;
        HandMenuMap = transform.GetChild(3).gameObject;
        HandMenuMap.SetActive(false);
-        backButtonObject = transform.GetChild(0).GetChild(2).GetChild(3).gameObject;
+        backButtonObject = transform.GetChild(0).GetChild(2).GetChild(1).gameObject;
         backInteractable = backButtonObject.GetComponent<Interactable>();
         BackButton_AddOnClick(backInteractable);
+
+        ExploreButton = transform.GetChild(0).GetChild(2).GetChild(0).gameObject;
+        ExploreInteractable = ExploreButton.GetComponent<Interactable>();
+        ExploreButton_AddOnClick(ExploreInteractable);
+        
         transform.gameObject.SetActive(false);
+        PoiCoordinatesObjects = new Dictionary<int, POICoordinatesObject>();
+    }
+
+    private void ExploreButton_AddOnClick(Interactable exploreInteractable)
+    {
+       exploreInteractable.OnClick.AddListener((() => OnARButtonLogic()));
     }
 
     //Input action from the user
@@ -112,6 +131,10 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     private void OnARButtonLogic()
     {
+        setCollectionVisibility(false);
+        var EventArgs = new GetPOILocationListEventArgs();
+        EventArgs.poiLocations = PoiCoordinatesObjects;
+        OnARClick(this, EventArgs);
         
     }
     
@@ -241,6 +264,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                 //VARIABLE.getGameObject().AddComponent<PictureAttribute>();
                 VARIABLE.getGameObject().GetComponent<PictureAttribute>().ID = VARIABLE.getID();
                 VARIABLE.getGameObject().GetComponent<PictureAttribute>().PointerData = VARIABLE;
+                AddToPOI(VARIABLE.getGameObject().GetComponent<PictureAttribute>().latitude,VARIABLE.getGameObject().GetComponent<PictureAttribute>().longitude, VARIABLE.getID(),VARIABLE.getGameObject());
                 
                 var touchable = VARIABLE.getGameObject().AddComponent<NearInteractionTouchableVolume>();
                 touchable.EventsToReceive = TouchableEventType.Pointer;
@@ -253,6 +277,15 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     }
 
+
+    private int key;
+    public void AddToPOI(double lat, double lon , int id, GameObject gameObject)
+    {
+        POICoordinatesObject POI = new POICoordinatesObject(lat,lon,gameObject);
+        PoiCoordinatesObjects.Add(key,POI);
+        key++;
+    }
+
     public void HandlePictureCLick()
     {
        
@@ -261,6 +294,15 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public void Visibility(bool flag)
     {
         transform.gameObject.SetActive(flag);
+    }
+
+    public void setAllResultMenuVisibility(bool flag)
+    {
+        transform.gameObject.SetActive(flag);
+        transform.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+        transform.gameObject.transform.GetChild(1).gameObject.SetActive(true);
+        transform.gameObject.transform.GetChild(2).gameObject.SetActive(true);
+
     }
     
     

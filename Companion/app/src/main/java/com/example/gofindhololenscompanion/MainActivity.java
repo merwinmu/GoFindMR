@@ -236,6 +236,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         for(int i = 16, j = 3; i < 20; i++, j--) payload[i] = hed[j];
 
 
+        Log.d("GPS", "ADV Latitude: "+ LATITUDE + " ADV Longitude: "+LONGITUDE);
+
         AdvertiseData data = new AdvertiseData.Builder()
                 .addManufacturerData(CUSTOM_ID,payload)
                 .build();

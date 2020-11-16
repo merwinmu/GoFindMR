@@ -57,8 +57,9 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     
     private TextMeshPro BLT_Text;
 
-    public double currentLatitude = 47.559601;
-    public double currentLongitude = 7.588576;
+    public double currentLatitude = 0;
+    public double currentLongitude = 0;
+    public double currentheading = 0;
     public event EventHandler<GPSDataReceivedEventArgs> OnReceived = (sender, e) => { };
     
     
@@ -93,6 +94,9 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
         byte[] data = args.Advertisement.ManufacturerData[0].Data.ToArray();
         
  // Dispatch the 'OnReceived' event
+                currentLatitude = BitConverter.ToDouble(data, 0);
+                currentLongitude = BitConverter.ToDouble(data,8);
+                currentheading = BitConverter.ToSingle(data,16);
                 var eventArgs = new GPSDataReceivedEventArgs(BitConverter.ToDouble(data, 0),BitConverter.ToDouble(data,8),BitConverter.ToSingle(data,16));
                 //Debug.Log(BitConverter.ToDouble(data, 0));
                 OnReceived(this, eventArgs);

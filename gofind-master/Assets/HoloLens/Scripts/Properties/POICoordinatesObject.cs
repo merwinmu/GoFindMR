@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -23,10 +24,12 @@ namespace Assets.HoloLens.Scripts.Properties
             this.url = url;
         }
 
-        public POICoordinatesObject(double latitude, double longitude)
+        public POICoordinatesObject(double latitude, double longitude, GameObject gameObject)
         {
             this.latitude = latitude;
             this.longitude = longitude;
+            this.coordinates = new Coordinates(latitude,longitude);
+            this.gameObject = gameObject;
         }
 
         public POICoordinatesObject(string upperbound, string lowerbound)
@@ -37,6 +40,11 @@ namespace Assets.HoloLens.Scripts.Properties
         public Coordinates getCoordinates()
         {
             return this.coordinates;
+        }
+
+        public GameObject GETGameObject()
+        {
+            return this.gameObject;
         }
 
         public string getURL()

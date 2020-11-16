@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Assets.HoloLens.Scripts.Model;
+using Assets.HoloLens.Scripts.View;
 using UnityEngine;
 
 
@@ -15,6 +17,7 @@ namespace Assets.HoloLens.Scripts.Controller
 public interface IResultPanelController
 {
     IResultPanelModel GETResultPanelModel();
+    IResultPanelView GETResultPanelView();
 }
 public class ResultPanelController : MonoBehaviour, IResultPanelController
 {
@@ -26,7 +29,12 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
     {
         return model;
     }
-    
+
+    public IResultPanelView GETResultPanelView()
+    {
+        return view;
+    }
+
     //Initialize Model, view and Listeners
     void Start()
     {
@@ -38,6 +46,7 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
          view.OnSelectPicture += HandlePictureSelect;
          view.OnShowOnMap += ShowMap;
          view.OnMapHide += HideMap;
+         view.OnARClick += ARMode;
         //view.OnGeneratePin += HandleGeneratePin;
        
         // Listen to changes in the model
@@ -45,6 +54,13 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         model.OnResultVisibility += ResultStatusVisibility;
         model.OnUpdatePictures += HandleUpdatePicture;
         //model.OnMapPinGenerate += GenerateMapPins;
+    }
+
+    private void ARMode(object sender, GetPOILocationListEventArgs e)
+    {
+        IMapMenuView mapmenu = GetComponent<MapMenuController>().GETMapMenuView();
+        mapmenu.setPOIList(e.poiLocations);
+        mapmenu.SpatialExploration();
     }
 
     private void HideMap(object sender, CancelEventArgs e)

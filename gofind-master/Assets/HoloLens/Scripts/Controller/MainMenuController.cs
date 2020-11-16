@@ -85,7 +85,7 @@ namespace Assets.HoloLens.Scripts.Controller
            // model.setQueryData(gpsLoggerModel.getStringGPSCoordinates());
 
             QueryMenuController IqueryMenuView = transform.GetComponent<QueryMenuController>();
-            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(gpsLoggerModel.getLatitude(),gpsLoggerModel.getLongitude());
+            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(gpsLoggerModel.getLatitude(),gpsLoggerModel.getLongitude(),null);
             poiCoordinatesObject.setName("My Location");
             IqueryMenuView.addQuery(poiCoordinatesObject);
         }
