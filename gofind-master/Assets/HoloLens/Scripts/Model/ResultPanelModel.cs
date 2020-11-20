@@ -2,7 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
+
 using UnityEngine;
+
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models.Messages.Query;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Processing;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
 
 /*
 * Various EventArgs has been created so that if changes in the Model has been made, a callback can be
@@ -11,6 +20,8 @@ using UnityEngine;
 public class UpdatePicturesEventArgs : EventArgs
 {
     private List<PictureData> pictureDatas;
+   
+
     public UpdatePicturesEventArgs(List<PictureData> pictureDatas)
     {
         this.pictureDatas = pictureDatas;
@@ -106,7 +117,6 @@ public interface IResultPanelModel
 {
     // Dispatched when years changes
     event EventHandler<UpdatePicturesEventArgs> OnUpdatePictures;
-
     event EventHandler<ResultVisibilityEventArgs> OnResultVisibility;
 
     /*
@@ -115,7 +125,7 @@ public interface IResultPanelModel
                  */
     void ChangeResultVisibility(bool flag);
     void renderPicture();
-
+  
     void SetCurrentPicture(PicturePointerData pointerData);
 }
 
@@ -124,14 +134,22 @@ public class ResultPanelModel : IResultPanelModel
     public event EventHandler<UpdatePicturesEventArgs> OnUpdatePictures = (sender, e) => { };
     public event EventHandler<ResultVisibilityEventArgs> OnResultVisibility = (sender, e) => { };
     private bool showResult;
+    private CineastApi cineast;
 
     private List<PictureData> pictureDataList;
+    
+    private List<MultimediaObject> mmoList;      
+    private List<MultimediaObject> activeMmos;
+
+
 
     private PicturePointerData CurrentPicture;
 
 
     public void renderPicture()
     {
+        
+        
         pictureDataList = new List<PictureData>();
         
         pictureDataList.Add(new PictureData(0,"https://cdn.pixabay.com/photo/2016/10/18/21/22/california-1751455__340.jpg",21.42039,24.28500));

@@ -24,6 +24,8 @@ public interface IQueryMenuView
     event EventHandler<QueryRemoveEventArgs> OnRemove;
     event EventHandler<QueryRemoveEventArgs> OnRemoveOnMap;
 
+    event EventHandler<BackEventArgs> OnSearch;
+
     void createSelection(POICoordinatesObject poiCoordinatesObject);
     void setVisibility(bool flag);
     void setQueryMenuRadialPosition(Vector3 pos, bool flag);
@@ -36,13 +38,15 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
     public event EventHandler<QueryCompleteEventArgs> OnReceived= (sender, e) => { };
     public event EventHandler<QueryRemoveEventArgs> OnRemove= (sender, e) => { };
     public event EventHandler<QueryRemoveEventArgs> OnRemoveOnMap  = (sender, e) => { };
+    public event EventHandler<BackEventArgs> OnSearch  = (sender, e) => { };
 
-
+    
     private GameObject querymenu;
     private GameObject scrollObeObjectCollectionGameObject;
     private ScrollingObjectCollection scrollingObjectCollection;
     private Vector3 queryMenuPosition;
     private RadialView initRadialView;
+    private GameObject searchButton;
    
     private Dictionary<int, GameObject> queryList;
     
@@ -56,7 +60,14 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         queryList = new Dictionary<int, GameObject>();
         scrollObeObjectCollectionGameObject = querymenu.transform.GetChild(1).gameObject;
         scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
-        
+        searchButton = transform.GetChild(3).gameObject;
+        searchButton.GetComponent<Interactable>().OnClick.AddListener((() => searchClick()));
+    }
+
+    public void searchClick()
+    {
+        var EventArgs = new BackEventArgs();
+        OnSearch(this, EventArgs);
     }
     public void createSelection(POICoordinatesObject poiCoordinatesObject)
     {

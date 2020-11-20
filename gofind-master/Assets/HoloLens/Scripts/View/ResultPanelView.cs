@@ -98,6 +98,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
        // result2 = transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).GetChild(0).gameObject;
 
        HandMenu = transform.GetChild(2).gameObject;
+       HandMenu.SetActive(false);
        HandMenuMap = transform.GetChild(3).gameObject;
        HandMenuMap.SetActive(false);
         backButtonObject = transform.GetChild(0).GetChild(2).GetChild(1).gameObject;
@@ -398,6 +399,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         HandMenucloseInteractable.OnClick.AddListener(PictureMenuCloseButton);
         HandMenuanchorInteractable.OnClick.AddListener(PictureMenuAnchor);
         showOnMapInteractable.OnClick.AddListener(()=>ShowOnMap(attribute));
+        
+        HandMenu.SetActive(true);
     }
     
     public void PictureMenuCloseButton()
@@ -405,6 +408,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         Debug.Log("Clicked Close Button");
         Destroy(ShowPictureObject);
         setCollectionVisibility(true);
+        HandMenu.SetActive(false);
     }
 
     public void PictureMenuAnchor()
@@ -444,7 +448,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         var EventArgs = new CancelEventArgs();
         OnMapHide(this, EventArgs);
         ShowPictureObject.SetActive(true);
-        HandMenuMap.SetActive(false);
+        HandMenuMap.SetActive(true);
         
     }
     public void PictureMenuSuperImoseInit()

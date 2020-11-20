@@ -61,6 +61,11 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     public double currentLatitude = 0;
     public double currentLongitude = 0;
     public float currentheading = 0;
+
+    private double previousLatitude = 0;
+    private double previousLongitude = 0;
+    private float previousheading = 0;
+    
     private List<Coordinates> currentCoordinates;
     private int currentCoordinatesSize;
     public event EventHandler<GPSDataReceivedEventArgs> OnReceived = (sender, e) => { };
@@ -162,7 +167,6 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
             {
                 currentCoordinates.RemoveAt(0);
             }
-
         }
     }
 }
