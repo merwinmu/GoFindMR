@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
+using Assets.Scripts.Core;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
@@ -51,10 +52,10 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void SearchClicked(object sender, BackEventArgs e)
         {
-            
+            float maxDist = 1000;
             double lat = 47.559601;
             double lon = 7.588576;
-            
+            cineast.AddCineastFilter(new SpatialMaxDistanceFilter(maxDist * 10000, lat, lon));
             DoCineastRequest(lat,lon);
         }
 

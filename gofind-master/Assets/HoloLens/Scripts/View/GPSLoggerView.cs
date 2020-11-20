@@ -165,6 +165,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
             OnReceived(this, eventArgs);
             if (currentCoordinates.Count > 2)
             {
+                Debug.Log(currentCoordinates.ToString());
                 currentCoordinates.RemoveAt(0);
             }
         }
