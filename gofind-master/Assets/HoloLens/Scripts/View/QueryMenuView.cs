@@ -58,7 +58,7 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         queryMenuPosition = GetComponent<SolverHandler>().AdditionalOffset;
         initRadialView = GetComponent<RadialView>();
         queryList = new Dictionary<int, GameObject>();
-        scrollObeObjectCollectionGameObject = querymenu.transform.GetChild(1).gameObject;
+        scrollObeObjectCollectionGameObject = querymenu.transform.GetChild(2).gameObject;
         scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
         searchButton = transform.GetChild(3).gameObject;
         searchButton.GetComponent<Interactable>().OnClick.AddListener((() => searchClick()));
@@ -77,7 +77,7 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         POIButton.GetComponent<ButtonConfigHelper>().MainLabelText = poiCoordinatesObject.ToString();
         POIButton.GetComponent<ButtonAttribute>().setID_coordinates(ButtonID,poiCoordinatesObject);
         POIButton.GetComponent<Interactable>().OnClick.AddListener((() => OnQueryRemoveButtonLogic(POIButton)));
-        POIButton.gameObject.transform.parent = transform.GetChild(1).GetChild(0);
+        POIButton.gameObject.transform.parent = transform.GetChild(2).GetChild(0);
         queryList[ButtonID] = POIButton;
         ButtonID++;
         scrollingObjectCollection.UpdateCollection();
@@ -143,6 +143,9 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
     // Update is called once per frame
     void Update()
     {
-        
+        if (this.queryList.Count == 0)
+        {
+            setVisibility(false);
+        }
     }
 }
