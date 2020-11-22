@@ -13,8 +13,8 @@ namespace Assets.HoloLens.Scripts.Properties
         private Coordinates coordinates;
         private string url;
         private Texture texture;
-        private int upperbound;
-        private int lowerbound;
+        private float upperbound;
+        private float lowerbound;
 
         public POICoordinatesObject(double latitude, double longitude, string name, GameObject gameObject, string url)
         {
@@ -35,6 +35,12 @@ namespace Assets.HoloLens.Scripts.Properties
         public POICoordinatesObject(string upperbound, string lowerbound)
         {
             
+        }
+
+        public POICoordinatesObject(float ub, float lb)
+        {
+            upperbound = ub;
+            lowerbound = lb;
         }
 
         public Coordinates getCoordinates()

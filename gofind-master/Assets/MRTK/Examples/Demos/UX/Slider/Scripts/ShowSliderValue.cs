@@ -8,6 +8,8 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 
+
+
 namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 {
     [AddComponentMenu("Scripts/MRTK/Examples/ShowSliderValue")]

@@ -5,6 +5,7 @@
 
 using Microsoft.MixedReality.Toolkit.Input;
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace Microsoft.MixedReality.Toolkit.UI
@@ -14,12 +15,22 @@ namespace Microsoft.MixedReality.Toolkit.UI
     /// </summary>
     [HelpURL("https://microsoft.github.io/MixedRealityToolkit-Unity/Documentation/README_Sliders.html")]
     [AddComponentMenu("Scripts/MRTK/SDK/PinchSlider")]
+    
+    
     public class PinchSlider : MonoBehaviour, IMixedRealityPointerHandler, IMixedRealityFocusHandler
     {
         #region Serialized Fields and Properties
         [Tooltip("The gameObject that contains the slider thumb.")]
         [SerializeField]
         private GameObject thumbRoot = null;
+
+        public GameObject TitleObject;
+        public GameObject ObjectValue;
+        private float value;
+        
+        public event EventHandler<SliderEventData> SliderValueUpdated = (sender, e) => { };
+
+        
         public GameObject ThumbRoot
         {
             get
@@ -45,6 +56,8 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 sliderValue = value;
                 UpdateUI();
                 OnValueUpdated.Invoke(new SliderEventData(oldSliderValue, value, activePointer, this));
+                //transform.GetChild(3).gameObject.GetComponent<TextMeshPro>().SetText(SliderValue.ToString());
+                
             }
         }
 
@@ -238,6 +251,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 throw new Exception($"Slider thumb on gameObject {gameObject.name} is not specified. Did you forget to set it?");
             }
             InitializeSliderThumb();
+            
             OnValueUpdated.Invoke(new SliderEventData(sliderValue, sliderValue, null, this));
         }
 
@@ -391,6 +405,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 OnInteractionEnded.Invoke(new SliderEventData(sliderValue, sliderValue, activePointer, this));
             }
             activePointer = null;
+
         }
 
         #endregion
@@ -447,7 +462,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
 
                 
                 SliderValue = (Mathf.Clamp(startSliderValue + handDelta / SliderTrackDirection.magnitude, 0, 1)); //Check
-
                 // Mark the pointer data as used to prevent other behaviors from handling input events
                 eventData.Use();
             }

@@ -1,5 +1,6 @@
 using System;
 
+
 namespace Assets.HoloLens.Scripts.Model
 {
     /*
@@ -9,7 +10,12 @@ namespace Assets.HoloLens.Scripts.Model
     public class SearchYearChangedEventArgs : EventArgs
     {
     }
-    
+
+    public class SliderValueEventArgs : EventArgs
+    {
+        public float value;
+    }
+
     public class TemporalMenuChangedEventArgs : EventArgs
     {
         public bool flag { get; private set; }
@@ -19,6 +25,9 @@ namespace Assets.HoloLens.Scripts.Model
             this.flag = flag;
         }
     }
+    
+
+
     
     /*
 * Models are used to store information of different UI Menus.
@@ -40,17 +49,23 @@ namespace Assets.HoloLens.Scripts.Model
         // Search Text
         string UpperBound { get; set; }
         string LowerBound { get; set; }
+        
+        void setUpperBound(float value);
+        void setLowerBound(float value);
+
+        float getUpperBound();
+        float getLowerBound();
     }
 
-    public class TemporalModel: ITemporalModel
+    public class TemporalModel : ITemporalModel
     {
         // Backing field for the Years
         private string upperBound;
         private string lowerBound;
-        
+
         private bool showTextBox;
 
-        
+
         public event EventHandler<SearchYearChangedEventArgs> OnYearchanged = (sender, e) => { };
         public event EventHandler<TemporalMenuChangedEventArgs> VisibilityChange = (sender, e) => { };
 
@@ -59,7 +74,7 @@ namespace Assets.HoloLens.Scripts.Model
         {
             showTextBox = flag;
             var eventArgs = new TemporalMenuChangedEventArgs(showTextBox);
-            
+
             // Dispatch the 'position changed' event
             VisibilityChange(this, eventArgs);
         }
@@ -76,14 +91,14 @@ namespace Assets.HoloLens.Scripts.Model
                     // Set new position
                     upperBound = value;
                 }
-            
+
                 // Dispatch the 'position changed' event
                 var eventArgs = new SearchYearChangedEventArgs();
                 OnYearchanged(this, eventArgs);
             }
 
         }
-        
+
         public string LowerBound
         {
             get { return lowerBound; }
@@ -95,11 +110,33 @@ namespace Assets.HoloLens.Scripts.Model
                     // Set new position
                     lowerBound = value;
                 }
-            
+
                 // Dispatch the 'position changed' event
                 var eventArgs = new SearchYearChangedEventArgs();
                 OnYearchanged(this, eventArgs);
             }
+        }
+
+        public float upperbound;
+        public float lowerbound;
+
+        public void setUpperBound(float value)
+        {
+            upperbound = value;
+        }
+
+        public float getUpperBound()
+        {
+            return this.upperbound;
+        }
+
+        public void setLowerBound(float value)
+        {
+            lowerbound = value;
+        }
+        public float getLowerBound()
+        {
+            return this.lowerbound;
         }
         
     }

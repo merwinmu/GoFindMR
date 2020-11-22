@@ -47,9 +47,21 @@ namespace Assets.HoloLens.Scripts.Controller
             // Listen to input from the view
             view.OnReceived += HandleInputReceived;
             view.MapBackButton += HandleBackButtonOnPress;
+            LowerBoundAttribute.OnLowerBoundValueChanged += HandleLowerBound;
+            UpperBoundAttribute.OnUpperBoundValueChanged += HandleUpperBound;
             // Listen to changes in the model
             model.OnYearchanged += HandleYearChanged;
             model.VisibilityChange += TextBoxStatusVisibility;
+        }
+
+        private void HandleUpperBound(object sender, SliderValueEventArgs e)
+        {
+            model.setUpperBound(e.value);
+        }
+
+        private void HandleLowerBound(object sender, SliderValueEventArgs e)
+        {
+            model.setLowerBound(e.value);
         }
 
         //Functions to call once an Event occurs
@@ -79,21 +91,19 @@ namespace Assets.HoloLens.Scripts.Controller
         //Handling models
         private void HandleInputReceived(object sender, YearChangeEventArgs e)
         {
-            model.LowerBound = e.lowerbound;
-            model.UpperBound = e.upperbound;
-            
             IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
             model.ChangeVisibility(false);
             //mainMenuModel.setQueryData(model.LowerBound +" "+ model.UpperBound);
             
-            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(model.LowerBound,model.UpperBound);
-            poiCoordinatesObject.setName("From "+model.LowerBound +" to "+model.UpperBound);
+            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(model.getLowerBound(),model.getUpperBound());
+            poiCoordinatesObject.setName("From "+model.getLowerBound().ToString() +" to "+model.getUpperBound().ToString());
             mainMenuModel.ChangeVisibility(true);
             IQueryMenuController iqQueryMenuController = GetComponent<QueryMenuController>();
             iqQueryMenuController.addQuery(poiCoordinatesObject);
-            //Debug.Log("Temporal input: "+model.LowerBound+" "+model.UpperBound);
+
             Vector3 pos = iqQueryMenuController.getview().getInitQueryMenuPosition();
             iqQueryMenuController.getview().setQueryMenuRadialPosition(pos, true);
+            
         }
 
         public ITemporalModel GETItTemporalModel()
