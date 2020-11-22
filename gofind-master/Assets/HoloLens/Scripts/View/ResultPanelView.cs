@@ -258,7 +258,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
             foreach (var VARIABLE in picturePointerDatasList)
             {
-                VARIABLE.getGameObject().transform.localScale = new Vector3(-0.4f,-0.2f,0.01f);
+                VARIABLE.getGameObject().transform.localScale = new Vector3(0.4f,0.2f,0.01f);
                 VARIABLE.getGameObject().gameObject.transform.parent =
                     transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).transform;
                 
@@ -330,7 +330,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
         ShowPictureObject.transform.position = ShowObject.transform.position; // Get Original position from colloection for nice smooth transition
 
-        ShowObject.transform.localScale = new Vector3(0.5f,-0.3f,0.0001f); // Setting size
+        ShowObject.transform.localScale = new Vector3(0.5f,0.3f,0.0001f); // Setting size
 
         ShowObject.transform.parent = ShowPictureObject.transform;
 
@@ -514,6 +514,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                     material.DisableKeyword("_ALPHATEST_ON");
                     material.DisableKeyword("_ALPHABLEND_ON");
                     material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    material.EnableKeyword("_ALBEDO_MAP");
                     material.renderQueue = -1;
                     break;
                 case BlendMode.Cutout:
@@ -544,6 +545,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                     material.DisableKeyword("_ALPHATEST_ON");
                     material.DisableKeyword("_ALPHABLEND_ON");
                     material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                    material.EnableKeyword("_ALBEDO_MAP");
                     material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
                     break;
             }
