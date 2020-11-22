@@ -448,7 +448,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         var EventArgs = new CancelEventArgs();
         OnMapHide(this, EventArgs);
         ShowPictureObject.SetActive(true);
-        HandMenuMap.SetActive(true);
+        HandMenuMap.SetActive(false);
+        HandMenu.SetActive(true);
         
     }
     public void PictureMenuSuperImoseInit()
