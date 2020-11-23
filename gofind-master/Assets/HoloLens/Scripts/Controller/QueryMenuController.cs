@@ -43,9 +43,10 @@ namespace Assets.HoloLens.Scripts.Controller
             // Listen to input from the view
             view.OnRemove += RemoveFromDatabase;
             view.OnReceived += SearchQuery;
-            view.OnSearch += SearchClicked;
+            view.OnSearch += Search;
+            //view.OnSearch += SearchClicked;
 
-            
+
             // Listen to changes in the model
 
         }
@@ -57,6 +58,16 @@ namespace Assets.HoloLens.Scripts.Controller
             double lon = 7.588576;
             cineast.AddCineastFilter(new SpatialMaxDistanceFilter(maxDist * 10000, lat, lon));
             DoCineastRequest(lat,lon);
+        }
+
+        private void Search(object sender, BackEventArgs e)
+        {
+            IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
+            IMainMenuController menuController = GetComponent<MainMenuController>();
+            menuController.GETMainMenuModel().ChangeVisibility(false);
+            view.setVisibility(false);
+            resultPanelModel.renderPicture();
+            resultPanelModel.ChangeResultVisibility(true);
         }
 
         public void addQuery(POICoordinatesObject poiCoordinatesObject)

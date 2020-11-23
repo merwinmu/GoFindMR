@@ -47,13 +47,28 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
          view.OnShowOnMap += ShowMap;
          view.OnMapHide += HideMap;
          view.OnARClick += ARMode;
+         view.OnResetObject += DeleteObjectsInRoot;
         //view.OnGeneratePin += HandleGeneratePin;
        
         // Listen to changes in the model
             
         model.OnResultVisibility += ResultStatusVisibility;
         model.OnUpdatePictures += HandleUpdatePicture;
+        model.OnReset += HandleReset;
         //model.OnMapPinGenerate += GenerateMapPins;
+    }
+
+    private void DeleteObjectsInRoot(object sender, ResetObject e)
+    {
+        foreach (Transform VARIABLE in transform.root)
+        {
+            Debug.Log(VARIABLE.gameObject.name);
+        }
+    }
+
+    private void HandleReset(object sender, ResetEventArgs e)
+    {
+        view.reset();
     }
 
     private void ARMode(object sender, GetPOILocationListEventArgs e)

@@ -38,8 +38,9 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnSpatialSelect += HandleSpatialSelect;
             view.OnCPositionSelect += HandleCPositionSelect;
             view.OnTemporalSelect += HandleTemporalSelect;
-            view.OnSearchSelect += HandleSearchSelect;
+            view.OnSearchSelect += HandleReset;
             view.OnRemove += HandleRemoveQuery;
+            
 
             // Listen to changes in the model
             model.DataOutput += HandleOutputData;
@@ -69,6 +70,12 @@ namespace Assets.HoloLens.Scripts.Controller
             model.ChangeVisibility(false);
             resultPanelModel.renderPicture();
             resultPanelModel.ChangeResultVisibility(true);
+        }
+
+        private void HandleReset(object sender, SearchEventArgs e)
+        {
+            ResultPanelController controller = GetComponent<ResultPanelController>();
+            controller.GETResultPanelView().reset();
         }
 
         private void HandleTemporalSelect(object sender, TemporalEventArgs e)

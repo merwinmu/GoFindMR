@@ -43,6 +43,11 @@ public class ResultVisibilityEventArgs : EventArgs
     }
 }
 
+public class ResetEventArgs : EventArgs
+{
+    
+}
+
 public class PictureData
 {
     private string url;
@@ -118,6 +123,8 @@ public interface IResultPanelModel
     // Dispatched when years changes
     event EventHandler<UpdatePicturesEventArgs> OnUpdatePictures;
     event EventHandler<ResultVisibilityEventArgs> OnResultVisibility;
+    event EventHandler<ResetEventArgs> OnReset;
+
 
     /*
                 * Eventhandler is used to to send events
@@ -125,6 +132,8 @@ public interface IResultPanelModel
                  */
     void ChangeResultVisibility(bool flag);
     void renderPicture();
+
+    void reset();
   
     void SetCurrentPicture(PicturePointerData pointerData);
 }
@@ -133,6 +142,8 @@ public class ResultPanelModel : IResultPanelModel
 {
     public event EventHandler<UpdatePicturesEventArgs> OnUpdatePictures = (sender, e) => { };
     public event EventHandler<ResultVisibilityEventArgs> OnResultVisibility = (sender, e) => { };
+    public event EventHandler<ResetEventArgs> OnReset = (sender, e) => { };
+
     private bool showResult;
     private CineastApi cineast;
 
@@ -170,6 +181,12 @@ public class ResultPanelModel : IResultPanelModel
 
         // Dispatch the 'Result changed' event
         OnUpdatePictures(this, eventArgs);
+    }
+
+    public void reset()
+    {
+        OnReset(this,new ResetEventArgs());
+        pictureDataList.Clear();
     }
 
     public void ChangeResultVisibility(bool flag)

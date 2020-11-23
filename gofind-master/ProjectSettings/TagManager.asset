@@ -9,6 +9,7 @@ TagManager:
   - ManipulationSystem
   - IOSystem
   - OKButton
+  - Spawned
   layers:
   - Default
   - TransparentFX

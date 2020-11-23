@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.Properties;
@@ -32,6 +33,10 @@ public class ResultBackEventArgs : EventArgs
 {
 }
 
+public class ResetObject : EventArgs
+{
+   public List<PicturePointerData> picturePointerDatasList;
+}
 public class SelectResultPictureDataArgs : EventArgs
 {
     private PicturePointerData pointerData;
@@ -53,8 +58,9 @@ public interface IResultPanelView
     event EventHandler<GPSDataReceivedEventArgs> OnShowOnMap;
     event EventHandler<CancelEventArgs> OnMapHide;
     event EventHandler<GetPOILocationListEventArgs> OnARClick;
+    event EventHandler<ResetObject> OnResetObject;
     void Visibility(bool flag);
-
+    void reset();
     void setAllResultMenuVisibility(bool flag);
     void setTextures(List<PictureData> pictureDatasList);
 
@@ -66,6 +72,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public event EventHandler<GPSDataReceivedEventArgs> OnShowOnMap = (sender, e) => { };
     public event EventHandler<CancelEventArgs> OnMapHide = (sender, e) => { };
     public event EventHandler<GetPOILocationListEventArgs> OnARClick = (sender, e) => { };
+    public event EventHandler<ResetObject> OnResetObject = (sender, e) => { };
+    
 
     public Texture2D texture;
     private GameObject backButtonObject;
@@ -76,6 +84,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public GameObject resultObject;
     private List<PictureData> textureDatas;
     public Dictionary<int, POICoordinatesObject> PoiCoordinatesObjects;
+    private List<PicturePointerData> picturePointerDatasList;
 
 
     private Texture panelTexture;
@@ -186,6 +195,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         }
         createResultObjects(size);
     }
+
     public void createResultObjects(int v_size)
     {
 
@@ -194,7 +204,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         
         
        // List<GameObject> ObjectList = new List<GameObject>();
-        List<PicturePointerData> picturePointerDatasList = new List<PicturePointerData>();
+        picturePointerDatasList = new List<PicturePointerData>();
 
         int horizontal_size = 3;
         //int vertical_size = t_size/horizontal_size;
@@ -295,6 +305,28 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public void Visibility(bool flag)
     {
         transform.gameObject.SetActive(flag);
+    }
+
+    public void reset()
+    {
+        foreach (var VARIABLE in picturePointerDatasList)
+        {
+            scrollingObjectCollection.RemoveItem(VARIABLE.getGameObject());
+        }
+
+        Destroy(GameObject.FindWithTag("Spawned"));
+        
+
+        ResetObject eventArgs = new ResetObject();
+        eventArgs.picturePointerDatasList = picturePointerDatasList;
+        //OnResetObject(this, eventArgs);
+        
+        this.picturePointerDatasList.Clear();
+        this.textureDatas.Clear();
+        this.PoiCoordinatesObjects.Clear();
+        
+        Debug.Log("Deleted all Results");
+        
     }
 
     public void setAllResultMenuVisibility(bool flag)
