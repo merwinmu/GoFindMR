@@ -2,16 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
-
 using UnityEngine;
 
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models.Messages.Query;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Processing;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
+
 
 /*
 * Various EventArgs has been created so that if changes in the Model has been made, a callback can be
@@ -145,12 +138,12 @@ public class ResultPanelModel : IResultPanelModel
     public event EventHandler<ResetEventArgs> OnReset = (sender, e) => { };
 
     private bool showResult;
-    private CineastApi cineast;
+    //private CineastApi cineast;
 
     private List<PictureData> pictureDataList;
     
-    private List<MultimediaObject> mmoList;      
-    private List<MultimediaObject> activeMmos;
+    //private List<MultimediaObject> mmoList;      
+    //private List<MultimediaObject> activeMmos;
 
 
 

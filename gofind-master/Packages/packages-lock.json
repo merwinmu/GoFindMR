@@ -137,13 +137,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.vitrivr.unityinterface.cineastapi": {
-      "version": "https://github.com/vitrivr/UnityInterface.git#release",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "69d6906265aaebb850be53d948b509444c3147fa"
-    },
     "com.yasirkula.assetusagedetector": {
       "version": "https://github.com/yasirkula/UnityAssetUsageDetector.git",
       "depth": 0,
@@ -157,6 +150,13 @@
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
+    },
+    "org.vitrivr.unityinterface.cineastapi": {
+      "version": "https://github.com/vitrivr/UnityInterface.git#dev-all",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "9d924d14a8e85c88059685222e87f61898804bd5"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

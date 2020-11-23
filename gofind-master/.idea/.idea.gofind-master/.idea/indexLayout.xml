@@ -17,9 +17,9 @@
       <Path>Library/PackageCache/com.unity.timeline@1.2.6</Path>
       <Path>Library/PackageCache/com.unity.xr.legacyinputhelpers@2.1.4</Path>
       <Path>Library/PackageCache/com.unity.xr.windowsmr.metro@4.2.3</Path>
-      <Path>Library/PackageCache/com.vitrivr.unityinterface.cineastapi@69d6906265</Path>
       <Path>Library/PackageCache/com.yasirkula.assetusagedetector@f4129574fb</Path>
       <Path>Library/PackageCache/nuget.mono-cecil@0.1.6-preview</Path>
+      <Path>Library/PackageCache/org.vitrivr.unityinterface.cineastapi@9d924d14a8</Path>
       <Path>Packages</Path>
       <Path>ProjectSettings</Path>
     </explicitIncludes>
