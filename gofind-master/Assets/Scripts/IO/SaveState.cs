@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Assets.Plugins.LocationAwarenessPlugin;
 using Assets.Scripts.Core;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 
 namespace Assets.Scripts.IO
 {
@@ -13,9 +13,9 @@ namespace Assets.Scripts.IO
 
         public Controller.State state = Controller.State.UNKOWN;
 
-        public MultimediaObject active = null;
+        public ObjectData active = null;
 
-        public List<MultimediaObject> activeMmos = null;
+        public List<ObjectData> activeMmos = null;
 
 
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.UI;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using UnityEngine;
 
 namespace Assets.GoFindMap.Scripts {
@@ -131,9 +131,9 @@ namespace Assets.GoFindMap.Scripts {
 
         public UIManager uiManager;
 
-        public void CreateMarkers(List<MultimediaObject> mmos) {
+        public void CreateMarkers(List<ObjectData> mmos) {
             markersExistent = true;
-            foreach (MultimediaObject mmo in mmos) {
+            foreach (ObjectData mmo in mmos) {
                 GameObject markerObj = Instantiate(markerPrefab);
                 if (markerObj == null) {
                     Debug.Log("ERROR! MarkerObject was not instantiated");
@@ -141,7 +141,7 @@ namespace Assets.GoFindMap.Scripts {
                 markerObj.GetComponent<ResultMarker>().result = mmo;
                 markerObj.GetComponent<ResultMarker>().uiManager = uiManager;
                 markerObj.AddComponent<GeoPosition>();
-                markerObj.GetComponent<GeoPosition>().Location = new GeoLocation(mmo.latitude, mmo.longitude);
+                //markerObj.GetComponent<GeoPosition>().Location = new GeoLocation(mmo.latitude, mmo.longitude);
                 touchController.AddGeoPositionedObject(markerObj);
             }
         }

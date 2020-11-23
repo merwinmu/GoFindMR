@@ -7,13 +7,13 @@ using Assets.Plugins.LocationAwarenessPlugin;
 using Assets.Scripts.Core;
 using Assets.Scripts.UI;
 using Assets.Scripts.UI.Management;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
-    private MultimediaObject activeMmo;
+    private ObjectData activeMmo;
 
     //public PanelSwitcher panelSwitcher;
 
@@ -97,6 +97,13 @@ public class UIManager : MonoBehaviour {
         GameObject displayPanelObj = GameObject.Find("DisplayImagePanel");
         GameObject mapPanelObj = GameObject.Find("MapPanel");
         GameObject mapShowPanelObj = GameObject.Find("MapShowPanel");
+        
+        GameObject historicMapPanelObj = GameObject.Find("HistoricMapPanel");
+        GameObject historicalPanelObj = GameObject.Find("HistoricalMapsPanel");
+        GameObject timelinePanelObj = GameObject.Find("TimelinePanel");
+        GameObject equidistantTimelinePanelObj = GameObject.Find("EquidistantTimelinePanel");
+        GameObject merian3DPanelObj = GameObject.Find("Merian3DPanel");
+        
         GameObject customizePanelObj = GameObject.Find("CustomizeSearchPanel");
         GameObject resultsPanelObj = GameObject.Find("ResultLocationDisplay");
         resultDisplay = resultsPanelObj.GetComponent<ResultLocationDisplay>();
@@ -105,6 +112,7 @@ public class UIManager : MonoBehaviour {
         GameObject queryImagePanelObj = GameObject.Find("QueryImagePanel");
         GameObject calibrationPanelObj = GameObject.Find("CalibrationUI");
         GameObject arDisplayPnaelObj = GameObject.Find("ARDisplayPanel");
+        GameObject arMerianPanaelObj = GameObject.Find("ARMerianPanel");
         GameObject settingsPanelObj = GameObject.Find("SettingsPanel");
 
 
@@ -113,6 +121,11 @@ public class UIManager : MonoBehaviour {
         var choicePanel = new PanelManager.Panel("choice", choicePanelObj);
         var displayPanel = new PanelManager.Panel("display", displayPanelObj);
         var mapPanel = new PanelManager.Panel("map", mapPanelObj);
+        var historicMapPanel = new PanelManager.Panel("historicMap", historicMapPanelObj);
+        var historicalPanel = new PanelManager.Panel("historical", historicalPanelObj);
+        var timelinePanel = new PanelManager.Panel("timeline", timelinePanelObj);
+        var equidistantTimelinePanel = new PanelManager.Panel("equidistantTimeline", equidistantTimelinePanelObj);
+        var merian3DPanel = new PanelManager.Panel("merian3D", merian3DPanelObj);
         var customizePanel = new PanelManager.Panel("customize", customizePanelObj);
         var resultPanel = new PanelManager.Panel("result", resultsPanelObj);
         var filterPanel = new PanelManager.Panel("filter", filterPanelObj);
@@ -121,6 +134,7 @@ public class UIManager : MonoBehaviour {
         var queryImagePanel = new PanelManager.Panel("queryImage", queryImagePanelObj);
         var calibrationPanel = new PanelManager.Panel("calibration", calibrationPanelObj);
         var arDisplayPanel = new PanelManager.Panel("ar-display", arDisplayPnaelObj);
+        var arMerianPanel = new PanelManager.Panel("ar-merian", arMerianPanaelObj);
         var settingsPanel = new PanelManager.Panel("settings", settingsPanelObj);
 
         homePanel.next = choicePanel;
@@ -129,11 +143,25 @@ public class UIManager : MonoBehaviour {
         displayPanel.previous = homePanel;
         mapPanel.previous = homePanel;
         mapPanel.visibilityChangedHandler = HandleMapVisibility;
+        historicMapPanel.previous = historicalPanel;
+        historicMapPanel.visibilityChangedHandler = HandleMapVisibility;
+        historicalPanel.previous = homePanel;
+        historicalPanel.visibilityChangedHandler = HandleMapVisibility;
+        timelinePanel.visibilityChangedHandler = HandleMapVisibility;
+        timelinePanel.previous = historicalPanel;
+        equidistantTimelinePanel.visibilityChangedHandler = HandleMapVisibility;
+        equidistantTimelinePanel.previous = historicalPanel;
+        merian3DPanel.previous = historicalPanel;
+        merian3DPanel.visibilityChangedHandler = HandleMapVisibility;
+        merian3DPanel.visibilityChangedHandler = Handle3DView;
+        merian3DPanel.previous = historicalPanel;
         filterPanel.previous = choicePanel;
         resultPanel.previous = mapPanel;
         mapShowPanel.previous = choicePanel;
         mapShowPanel.visibilityChangedHandler = HandleMapShowVisibility;
         arDisplayPanel.visibilityChangedHandler = HandleARVisibility;
+        arMerianPanel.visibilityChangedHandler = HandleARVisibility;
+        arMerianPanel.previous = historicalPanel;
 
         customizePanel.previous = homePanel;
         resultPanel.previous = mapPanel;
@@ -143,9 +171,9 @@ public class UIManager : MonoBehaviour {
         settingsPanel.visibilityChangedHandler = showing => { if(showing){settingsPanel.obj.GetComponent<SettingsDialog>().Init();}};
 
         panelManager.RegisterAll(new[] {
-            homePanel, choicePanel, displayPanel, mapPanel, customizePanel, resultPanel, filterPanel, waitingPanel,
-            mapShowPanel, queryImagePanel, calibrationPanel, arDisplayPanel, settingsPanel
-        });
+            homePanel, choicePanel, displayPanel, mapPanel, historicMapPanel, historicalPanel, timelinePanel, equidistantTimelinePanel, merian3DPanel, customizePanel, resultPanel, filterPanel, waitingPanel,
+            mapShowPanel, queryImagePanel, calibrationPanel, arDisplayPanel, arMerianPanel, settingsPanel 
+        }); 
         panelManager.SetInitial(homePanel);
         panelManager.ShowPanel("home");
     }
@@ -171,21 +199,31 @@ public class UIManager : MonoBehaviour {
         if (mapTouchController != null) {
             mapTouchController.EnableTouch(visible);
             mapTouchController.EnableDoubleTap(visible);
+            mapTouchController.camera = GameObject.Find("MapCamera").GetComponent<Camera>();
             mapTouchController.EnableCamera(visible);
             controller.EnableARCam(!visible);
         }
     }
 
+    private void Handle3DView(bool visible)
+    {
+        if (mapTouchController != null && GameObject.Find("Merian3DCamera") != null)
+        {
+            mapTouchController.camera = GameObject.Find("Merian3DCamera").GetComponent<Camera>();
+        }
+        HandleMapVisibility(false);
+    }
+
     private Assets.Modules.SimpleLogging.Logger logger;
 
-    public void Present(MultimediaObject mmo, bool loadInRange = true) {
-        Debug.Log("Presenting " + mmo.id);
+    public void Present(ObjectData mmo, bool loadInRange = true) {
+        Debug.Log("Presenting " + mmo.Id);
         //panelSwitcher.SwitchToDisplay();
 
         panelManager.ShowPanel("display");
 
-        presenter.LoadImage(CineastUtils.GetImageUrl(mmo));
-        logger.Debug("URL: " + CineastUtils.GetImageUrl(mmo));
+        presenter.LoadImage(TemporaryCompatUtils.GetImageUrl(mmo));
+        logger.Debug("URL: " + TemporaryCompatUtils.GetImageUrl(mmo));
 
 
         alphaController.SetAlpha(0.5f);
@@ -194,12 +232,12 @@ public class UIManager : MonoBehaviour {
             headingDisplay.targetHeading = controller.GetHeading(mmo);
         }
 
-        infoText.text = string.Format("Index: {0}\nDate: {1}", mmo.resultIndex, FormatDate(mmo));
+        infoText.text = string.Format("ID: {0}\nDate: {1}", mmo.Id, FormatDate(mmo));
         activeMmo = mmo;
 
         if (loadInRange) {
             Debug.Log("LOAD IN RANGE");
-            List<MultimediaObject> inRangeList = controller.GetInRange(activeMmo);
+            List<ObjectData> inRangeList = controller.GetInRange(activeMmo);
             temporalSlider.Setup(inRangeList, activeMmo); // ArgumentNull in DatetimeParser, parameter name s
         }
 
@@ -211,10 +249,12 @@ public class UIManager : MonoBehaviour {
         controller.StoreHeading(activeMmo, CompassHeadingDisplay.RoundOff(Input.compass.magneticHeading));
     }
 
-    public static string FormatDate(MultimediaObject mmo) {
+    public static string FormatDate(ObjectData mmo) {
         DateTime dt = DateTime.MaxValue;
-        try {
-            dt = DateTime.Parse(mmo.datetime);
+        try
+        {
+            var datetime = MetadataUtils.GetDateTime(mmo.Metadata);
+            dt = DateTime.Parse(datetime);
         } catch (ArgumentNullException ex) {
             // Silently ignoring
         } catch (FormatException e) {
@@ -224,7 +264,7 @@ public class UIManager : MonoBehaviour {
         return dt != DateTime.MaxValue ? dt.ToString("dd. MMM yyyy") : "";
     }
 
-    public void SetAndPopulateList(List<MultimediaObject> mmos) {
+    public void SetAndPopulateList(List<ObjectData> mmos) {
         UpdateChoiceTitle("" + mmos.Count);
         ClearList();
         StartCoroutine(PopulateScrollView(mmos));
@@ -238,9 +278,9 @@ public class UIManager : MonoBehaviour {
         }
     }
 
-    private IEnumerator PopulateScrollView(List<MultimediaObject> mmos) {
+    private IEnumerator PopulateScrollView(List<ObjectData> mmos) {
         ClearList();
-        foreach (MultimediaObject mmo in mmos) {
+        foreach (ObjectData mmo in mmos) {
             var exception = true;
             var tryies = 0;
             while (exception && (tryies <= 30)) {
@@ -265,7 +305,7 @@ public class UIManager : MonoBehaviour {
     }
 
 
-    private void AddObjectToScroll(MultimediaObject mmo) {
+    private void AddObjectToScroll(ObjectData mmo) {
         Debug.Log(":AddObjectToScroll " + (mmo != null ? JsonUtility.ToJson(mmo) : "null"));
         GameObject panel = Instantiate(prefab);
         Debug.Log("panel: " + (panel == null ? "null" : "found"));
@@ -273,13 +313,15 @@ public class UIManager : MonoBehaviour {
 
         var ctrl = panel.GetComponent<DisplayController>();
         Debug.Log("ctrl " + (ctrl == null ? "Null" : "received"));
-        ctrl.SetTitle(string.Format("Result: {0}", mmo.resultIndex));
+        ctrl.SetTitle(string.Format("Result: {0}", mmo.Id));
         Debug.Log("initalGeoLoc: " + (initialGeoLocation == null ? "null" : "present"));
-        double dist = Utilities.HaversineDistance(mmo.latitude, mmo.longitude, initialGeoLocation.latitude,
+        var lat = MetadataUtils.GetLatitude(mmo.Metadata);
+        var lon = MetadataUtils.GetLongitude(mmo.Metadata);
+        double dist = Utilities.HaversineDistance(lat, lon, initialGeoLocation.latitude,
             initialGeoLocation.longitude);
         string footerText = string.Format("Distance: {0}m\nDate: {1}", Round(dist), FormatDate(mmo));
         ctrl.SetFooter(footerText);
-        ctrl.LoadImageFromWeb(CineastUtils.GetThumbnailUrl(mmo));
+        ctrl.LoadImageFromWeb(TemporaryCompatUtils.GetThumbnailUrl(mmo));
         ctrl.Mmo = mmo;
         ctrl.UiManager = this;
         ctrl.Controller = controller;
@@ -296,7 +338,7 @@ public class UIManager : MonoBehaviour {
         return "" + Math.Round(d, digits, MidpointRounding.AwayFromZero);
     }
 
-    public void ShowResultPanel(MultimediaObject mmo) {
+    public void ShowResultPanel(ObjectData mmo) {
         panelManager.ShowPanel("result");
         resultDisplay.Present(mmo);
     }

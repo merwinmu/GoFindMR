@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Logger = Assets.Modules.SimpleLogging.Logger;
 
+// TODO Fixme
 public class ManualDisplayLoader : MonoBehaviour {
 
     public Text messageText;
@@ -27,12 +28,12 @@ public class ManualDisplayLoader : MonoBehaviour {
     public void HandleInputUpdate(string input) {
         logger.Debug("Handling input with index  (str) "+index);
         this.index = int.Parse(input);
-
+/*
         if (controller.ExistsResultIndex(this.index)) {
             DisplayPositiveMsg(index);
         } else {
             DisplayNegativeMsg(this.index);
-        }
+        }*/
     }
 
     public void HandleCancel() {
@@ -40,9 +41,11 @@ public class ManualDisplayLoader : MonoBehaviour {
     }
 
     public void HandleOk() {
+        /*
         logger.Debug("Handling OK button with index "+index);
         uiManager.Present(controller.GetMultimediaObject(index));
         loadPopupHandler.ShowPopup(false);
+        */
     }
 
     private void DisplayNegativeMsg(int index) {

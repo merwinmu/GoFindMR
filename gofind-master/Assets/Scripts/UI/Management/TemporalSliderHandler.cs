@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Assets.Modules.SimpleLogging;
 using Assets.Scripts.Core;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using Logger = Assets.Modules.SimpleLogging.Logger;
@@ -11,7 +12,7 @@ namespace Assets.Scripts.UI.Management {
     public class TemporalSliderHandler : MonoBehaviour {
         public Controller controller;
 
-        private readonly Dictionary<int, MultimediaObject> dict = new Dictionary<int, MultimediaObject>();
+        private readonly Dictionary<int, ObjectData> dict = new Dictionary<int, ObjectData>();
 
         private Logger logger;
 
@@ -81,20 +82,22 @@ namespace Assets.Scripts.UI.Management {
 
         private bool setupFinished = false;
 
-        public void Setup(List<MultimediaObject> mmos, MultimediaObject active) {
+        public void Setup(List<ObjectData> mmos, ObjectData active) {
             logger.Debug("Setup");
             setupFinished = false;
             dict.Clear();
 
-            foreach (MultimediaObject mmo in mmos) {
-                DateTime dt = DateTime.Parse(mmo.datetime); // mmo.dateitme is null, TODO investigate
+            foreach (ObjectData mmo in mmos)
+            {
+                string datetime = MetadataUtils.GetDateTime(mmo.Metadata);
+                DateTime dt = DateTime.Parse(datetime); // mmo.dateitme is null, TODO investigate
                 int key = dt.Year*10; // times ten to have multiple entries per year (10)
                 while (dict.ContainsKey(key)) {
                     logger.Debug("Key {0} already used. decrease key by one", key, key-1);
                     key--;
                 }
                 dict.Add(key, mmo);
-                logger.Debug("Added {0}/{1} to dict (origin year: {2})", key, mmo.id, dt.Year);
+                logger.Debug("Added {0}/{1} to dict (origin year: {2})", key, mmo.Id, dt.Year);
             }
             List<int> keys = new List<int>(dict.Keys);
             keys.Sort((i, j) => i - j); // basic integer sorting
@@ -106,7 +109,8 @@ namespace Assets.Scripts.UI.Management {
             slider.minValue = 0;
             slider.maxValue = 1;
             slider.wholeNumbers = false;
-            DateTime adt = DateTime.Parse(active.datetime);
+            string _datetime = MetadataUtils.GetDateTime(active.Metadata);
+            DateTime adt = DateTime.Parse(_datetime);
             slider.value = keys.IndexOf(adt.Year * 10);
             logger.Debug("Slider should:({0},{1},{2})", min, adt.Year*10, max);
             logger.Debug("Slider is:({0},{1},{2})", slider.minValue, slider.value, slider.maxValue);

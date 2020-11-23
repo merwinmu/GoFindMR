@@ -1,11 +1,11 @@
-﻿using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+﻿using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using UnityEngine;
 
 namespace Assets.Scripts.Core {
     public class MMOContainer : MonoBehaviour {
         
         
-        public MultimediaObject MultimediaObject { get; set; }
+        public ObjectData MultimediaObject { get; set; }
         
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using Assets.Scripts.Core;
 using Assets.Scripts.UI;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -24,7 +23,7 @@ public class DisplayController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     private Text titleText;
 
     public UIManager UiManager { get; set; }
-    public MultimediaObject Mmo { get; set; }
+    public ObjectData Mmo { get; set; }
     public Controller Controller { get; set; }
 
     private void Awake()
@@ -122,6 +121,6 @@ public class DisplayController : MonoBehaviour, IPointerDownHandler, IPointerUpH
     }
 
     private void DumpPointerInfo() {
-        Debug.LogFormat("Disp{4} FD={0}/FU={1}   SD={2}/SU={3}",firstDown,firstUp,secondDown,secondUp,Mmo.resultIndex);
+        Debug.LogFormat("Disp{4} FD={0}/FU={1}   SD={2}/SU={3}",firstDown,firstUp,secondDown,secondUp,Mmo.Id);
     }
 }

@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using Assets.Scripts.Core;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Models;
-using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using UnityEngine;
 
 namespace Assets.HoloLens.Scripts.Controller
@@ -23,14 +20,11 @@ namespace Assets.HoloLens.Scripts.Controller
         
         private static  IQueryMenuView view;
         private static IResultPanelModel resultmodel;
-        private List<MultimediaObject> activeMmos;
-        private List<MultimediaObject> mmoList;
-        private CineastApi cineast;
+        
 
         private void Awake()
         {
-            this.gameObject.AddComponent<CineastApi>();
-            cineast = this.GetComponent<CineastApi>();
+          
         }
 
         //Initialize Model, view and Listeners
@@ -56,7 +50,7 @@ namespace Assets.HoloLens.Scripts.Controller
             float maxDist = 1000;
             double lat = 47.559601;
             double lon = 7.588576;
-            cineast.AddCineastFilter(new SpatialMaxDistanceFilter(maxDist * 10000, lat, lon));
+            //cineast.AddCineastFilter(new SpatialMaxDistanceFilter(maxDist * 10000, lat, lon));
             DoCineastRequest(lat,lon);
         }
 
@@ -98,9 +92,7 @@ namespace Assets.HoloLens.Scripts.Controller
             //initialLocation = new LocationInfo(); // Why?
             //ChangeState(State.CINEAST_REQUEST);
             //cineast.RequestSimilarAndThen(initialLocation.latitude, initialLocation.longitude, HandleCineastResult);
-            cineast.RequestSimilarAndThen(
-                QueryFactory.BuildSpatialSimilarQuery(latitude,longitude),
-                HandleCineastResult);
+           
         }
 
         public void Clean()
@@ -114,11 +106,11 @@ namespace Assets.HoloLens.Scripts.Controller
             //TODO
         }
     
-        private void HandleCineastResult(List<MultimediaObject> list) {
+        private void HandleCineastResult(List<ObjectData> list) {
             Debug.Log("HandleCineastResult");
             Debug.Log(list);
             //ChangeState(State.CINEAST_RESPONSE);
-            mmoList = list;
+            
             Debug.Log("Internal mmo list set to received one");
 
             // == SORT DISTANCE ==
@@ -145,7 +137,6 @@ namespace Assets.HoloLens.Scripts.Controller
 
             //uiManager.panelManager.ShowPanel("choice");
             //uiManager.viewChoiceHomeBtn.gameObject.SetActive(true);
-            activeMmos = list;
             //uiManager.SetAndPopulateList(activeMmos);
         }
 
