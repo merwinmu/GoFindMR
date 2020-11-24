@@ -262,7 +262,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                // ObjectList[listcount].GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().AddComponent<PictureAttribute>();
-                picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().setlatlon(VARIABLE.getLat(), VARIABLE.getLon());
+                picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().setlatlon(VARIABLE.getLat(), VARIABLE.getLon(),VARIABLE.gethea());
                 listcount++;
             }
 
@@ -275,7 +275,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                 //VARIABLE.getGameObject().AddComponent<PictureAttribute>();
                 VARIABLE.getGameObject().GetComponent<PictureAttribute>().ID = VARIABLE.getID();
                 VARIABLE.getGameObject().GetComponent<PictureAttribute>().PointerData = VARIABLE;
-                AddToPOI(VARIABLE.getGameObject().GetComponent<PictureAttribute>().latitude,VARIABLE.getGameObject().GetComponent<PictureAttribute>().longitude, VARIABLE.getID(),VARIABLE.getGameObject());
+                AddToPOI(VARIABLE.getGameObject().GetComponent<PictureAttribute>().latitude,VARIABLE.getGameObject().GetComponent<PictureAttribute>().longitude, VARIABLE.getID(),VARIABLE.getGameObject(),VARIABLE.getGameObject().GetComponent<PictureAttribute>().heading);
                 
                 var touchable = VARIABLE.getGameObject().AddComponent<NearInteractionTouchableVolume>();
                 touchable.EventsToReceive = TouchableEventType.Pointer;
@@ -284,15 +284,15 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             }
             
             scrollingObjectCollection.UpdateCollection();
-            Debug.Log("achso");
+            Debug.Log("Scroling Object Updated");
 
     }
 
 
     private int key;
-    public void AddToPOI(double lat, double lon , int id, GameObject gameObject)
+    public void AddToPOI(double lat, double lon , int id, GameObject gameObject, float heading)
     {
-        POICoordinatesObject POI = new POICoordinatesObject(lat,lon,gameObject);
+        POICoordinatesObject POI = new POICoordinatesObject(lat,lon,gameObject,heading);
         PoiCoordinatesObjects.Add(key,POI);
         key++;
     }

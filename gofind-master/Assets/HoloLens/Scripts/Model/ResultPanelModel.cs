@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.Scripts.Core;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
 using UnityEngine;
-
 
 /*
 * Various EventArgs has been created so that if changes in the Model has been made, a callback can be
@@ -45,6 +47,7 @@ public class PictureData
     private Texture texture;
     private double lat;
     private double lon;
+    private float heading;
 
     public PictureData(int id, string url)
     {
@@ -52,12 +55,13 @@ public class PictureData
         this.url = url;
     }
     
-    public PictureData(int id, string url,double lat, double lon)
+    public PictureData(int id, string url,double lat, double lon, float heading)
     {
         this.objectID = id;
         this.url = url;
         this.lat = lat;
         this.lon = lon;
+        this.heading = heading;
     }
 
     public void setData(Texture texture)
@@ -65,10 +69,11 @@ public class PictureData
         this.texture = texture;
     }
 
-    public void setLatLon(double lat, double lon)
+    public void setLatLon(double lat, double lon, float heading)
     {
         this.lat = lat;
         this.lon = lon;
+        this.heading = heading;
     }
 
     public double getLat()
@@ -79,6 +84,11 @@ public class PictureData
     public double getLon()
     {
         return this.lon;
+    }
+
+    public float gethea()
+    {
+        return this.heading;
     }
 
     public void setID(int id)
@@ -100,7 +110,6 @@ public class PictureData
     {
         return this.url;
     }
-    
 }
 
 /*
@@ -121,7 +130,9 @@ public interface IResultPanelModel
                  * This method is used for changing the visibility of the menu
                  */
     void ChangeResultVisibility(bool flag);
-    void renderPicture();
+    void renderDebugPicture();
+
+    void populateAndRender(List<ObjectData> list);
 
     void reset();
   
@@ -137,36 +148,65 @@ public class ResultPanelModel : IResultPanelModel
     private bool showResult;
 
     private List<PictureData> pictureDataList;
-    
-
 
     private PicturePointerData CurrentPicture;
 
 
-    public void renderPicture()
+    public void renderDebugPicture()
     {
         
         
         pictureDataList = new List<PictureData>();
         
-        pictureDataList.Add(new PictureData(0,"https://cdn.pixabay.com/photo/2016/10/18/21/22/california-1751455__340.jpg",21.42039,24.28500));
-        pictureDataList.Add(new PictureData(1,"https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832__340.jpg",-28.35779,66.10798));
-        pictureDataList.Add(new PictureData(2,"https://cdn.pixabay.com/photo/2015/05/15/14/21/architecture-768432__340.jpg",-23.69705,-142.92103));
-        pictureDataList.Add(new PictureData(3,"https://cdn.pixabay.com/photo/2016/10/20/18/35/sunrise-1756274__340.jpg",52.08303,-28.59140));
-        pictureDataList.Add(new PictureData(4,"https://cdn.pixabay.com/photo/2013/10/02/23/03/dog-190056__340.jpg",34.3313,17.20796));
-        pictureDataList.Add(new PictureData(5,"https://cdn.pixabay.com/photo/2015/04/19/08/32/rose-729509__340.jpg",23.64371,-39.94751));
-        pictureDataList.Add(new PictureData(6,"https://cdn.pixabay.com/photo/2013/10/02/23/03/dawn-190055__340.jpg",69.48288,-117.56180));
-        pictureDataList.Add(new PictureData(7,"https://cdn.pixabay.com/photo/2014/09/07/16/53/hands-437968__340.jpg",64.95757,70.36632));
-        pictureDataList.Add(new PictureData(8,"https://cdn.pixabay.com/photo/2017/03/13/10/25/hummingbird-2139279__340.jpg", -18.70780,22.63778));
-        pictureDataList.Add(new PictureData(9,"https://cdn.pixabay.com/photo/2014/09/14/18/04/dandelion-445228__340.jpg",39.53518,36.22254));
-        pictureDataList.Add(new PictureData(10,"https://cdn.pixabay.com/photo/2015/12/01/20/28/fall-1072821__340.jpg",18.02662,39.71201));
-        pictureDataList.Add(new PictureData(11,"https://cdn.pixabay.com/photo/2018/09/23/18/30/drop-3698073__340.jpg",-40.42041,-170.03909));
-        pictureDataList.Add(new PictureData(12,"https://cdn.pixabay.com/photo/2017/12/10/15/16/white-horse-3010129__340.jpg", -51.71954,73.71774));
+        pictureDataList.Add(new PictureData(0,"https://cdn.pixabay.com/photo/2016/10/18/21/22/california-1751455__340.jpg",21.42039,24.28500,0));
+        pictureDataList.Add(new PictureData(1,"https://cdn.pixabay.com/photo/2018/01/14/23/12/nature-3082832__340.jpg",-28.35779,66.10798,0));
+        pictureDataList.Add(new PictureData(2,"https://cdn.pixabay.com/photo/2015/05/15/14/21/architecture-768432__340.jpg",-23.69705,-142.92103,0));
+        pictureDataList.Add(new PictureData(3,"https://cdn.pixabay.com/photo/2016/10/20/18/35/sunrise-1756274__340.jpg",52.08303,-28.59140,0));
+        pictureDataList.Add(new PictureData(4,"https://cdn.pixabay.com/photo/2013/10/02/23/03/dog-190056__340.jpg",34.3313,17.20796,0));
+        pictureDataList.Add(new PictureData(5,"https://cdn.pixabay.com/photo/2015/04/19/08/32/rose-729509__340.jpg",23.64371,-39.94751,0));
+        pictureDataList.Add(new PictureData(6,"https://cdn.pixabay.com/photo/2013/10/02/23/03/dawn-190055__340.jpg",69.48288,-117.56180,0));
+        pictureDataList.Add(new PictureData(7,"https://cdn.pixabay.com/photo/2014/09/07/16/53/hands-437968__340.jpg",64.95757,70.36632,0));
+        pictureDataList.Add(new PictureData(8,"https://cdn.pixabay.com/photo/2017/03/13/10/25/hummingbird-2139279__340.jpg", -18.70780,22.63778,0));
+        pictureDataList.Add(new PictureData(9,"https://cdn.pixabay.com/photo/2014/09/14/18/04/dandelion-445228__340.jpg",39.53518,36.22254,0));
+        pictureDataList.Add(new PictureData(10,"https://cdn.pixabay.com/photo/2015/12/01/20/28/fall-1072821__340.jpg",18.02662,39.71201,0));
+        pictureDataList.Add(new PictureData(11,"https://cdn.pixabay.com/photo/2018/09/23/18/30/drop-3698073__340.jpg",-40.42041,-170.03909,0));
+        pictureDataList.Add(new PictureData(12,"https://cdn.pixabay.com/photo/2017/12/10/15/16/white-horse-3010129__340.jpg", -51.71954,73.71774,0));
 
         var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
 
         // Dispatch the 'Result changed' event
         OnUpdatePictures(this, eventArgs);
+    }
+
+    public void populateAndRender(List<ObjectData> list)
+    {
+        parseToPictureData(list);
+        Debug.Log("Parsed the mmo Object to PictureData");
+        
+        var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
+        // Dispatch the 'Result changed' event
+        OnUpdatePictures(this, eventArgs);
+    }
+
+    public void parseToPictureData(List<ObjectData> list)
+    {
+        pictureDataList = new List<PictureData>();
+
+        int id = 0;
+        string url;
+        double lat;
+        double lon;
+        float hea;
+        
+        foreach (var VARIABLE in list)
+        {
+            url = TemporaryCompatUtils.GetThumbnailUrl(VARIABLE);
+            lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
+            lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);
+            hea = Convert.ToSingle(MetadataUtils.GetBearing(VARIABLE.Metadata));
+            pictureDataList.Add(new PictureData(id,url,lat,lon,hea));
+            id++;
+        }
     }
 
     public void reset()

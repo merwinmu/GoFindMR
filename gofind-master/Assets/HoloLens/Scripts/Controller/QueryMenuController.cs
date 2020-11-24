@@ -1,13 +1,16 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using Assets.Scripts.Core;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Registries;
+using Org.Vitrivr.CineastApi.Model;
 using UnityEngine;
 
 namespace Assets.HoloLens.Scripts.Controller
 {
-
     public interface IQueryMenuController
     {
         void addQuery(POICoordinatesObject poiCoordinatesObject);
@@ -19,8 +22,11 @@ namespace Assets.HoloLens.Scripts.Controller
         // Keep references to the model and view
         
         private static  IQueryMenuView view;
+        private List<POICoordinatesObject> querylist;
         private static IResultPanelModel resultmodel;
-        
+        private List<ObjectData> activeMmos;
+        private Coordinates myLocation;
+        private List<Coordinates> PointOfInterests;
 
         private void Awake()
         {
@@ -31,36 +37,59 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void Start()
         {
-            
+            querylist = new List<POICoordinatesObject>();
             view = transform.GetChild(7).GetComponent<QueryMenuView>();
             resultmodel = GetComponent<ResultPanelController>().GETResultPanelModel();
+            PointOfInterests = new List<Coordinates>();
+            myLocation = new Coordinates(0,0);
+            
             // Listen to input from the view
             view.OnRemove += RemoveFromDatabase;
             view.OnReceived += SearchQuery;
-            view.OnSearch += Search;
-            //view.OnSearch += SearchClicked;
+            //view.OnSearch += SearchDebug;
+            view.OnSearch += SearchClicked;
 
 
             // Listen to changes in the model
-
         }
 
         private void SearchClicked(object sender, BackEventArgs e)
         {
-            float maxDist = 1000;
-            double lat = 47.559601;
-            double lon = 7.588576;
-            //cineast.AddCineastFilter(new SpatialMaxDistanceFilter(maxDist * 10000, lat, lon));
-            DoCineastRequest(lat,lon);
+            Debug.Log(myLocation);
+            var query = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder
+                .BuildSpatialSimilarityQuery(myLocation.getLat(), myLocation.getLon());
+             QueryCineastAndProcess(query);
+             
+             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
+             IMainMenuController menuController = GetComponent<MainMenuController>();
+             menuController.GETMainMenuModel().ChangeVisibility(false);
+             view.setVisibility(false);
+             resultPanelModel.ChangeResultVisibility(true);
+        }
+        
+        public async void QueryCineastAndProcess(SimilarityQuery query)
+        {
+            var res = await Task.Run(async () =>
+            {
+                var results = await Task.Run(async () => await CineastWrapper.ExecuteQuery(query, 100, 100));
+                Debug.Log("Results received. Fetching objectdata");
+                await ObjectRegistry.Initialize(false); // Works due to collection being less than 100 and 100 are prefetched
+                Debug.Log("Objectdata Fetched");
+                await ObjectRegistry.BatchFetchObjectMetadata(ObjectRegistry.Objects);
+                Debug.Log("Metadata fetched");
+                Debug.Log("Fetched resutls: "+ results.results.Count);
+                return results;
+            });
+            HandleCineastResult(ObjectRegistry.Objects); // TODO more sophisticated
         }
 
-        private void Search(object sender, BackEventArgs e)
+        private void SearchDebug(object sender, BackEventArgs e)
         {
             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
             IMainMenuController menuController = GetComponent<MainMenuController>();
             menuController.GETMainMenuModel().ChangeVisibility(false);
             view.setVisibility(false);
-            resultPanelModel.renderPicture();
+            resultPanelModel.renderDebugPicture();
             resultPanelModel.ChangeResultVisibility(true);
         }
 
@@ -68,7 +97,10 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             view.setVisibility(true);
             view.createSelection(poiCoordinatesObject);
+            querylist.Add(poiCoordinatesObject);
+            FilterData(poiCoordinatesObject);
         }
+        
 
         public IQueryMenuView getview()
         {
@@ -108,10 +140,9 @@ namespace Assets.HoloLens.Scripts.Controller
     
         private void HandleCineastResult(List<ObjectData> list) {
             Debug.Log("HandleCineastResult");
-            Debug.Log(list);
+            SetActiveList(list);
             //ChangeState(State.CINEAST_RESPONSE);
             
-            Debug.Log("Internal mmo list set to received one");
 
             // == SORT DISTANCE ==
             /*
@@ -140,11 +171,39 @@ namespace Assets.HoloLens.Scripts.Controller
             //uiManager.SetAndPopulateList(activeMmos);
         }
 
-        //Functions to call once an Event occurs
+        public void SetActiveList(List<ObjectData> mmos)
+        {
+            activeMmos = mmos;
+            resultmodel.populateAndRender(mmos);
+        }
 
-        //Handling views
+        public void RemoveFromActiveList(ObjectData mmo)
+        {
+            activeMmos.Remove(mmo);
+        }
 
+        // If already in list, ignored
+        public void AddToActiveList(ObjectData mmo)
+        {
+            if (!activeMmos.Contains(mmo))
+            {
+                activeMmos.Add(mmo);
+            }
+        }
 
-        //Handling models
+        public void FilterData(POICoordinatesObject poiCoordinatesObject)
+        {
+            if (poiCoordinatesObject.getMyLocation())
+            {
+                myLocation = poiCoordinatesObject.getCoordinates();
+            }
+            else
+            {
+                PointOfInterests.Add(poiCoordinatesObject.getCoordinates());
+            }
+        }
+
     }
+       
+       
 }

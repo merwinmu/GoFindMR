@@ -6,6 +6,8 @@ namespace Assets.HoloLens.Scripts.Properties
 {
     public class POICoordinatesObject
     {
+        private bool mylocation;
+        private float heading;
         private double latitude;
         private double longitude;
         private string name;
@@ -24,12 +26,21 @@ namespace Assets.HoloLens.Scripts.Properties
             this.url = url;
         }
 
-        public POICoordinatesObject(double latitude, double longitude, GameObject gameObject)
+        public POICoordinatesObject(double latitude, double longitude, GameObject gameObject,float heading)
         {
             this.latitude = latitude;
             this.longitude = longitude;
+            this.heading = heading;
             this.coordinates = new Coordinates(latitude,longitude);
             this.gameObject = gameObject;
+        }
+
+        public POICoordinatesObject(double latitude, double longitude, float heading)
+        {
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.heading = heading;
+            this.coordinates = new Coordinates(latitude,longitude);
         }
 
         public POICoordinatesObject(string upperbound, string lowerbound)
@@ -53,6 +64,11 @@ namespace Assets.HoloLens.Scripts.Properties
             return this.gameObject;
         }
 
+        public float getHeading()
+        {
+            return this.heading;
+        }
+
         public string getURL()
         {
             return url;
@@ -68,7 +84,15 @@ namespace Assets.HoloLens.Scripts.Properties
             this.name = name;
         }
 
+        public void setMyLocation(bool flag)
+        {
+            this.mylocation = true;
+        }
 
+        public bool getMyLocation()
+        {
+            return mylocation;
+        }
         public override string ToString()
         {
             return name;

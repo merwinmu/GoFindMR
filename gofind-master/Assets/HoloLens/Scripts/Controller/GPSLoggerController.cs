@@ -69,7 +69,6 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
     {
         view.setGPSTextMesh(e.latitude,e.longitude,e.heading);
         //Debug.Log("Display Event changed "+e.longitude);
-       
     }
     
     //Not used function

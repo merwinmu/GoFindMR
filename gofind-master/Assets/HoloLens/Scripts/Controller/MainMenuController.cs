@@ -68,7 +68,7 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
             model.ChangeVisibility(false);
-            resultPanelModel.renderPicture();
+            //resultPanelModel.renderPicture();
             resultPanelModel.ChangeResultVisibility(true);
         }
 
@@ -92,8 +92,9 @@ namespace Assets.HoloLens.Scripts.Controller
            // model.setQueryData(gpsLoggerModel.getStringGPSCoordinates());
 
             QueryMenuController IqueryMenuView = transform.GetComponent<QueryMenuController>();
-            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(gpsLoggerModel.getLatitude(),gpsLoggerModel.getLongitude(),null);
-            poiCoordinatesObject.setName("My Location");
+            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(gpsLoggerModel.getLatitude(),gpsLoggerModel.getLongitude(),gpsLoggerModel.getHeading());
+            poiCoordinatesObject.setMyLocation(true);
+            poiCoordinatesObject.setName("My Location: " + poiCoordinatesObject.getCoordinates());
             IqueryMenuView.addQuery(poiCoordinatesObject);
         }
 

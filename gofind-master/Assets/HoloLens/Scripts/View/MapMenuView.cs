@@ -469,8 +469,10 @@ namespace Assets.HoloLens.Scripts.View
 
         private double lat1;
         private double lon1;
+        private float heading1;
         private double lat2;
         private double lon2;
+        private float myheading;
 
         private int deleteKey;
         private bool arrived;
@@ -482,6 +484,7 @@ namespace Assets.HoloLens.Scripts.View
                 {
                     lat1 = PoiCoordinatesObjects[key].getCoordinates().getLat();
                     lon1 = PoiCoordinatesObjects[key].getCoordinates().getLon();
+                    heading1 = PoiCoordinatesObjects[key].getHeading();
 
                     distance = calculateRadius(lat1, lon1, currentLatitude, currentLongitude);
                     DelayLoadLevel();

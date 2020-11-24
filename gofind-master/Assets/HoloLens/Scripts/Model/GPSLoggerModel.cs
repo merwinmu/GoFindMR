@@ -49,6 +49,7 @@ public interface IGPSLoggerModel
 
     double getLatitude();
     double getLongitude();
+    float getHeading();
 }
 
 // Implementation of the GPSLoggerModel model interface
@@ -122,6 +123,11 @@ public class GPSLoggerModel: IGPSLoggerModel
     public double getLongitude()
     {
         return this.longitude;
+    }
+
+    public float getHeading()
+    {
+        return this.heading;
     }
 
     public string getStringGPSCoordinates()

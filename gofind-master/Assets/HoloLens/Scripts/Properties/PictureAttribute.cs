@@ -8,10 +8,11 @@ public class PictureAttribute: MonoBehaviour
     public PicturePointerData PointerData;
     public double latitude;
     public double longitude;
-
-    public void setlatlon(double lat, double lon)
+    public float heading;
+    public void setlatlon(double lat, double lon, float heading)
     {
         this.latitude = lat;
         this.longitude = lon;
+        this.heading = heading;
     }
 }
