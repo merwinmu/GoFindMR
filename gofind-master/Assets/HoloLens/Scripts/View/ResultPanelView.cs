@@ -198,11 +198,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     public void createResultObjects(int v_size)
     {
-
         GameObject Container = scrollingObjectCollection.transform.GetChild(0).gameObject;
 
-        
-        
        // List<GameObject> ObjectList = new List<GameObject>();
         picturePointerDatasList = new List<PicturePointerData>();
 
@@ -285,7 +282,6 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             
             scrollingObjectCollection.UpdateCollection();
             Debug.Log("Scroling Object Updated");
-
     }
 
 
@@ -314,7 +310,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             scrollingObjectCollection.RemoveItem(VARIABLE.getGameObject());
         }
 
-        Destroy(GameObject.FindWithTag("Spawned"));
+        
         
 
         ResetObject eventArgs = new ResetObject();
@@ -324,9 +320,11 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         this.picturePointerDatasList.Clear();
         this.textureDatas.Clear();
         this.PoiCoordinatesObjects.Clear();
+        this.key = 0;
         
-        Debug.Log("Deleted all Results");
         
+        Destroy(transform.parent.parent);
+        //Debug.Log("Deleted all Results "+transform.parent.parent.GetChild(8));
     }
 
     public void setAllResultMenuVisibility(bool flag)
@@ -335,7 +333,6 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         transform.gameObject.transform.GetChild(0).gameObject.SetActive(true);
         transform.gameObject.transform.GetChild(1).gameObject.SetActive(true);
         transform.gameObject.transform.GetChild(2).gameObject.SetActive(true);
-
     }
     
     

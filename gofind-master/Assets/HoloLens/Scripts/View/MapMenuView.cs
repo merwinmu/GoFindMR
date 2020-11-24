@@ -99,6 +99,8 @@ namespace Assets.HoloLens.Scripts.View
         public double currentLatitude = 47.5569389;
 
         public double currentLongitude = 7.5888067;
+
+        public float currentheading = 250;
         
         
         
@@ -242,6 +244,7 @@ namespace Assets.HoloLens.Scripts.View
             currentMapPin.Location =  new LatLon(latitude,longitude);
             this.currentLatitude = latitude;
             this.currentLongitude = longitude;
+            this.currentheading = heading;
         }
 
         //Input actions from the user
@@ -353,12 +356,19 @@ namespace Assets.HoloLens.Scripts.View
             var eventArgs = new ZoomMapEventArgs(data);
             OnZoomMap(this, eventArgs);
         }
+
+        public float CalculateBearing(float pictureheading)
+        {
+            float diff = pictureheading - currentheading;
+            return diff;
+        }
         
         public async void RenderGameObject(POICoordinatesObject poiCoordinatesObject)
         {
             GameObject ShowPicture = poiCoordinatesObject.GETGameObject();
             ShowPicture = Instantiate(ShowPicture);
             ShowPicture.transform.localScale= new Vector3(-0.3f,-0.15f,0.004f);
+            float difference = CalculateBearing(poiCoordinatesObject.getHeading());
             ShowPicture.transform.rotation = Camera.main.transform.rotation;
             ShowPicture.transform.parent = transform;
             ShowPicture.transform.position = transform.GetChild(9).position;
@@ -441,7 +451,6 @@ namespace Assets.HoloLens.Scripts.View
 
         public void stopSpatialExploration()
         {
-            
             this.journeyStart = false;
             miniMap.SetActive(false);
             flushPOIList();
@@ -458,7 +467,6 @@ namespace Assets.HoloLens.Scripts.View
                     RemoveGameObject(VARIABLE.Key);
                 }
             }
-            
             //PoiCoordinatesObjects.Clear();
         }
         
