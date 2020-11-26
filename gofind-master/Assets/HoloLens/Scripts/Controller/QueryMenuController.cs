@@ -72,6 +72,8 @@ namespace Assets.HoloLens.Scripts.Controller
         
         public async void QueryCineastAndProcess(SimilarityQuery query)
         {
+            bool f = false;
+            
             var res = await Task.Run(async () =>
             {
                 var results = await Task.Run(async () => await CineastWrapper.ExecuteQuery(query, 100, 100));
@@ -81,8 +83,18 @@ namespace Assets.HoloLens.Scripts.Controller
                 await ObjectRegistry.BatchFetchObjectMetadata(ObjectRegistry.Objects);
                 Debug.Log("Metadata fetched");
                 Debug.Log("Fetched resutls: "+ results.results.Count);
+                f = true;
                 return results;
             });
+            Debug.Log("Handling Result");
+
+            while (f==false)
+            {
+                Debug.Log("waiting");
+            }
+            
+            Debug.Log("finished");
+            
             HandleCineastResult(ObjectRegistry.Objects); // TODO more sophisticated
         }
 
