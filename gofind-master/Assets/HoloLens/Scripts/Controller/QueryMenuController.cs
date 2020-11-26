@@ -6,6 +6,8 @@ using Assets.Scripts.Core;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Registries;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Utilities;
 using Org.Vitrivr.CineastApi.Model;
 using UnityEngine;
 
@@ -30,7 +32,8 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void Awake()
         {
-          
+            AotHelper.EnsureType<StringEnumConverter>();
+            var falseJc = new Newtonsoft.Json.JsonConstructorAttribute();
         }
 
         //Initialize Model, view and Listeners

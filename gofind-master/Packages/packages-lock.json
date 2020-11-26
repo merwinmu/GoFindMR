@@ -61,7 +61,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.vscode": {
-      "version": "1.2.2",
+      "version": "1.2.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -128,6 +128,20 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.xr.oculus.standalone": {
+      "version": "2.38.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.xr.openvr.standalone": {
+      "version": "2.0.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.xr.windowsmr.metro": {
       "version": "4.2.3",
       "depth": 0,
@@ -144,6 +158,13 @@
       "dependencies": {},
       "hash": "f4129574fb7a5bcb3c1e3b2da353a44ea762ee2d"
     },
+    "jillejr.newtonsoft.json-for-unity": {
+      "version": "12.0.301",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity"
+    },
     "nuget.mono-cecil": {
       "version": "0.1.6-preview",
       "depth": 1,
@@ -152,11 +173,11 @@
       "url": "https://packages.unity.com"
     },
     "org.vitrivr.unityinterface.cineastapi": {
-      "version": "https://github.com/vitrivr/UnityInterface.git#dev-all",
+      "version": "https://github.com/vitrivr/UnityInterface.git#dev",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "9d924d14a8e85c88059685222e87f61898804bd5"
+      "hash": "20dfaa3d615cd708cc8cdb36997a944f59cb75a0"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

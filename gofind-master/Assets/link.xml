@@ -1,0 +1,152 @@
+<linker>
+    <assembly fullname="AssemblyCSharp">
+        <type fullname="Org.Vitrivr.CineastApi">
+            <method signature="System.Void .ctor()"/>
+        </type>
+    </assembly>
+
+    
+        <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.SimilarityQueryResultBatch" preserve="all"/>
+        </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.SimilarityQueryResult" preserve="all"/>
+    </assembly>
+
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.StringDoublePair" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.AbstractMetadataFilterDescriptor" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.Credentials" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.DistinctElementsResult" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.ExtractionContainerMessage" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.ExtractionItemContainer" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.IdList" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MediaObjectMetadataDescriptor" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MediaObjectDescriptor" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MediaObjectMetadataQueryResult" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MediaObjectQueryResult" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MediaSegmentDescriptor" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MediaSegmentQueryResult" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MetadataDomainFilter" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.MetadataKeyFilter" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.OptionallyFilteredIdList" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.Ping" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.QueryComponent" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.QueryConfig" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.QueryTerm" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.SessionState" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.SimilarityQuery" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Model.StartSessionMessage" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.Tag" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.ApiClient" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.ApiException" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.Configuration" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.ExceptionFactory" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.GlobalConfiguration" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.IApiAccessor" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.IReadableConfiguration" preserve="all"/>
+    </assembly>
+
+    <assembly fullname="Org.Vitrivr.CineastApi">
+        <type fullname="Org.Vitrivr.CineastApi.Client.OpenAPIDateConverter" preserve="all"/>
+    </assembly>
+
+    
+    
+</linker>
