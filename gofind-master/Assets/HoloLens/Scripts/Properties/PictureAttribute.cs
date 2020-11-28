@@ -9,6 +9,8 @@ public class PictureAttribute: MonoBehaviour
     public double latitude;
     public double longitude;
     public float heading;
+    public float height;
+    public float width;
     public void setlatlon(double lat, double lon, float heading)
     {
         this.latitude = lat;

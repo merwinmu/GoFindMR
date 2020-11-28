@@ -68,6 +68,12 @@ namespace Assets.HoloLens.Scripts.Controller
              menuController.GETMainMenuModel().ChangeVisibility(false);
              view.setVisibility(false);
              resultPanelModel.ChangeResultVisibility(true);
+
+             IMapController mapController = GetComponent<MapController>();
+             mapController.GETMapView().setGameObjectVisibility(false);
+
+             ITemporalController temporalController = GetComponent<TemporalController>();
+             temporalController.GETItTemporalView().MenuVisibility(false);
         }
         
         public async void QueryCineastAndProcess(SimilarityQuery query)
@@ -129,7 +135,8 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void RemoveFromDatabase(object sender, QueryRemoveEventArgs e)
         {
-            
+            MapController mapController = GetComponent<MapController>();
+            mapController.GETMapView().removeLocationPins(e.RemoveObject);
         }
         public void DoCineastRequest(double latitude, double longitude) {
             Debug.Log("DoCineastRequest LInfo " + latitude + "," + longitude);

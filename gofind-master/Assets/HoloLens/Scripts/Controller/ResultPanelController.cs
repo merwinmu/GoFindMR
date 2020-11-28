@@ -47,7 +47,7 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
          view.OnShowOnMap += ShowMap;
          view.OnMapHide += HideMap;
          view.OnARClick += ARMode;
-         view.OnResetObject += DeleteObjectsInRoot;
+         view.OnResetObject += DeleteFromQueryMenu;
         //view.OnGeneratePin += HandleGeneratePin;
        
         // Listen to changes in the model
@@ -58,12 +58,10 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         //model.OnMapPinGenerate += GenerateMapPins;
     }
 
-    private void DeleteObjectsInRoot(object sender, ResetObject e)
+    private void DeleteFromQueryMenu(object sender, ResetObject e)
     {
-        foreach (Transform VARIABLE in transform.root)
-        {
-            Debug.Log(VARIABLE.gameObject.name);
-        }
+        IQueryMenuController controller = gameObject.GetComponent<QueryMenuController>();
+        controller.getview().Reset();
     }
 
     private void HandleReset(object sender, ResetEventArgs e)

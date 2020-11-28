@@ -1149,12 +1149,13 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
                 NodeList.RemoveAt(nodeIndex);
                 item.transform.parent = null;
                 Reset();
-
+                Destroy(item);
                 return true;
             }
-
             return false;
         }
+        
+        
 
         /// <summary>
         /// Gets the cursor position (pointer end point) on the scrollable plane,

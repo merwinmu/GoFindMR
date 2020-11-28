@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 
 public class QueryCompleteEventArgs : EventArgs
@@ -30,7 +33,7 @@ public interface IQueryMenuView
     void setVisibility(bool flag);
     void setQueryMenuRadialPosition(Vector3 pos, bool flag);
     void setQueryMenuPosition(Vector3 pos);
-
+    void Reset();
     Vector3 getInitQueryMenuPosition();
 };
 public class QueryMenuView : MonoBehaviour, IQueryMenuView
@@ -76,14 +79,14 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         POIButton.transform.rotation = transform.rotation;
         POIButton.GetComponent<ButtonConfigHelper>().MainLabelText = poiCoordinatesObject.ToString();
         POIButton.GetComponent<ButtonAttribute>().setID_coordinates(ButtonID,poiCoordinatesObject);
-        POIButton.GetComponent<Interactable>().OnClick.AddListener((() => OnQueryRemoveButtonLogic(POIButton)));
+        POIButton.GetComponent<Interactable>().OnClick.AddListener((() => OnQueryRemoveButtonLogic(POIButton,poiCoordinatesObject)));
         POIButton.gameObject.transform.parent = transform.GetChild(2).GetChild(0);
         queryList[ButtonID] = POIButton;
         ButtonID++;
         scrollingObjectCollection.UpdateCollection();
     }
     
-    private void OnQueryRemoveButtonLogic(GameObject POIButton)
+    private void OnQueryRemoveButtonLogic(GameObject POIButton, POICoordinatesObject poiCoordinatesObject)
     {
         int ID = POIButton.GetComponent<ButtonAttribute>().getID();
         queryList.Remove(ID);
@@ -93,13 +96,14 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         scrollingObjectCollection.RemoveItem(POIButton);
         Destroy(POIButton);
         scrollingObjectCollection.UpdateCollection();
+
         var eventArgs = new QueryRemoveEventArgs();
-        eventArgs.RemoveObject = POIButton;
-        OnRemove(this, eventArgs);    
-        //TODO OnRemoveMap
+        eventArgs.RemoveObject = poiCoordinatesObject.GETGameObject();
+        OnRemove(this, eventArgs);
+        
+        
             
-
-
+        
         // foreach (Transform VARIABLE in transform.GetChild(4).GetChild(1).GetChild(0))
         // {
         //     if (id == VARIABLE.gameObject.GetComponent<ButtonAttribute>().getID())
@@ -114,6 +118,14 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         // }
     }
 
+    public void Reset()
+    {
+        foreach (var VARIABLE in queryList)
+        {
+            Destroy(VARIABLE.Value);
+        }
+        queryList.Clear();
+    }
 
     public void setQueryMenuRadialPosition(Vector3 pos, bool flag)
     {

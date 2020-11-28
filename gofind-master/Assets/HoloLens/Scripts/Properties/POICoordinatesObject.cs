@@ -11,7 +11,7 @@ namespace Assets.HoloLens.Scripts.Properties
         private double latitude;
         private double longitude;
         private string name;
-        private GameObject gameObject;
+        private GameObject MapPin;
         private Coordinates coordinates;
         private string url;
         private Texture texture;
@@ -22,7 +22,7 @@ namespace Assets.HoloLens.Scripts.Properties
         {
             this.coordinates = new Coordinates(latitude, longitude);
             this.name = name;
-            this.gameObject = gameObject;
+            this.MapPin = gameObject;
             this.url = url;
         }
 
@@ -32,7 +32,7 @@ namespace Assets.HoloLens.Scripts.Properties
             this.longitude = longitude;
             this.heading = heading;
             this.coordinates = new Coordinates(latitude,longitude);
-            this.gameObject = gameObject;
+            this.MapPin = gameObject;
         }
 
         public POICoordinatesObject(double latitude, double longitude, float heading)
@@ -61,7 +61,7 @@ namespace Assets.HoloLens.Scripts.Properties
 
         public GameObject GETGameObject()
         {
-            return this.gameObject;
+            return this.MapPin;
         }
 
         public float getHeading()
@@ -82,6 +82,11 @@ namespace Assets.HoloLens.Scripts.Properties
         public void setName(string name)
         {
             this.name = name;
+        }
+
+        public void setMapPin(GameObject gameObject)
+        {
+            MapPin = gameObject;
         }
 
         public void setMyLocation(bool flag)

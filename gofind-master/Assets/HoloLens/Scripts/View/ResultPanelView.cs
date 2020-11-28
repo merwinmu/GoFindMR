@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.Properties;
+using GeoARDisplay.Scripts;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -73,7 +74,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public event EventHandler<CancelEventArgs> OnMapHide = (sender, e) => { };
     public event EventHandler<GetPOILocationListEventArgs> OnARClick = (sender, e) => { };
     public event EventHandler<ResetObject> OnResetObject = (sender, e) => { };
-    
+
+    private int local_resize = 500;
 
     public Texture2D texture;
     private GameObject backButtonObject;
@@ -97,6 +99,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     private GameObject result0;
     private GameObject result1;
     private GameObject result2;
+    private WebTextured webTextured;
     private void Start()
     {
         scrollObeObjectCollectionGameObject = transform.GetChild(1).GetChild(0).GetChild(1).gameObject;
@@ -120,6 +123,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         
         transform.gameObject.SetActive(false);
         PoiCoordinatesObjects = new Dictionary<int, POICoordinatesObject>();
+        webTextured = transform.gameObject.AddComponent<WebTextured>();
     }
 
     private void ExploreButton_AddOnClick(Interactable exploreInteractable)
@@ -182,6 +186,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             }
         }
     }
+
+
     public async void setTextures(List<PictureData> pictureDatasList)
     {
         textureDatas = pictureDatasList;
@@ -190,11 +196,12 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
         foreach (var VARIABLE in textureDatas)
         {
-            url = VARIABLE.getURL();
+            url = VARIABLE.getURL(); 
             VARIABLE.setData(await GetRemoteTexture(url));
         }
         createResultObjects(size);
     }
+    
 
     public void createResultObjects(int v_size)
     {
@@ -260,13 +267,18 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                 picturePointerDatasList[listcount].getGameObject().GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().AddComponent<PictureAttribute>();
                 picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().setlatlon(VARIABLE.getLat(), VARIABLE.getLon(),VARIABLE.gethea());
+                picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().width =
+                    VARIABLE.getData().width;
+                picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().height =
+                    VARIABLE.getData().height;
                 listcount++;
             }
 
             foreach (var VARIABLE in picturePointerDatasList)
             {
-                VARIABLE.getGameObject().transform.localScale = new Vector3(0.4f,0.2f,0.01f);
-                VARIABLE.getGameObject().gameObject.transform.parent =
+                var attribute = VARIABLE.getGameObject().GetComponent<PictureAttribute>();
+                VARIABLE.getGameObject().transform.localScale = new Vector3(attribute.width/local_resize,attribute.height/local_resize,0.01f);
+                VARIABLE.getGameObject().gameObject.transform.parent = 
                     transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).transform;
                 
                 //VARIABLE.getGameObject().AddComponent<PictureAttribute>();
@@ -308,22 +320,16 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         foreach (var VARIABLE in picturePointerDatasList)
         {
             scrollingObjectCollection.RemoveItem(VARIABLE.getGameObject());
+           
         }
 
-        
-        
-
         ResetObject eventArgs = new ResetObject();
-        eventArgs.picturePointerDatasList = picturePointerDatasList;
-        //OnResetObject(this, eventArgs);
+        OnResetObject(this, eventArgs);
         
         this.picturePointerDatasList.Clear();
         this.textureDatas.Clear();
         this.PoiCoordinatesObjects.Clear();
         this.key = 0;
-        
-        
-        Destroy(transform.parent.parent);
         //Debug.Log("Deleted all Results "+transform.parent.parent.GetChild(8));
     }
 
@@ -356,10 +362,10 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         ShowPictureObject = (GameObject)Resources.Load("Prefab/ShowResult",typeof(GameObject)) ;
         ShowPictureObject = Instantiate(ShowPictureObject);
         ShowPictureObject.transform.parent = transform.parent;
-
+        
         ShowPictureObject.transform.position = ShowObject.transform.position; // Get Original position from colloection for nice smooth transition
 
-        ShowObject.transform.localScale = new Vector3(0.5f,0.3f,0.0001f); // Setting size
+        ShowObject.transform.localScale = new Vector3(attribute.width/local_resize,attribute.height/local_resize,0.0001f); // Setting size
 
         ShowObject.transform.parent = ShowPictureObject.transform;
 

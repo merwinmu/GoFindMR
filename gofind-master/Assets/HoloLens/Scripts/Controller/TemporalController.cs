@@ -15,6 +15,7 @@ namespace Assets.HoloLens.Scripts.Controller
     public interface ITemporalController
     {
         ITemporalModel GETItTemporalModel();
+        ITemporalView GETItTemporalView();
     }
     
     public class TemporalController: MonoBehaviour,ITemporalController
@@ -109,6 +110,11 @@ namespace Assets.HoloLens.Scripts.Controller
         public ITemporalModel GETItTemporalModel()
         {
             return model;
+        }
+
+        public ITemporalView GETItTemporalView()
+        {
+            return view;
         }
     }
 }

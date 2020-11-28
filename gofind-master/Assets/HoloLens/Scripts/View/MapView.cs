@@ -37,7 +37,7 @@ namespace Assets.HoloLens.Scripts.View
         void RenderGenerateMapPins();
         void ZoomMap(float data);
         void setCurrentPositionPin(double latitude, double longitude, float heading);
-
+        void removeLocationPins(GameObject gameObject);
         void ZoomIntoPoint(double lat, double lon);
         void EnableRadial();
 
@@ -87,6 +87,7 @@ namespace Assets.HoloLens.Scripts.View
             mapPin.Location = data.LatLon;
             _mapPinLayer.MapPins.Add(mapPin);
             POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(data.LatitudeInDegrees,data.LongitudeInDegrees,0);
+            poiCoordinatesObject.setMapPin(mapPin.gameObject);
             poiCoordinatesObject.setName(data.LatLon.LatitudeInDegrees.ToString()+" "+data.LongitudeInDegrees);
             var EventArgs = new POIEventArgs(poiCoordinatesObject);
             OnPOI(this, EventArgs);
@@ -128,6 +129,18 @@ namespace Assets.HoloLens.Scripts.View
         public void setLocationPins()
         {
             throw new NotImplementedException();
+        }
+
+        public void removeLocationPins(GameObject gameObject)
+        {
+            foreach (Transform transform in transform.GetChild(1))
+            {
+                if (transform.gameObject == gameObject)
+                {
+                    transform.gameObject.SetActive(false);
+                    break;
+                }
+            }
         }
 
 
