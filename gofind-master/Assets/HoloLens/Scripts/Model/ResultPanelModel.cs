@@ -126,6 +126,7 @@ public interface IResultPanelModel
     event EventHandler<UpdatePicturesEventArgs> OnUpdatePictures;
     event EventHandler<ResultVisibilityEventArgs> OnResultVisibility;
     event EventHandler<ResetEventArgs> OnReset;
+    event EventHandler<BackEventArgs> OnEDialog;
 
 
     /*
@@ -151,6 +152,8 @@ public class ResultPanelModel : IResultPanelModel
     public event EventHandler<UpdatePicturesEventArgs> OnUpdatePictures = (sender, e) => { };
     public event EventHandler<ResultVisibilityEventArgs> OnResultVisibility = (sender, e) => { };
     public event EventHandler<ResetEventArgs> OnReset = (sender, e) => { };
+    public event EventHandler<BackEventArgs> OnEDialog = (sender, e) => { };
+
 
     private bool showResult;
 
@@ -207,11 +210,21 @@ public class ResultPanelModel : IResultPanelModel
         this.lowerbound = lowerbound;
         this.activate_temp = activate_temp;
         parseToPictureData(list,poilist);
-        Debug.Log("Parsed the mmo Object to PictureData");
-        
-        var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
-        // Dispatch the 'Result changed' event
-        OnUpdatePictures(this, eventArgs);
+
+        if (pictureDataList.Count != 0)
+        {
+            Debug.Log("Parsed the mmo Object to PictureData");
+            var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
+            // Dispatch the 'Result changed' event
+            OnUpdatePictures(this, eventArgs);
+        }
+        else
+        {
+            Debug.Log("No Results found");
+            var eventArgs = new BackEventArgs();
+            OnEDialog(this,eventArgs);
+        }
+       
     }
 
     private DateTime upperbound;

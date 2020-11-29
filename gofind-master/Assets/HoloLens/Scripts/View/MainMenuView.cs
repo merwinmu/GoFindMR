@@ -77,10 +77,11 @@ namespace Assets.HoloLens.Scripts.View
         event EventHandler<TemporalEventArgs> OnTemporalSelect;
         event EventHandler<SearchEventArgs> OnSearchSelect;
         event EventHandler<RemoveQueryDataArgs> OnRemove;
+        event EventHandler<BackEventArgs> OnShow;
         
         void setViewproperties();
         void HideQueryOption(bool flag);
-
+        void activateShow(bool flag);
         List<GameObject> getQueryButtons();
 
         void SetMainMenuVisibility(bool flag);
@@ -97,6 +98,9 @@ namespace Assets.HoloLens.Scripts.View
         public event EventHandler<TemporalEventArgs> OnTemporalSelect= (sender, e) => { };
         public event EventHandler<SearchEventArgs> OnSearchSelect= (sender, e) => { };
         public event EventHandler<RemoveQueryDataArgs> OnRemove= (sender, e) => { };
+        
+        public event EventHandler<BackEventArgs> OnShow= (sender, e) => { };
+
 
         //Init GameObjects
         private GameObject Camera_button;
@@ -113,6 +117,11 @@ namespace Assets.HoloLens.Scripts.View
         
         private GameObject Search_button;
         private Interactable Search_interactable;
+
+        private GameObject Show;
+        private GameObject Show_Button;
+        private Interactable Show_Interactable;
+
 
         private GameObject query0_button;
         private Interactable query0_interactable;
@@ -150,6 +159,11 @@ namespace Assets.HoloLens.Scripts.View
             Search_interactable = Search_button.GetComponent<Interactable>();
             Search_button_AddOnClick(Search_interactable);
             
+            Show = transform.GetChild(5).gameObject;
+            Show_Button = transform.GetChild(5).GetChild(1).GetChild(0).gameObject;
+            Show_Interactable = Show_Button.GetComponent<Interactable>();
+            Show_button_AddOnClick(Show_Interactable);
+            
             query0_button = transform.GetChild(2).GetChild(5).gameObject;
             query0_interactable = query0_button.GetComponent<Interactable>();
             query1_AddOnClick(query0_interactable);
@@ -173,7 +187,23 @@ namespace Assets.HoloLens.Scripts.View
             OptionBackground = transform.GetChild(4).gameObject;
             OptionBackground.SetActive(false);
         }
-        
+
+        private void Show_button_AddOnClick(Interactable showInteractable)
+        {
+            showInteractable.OnClick.AddListener((() => ShowAgain()));
+        }
+
+        private void ShowAgain()
+        {
+            var eventArgs = new BackEventArgs();
+            OnShow(this, eventArgs);
+        }
+
+        public void activateShow(bool flag)
+        {
+            Show.SetActive(flag);
+        }
+
 
         //INPUT actions from the user
         

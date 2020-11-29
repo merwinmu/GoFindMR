@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
@@ -15,6 +14,9 @@ namespace Assets.HoloLens.Scripts.Controller
     public interface IMainMenuController
     {
         IMainMenuModel GETMainMenuModel();
+        IMainMenuView GETMainMenuView();
+        void HandleReset(object sender, SearchEventArgs e);
+
     }
     public class MainMenuController: MonoBehaviour, IMainMenuController
     {
@@ -40,6 +42,7 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnTemporalSelect += HandleTemporalSelect;
             view.OnSearchSelect += HandleReset;
             view.OnRemove += HandleRemoveQuery;
+            view.OnShow += HandleSearchSelect;
             
 
             // Listen to changes in the model
@@ -50,10 +53,17 @@ namespace Assets.HoloLens.Scripts.Controller
             // Set the view's initial state by synching with the model
         }
 
+
+
         //An Interface so other controllers can access the model
         public IMainMenuModel GETMainMenuModel()
         {
             return model;
+        }
+
+        public IMainMenuView GETMainMenuView()
+        {
+            return view;
         }
 
         //Functions to call once an Event occurs
@@ -64,7 +74,7 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             model.RemoveQueryOption(e.getID());
         }
-        private void HandleSearchSelect(object sender, SearchEventArgs e)
+        private void HandleSearchSelect(object sender, BackEventArgs e)
         {
             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
             model.ChangeVisibility(false);
@@ -72,10 +82,11 @@ namespace Assets.HoloLens.Scripts.Controller
             resultPanelModel.ChangeResultVisibility(true);
         }
 
-        private void HandleReset(object sender, SearchEventArgs e)
+        public void HandleReset(object sender, SearchEventArgs e)
         {
             ResultPanelController controller = GetComponent<ResultPanelController>();
             controller.GETResultPanelView().reset();
+            view.activateShow(false);
         }
 
         private void HandleTemporalSelect(object sender, TemporalEventArgs e)

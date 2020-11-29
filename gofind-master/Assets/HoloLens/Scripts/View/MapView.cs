@@ -142,7 +142,8 @@ namespace Assets.HoloLens.Scripts.View
             {
                 if (transform.gameObject == gameObject)
                 {
-                    transform.gameObject.SetActive(false);
+                    Debug.Log("Removed MapPin "+transform.gameObject);
+                    Destroy(transform.gameObject);
                     break;
                 }
             }

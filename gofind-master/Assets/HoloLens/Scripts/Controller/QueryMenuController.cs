@@ -62,10 +62,18 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnReceived += SearchQuery;
             //view.OnSearch += SearchDebug;
             view.OnSearch += SearchClicked;
+            view.OnErrorBack += HandleError;
             DistanceAttribute.OnDistanceChanged += UpdateDistance;
 
 
             // Listen to changes in the model
+        }
+
+        private void HandleError(object sender, BackEventArgs e)
+        {
+            view.setErrorDialogVisibility(false);
+            IMainMenuController mainMenuController = GetComponent<MainMenuController>();
+            mainMenuController.GETMainMenuView().SetMainMenuVisibility(true);
         }
 
         private void UpdateDistance(object sender, DistanceEventArgs e)
@@ -95,6 +103,9 @@ namespace Assets.HoloLens.Scripts.Controller
 
              IMapController mapController = GetComponent<MapController>();
              mapController.GETMapView().setGameObjectVisibility(false);
+
+             IMapMenuController mapMenuController = GetComponent<MapMenuController>();
+             mapMenuController.GETMapMenuView().MenuVisibility(false);
 
              ITemporalController temporalController = GetComponent<TemporalController>();
              temporalController.GETItTemporalView().MenuVisibility(false);
@@ -258,6 +269,4 @@ namespace Assets.HoloLens.Scripts.Controller
         }
 
     }
-       
-       
 }

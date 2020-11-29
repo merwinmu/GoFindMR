@@ -321,12 +321,14 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         transform.position = pos;
     }
 
-    public void reset()
+    public void  reset()
     {
-        foreach (var VARIABLE in picturePointerDatasList)
+        if (picturePointerDatasList.Count != 0 || picturePointerDatasList !=null)
         {
-            scrollingObjectCollection.RemoveItem(VARIABLE.getGameObject());
-           
+            foreach (var VARIABLE in picturePointerDatasList)
+            {
+                scrollingObjectCollection.RemoveItem(VARIABLE.getGameObject());
+            }
         }
 
         ResetObject eventArgs = new ResetObject();

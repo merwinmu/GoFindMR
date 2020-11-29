@@ -8,6 +8,7 @@ using Assets.HoloLens.Scripts.View;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -26,7 +27,7 @@ public interface IQueryMenuView
     event EventHandler<QueryCompleteEventArgs> OnReceived;
     event EventHandler<QueryRemoveEventArgs> OnRemove;
     event EventHandler<QueryRemoveEventArgs> OnRemoveOnMap;
-
+    event EventHandler<BackEventArgs> OnErrorBack;
     event EventHandler<BackEventArgs> OnSearch;
 
     void createSelection(POICoordinatesObject poiCoordinatesObject);
@@ -35,6 +36,8 @@ public interface IQueryMenuView
     void setQueryMenuPosition(Vector3 pos);
     void Reset();
     Vector3 getInitQueryMenuPosition();
+    void setErrorDialogVisibility(bool flag);
+    void error();
 };
 public class QueryMenuView : MonoBehaviour, IQueryMenuView
 {
@@ -42,14 +45,16 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
     public event EventHandler<QueryRemoveEventArgs> OnRemove= (sender, e) => { };
     public event EventHandler<QueryRemoveEventArgs> OnRemoveOnMap  = (sender, e) => { };
     public event EventHandler<BackEventArgs> OnSearch  = (sender, e) => { };
+    public event EventHandler<BackEventArgs> OnErrorBack  = (sender, e) => { };
 
-    
+    private GameObject searchButton;
     private GameObject querymenu;
     private GameObject scrollObeObjectCollectionGameObject;
+    private GameObject ErrorDialog;
+    private GameObject ErrorButton;
     private ScrollingObjectCollection scrollingObjectCollection;
     private Vector3 queryMenuPosition;
     private RadialView initRadialView;
-    private GameObject searchButton;
    
     private Dictionary<int, GameObject> queryList;
     
@@ -65,6 +70,16 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         scrollingObjectCollection = scrollObeObjectCollectionGameObject.GetComponent<ScrollingObjectCollection>();
         searchButton = transform.GetChild(3).gameObject;
         searchButton.GetComponent<Interactable>().OnClick.AddListener((() => searchClick()));
+        ErrorDialog = transform.GetChild(8).gameObject;
+        ErrorDialog.SetActive(false);
+        ErrorButton = transform.GetChild(8).GetChild(2).GetChild(0).gameObject;
+        ErrorButton.GetComponent<Interactable>().OnClick.AddListener((() => backClick()));
+    }
+
+    public void backClick()
+    {
+        var EventArgs = new BackEventArgs();
+        OnErrorBack(this, EventArgs);
     }
 
     public void searchClick()
@@ -126,11 +141,16 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         }
         queryList.Clear();
     }
-
+    
     public void setQueryMenuRadialPosition(Vector3 pos, bool flag)
     {
         GetComponent<SolverHandler>().AdditionalOffset = pos;
         GetComponent<RadialView>().enabled = flag;
+    }
+
+    public void setErrorDialogVisibility(bool flag)
+    {
+        ErrorDialog.SetActive(flag);
     }
 
     public void setQueryMenuPosition(Vector3 pos)
@@ -150,7 +170,27 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
     public void setVisibility(bool flag)
     {
         querymenu.SetActive(flag);
+        
+        foreach (Transform transform in transform)
+        {
+            if (transform.gameObject != ErrorDialog)
+            {
+                transform.gameObject.SetActive(flag);
+            }
+        }
     }
+
+    public void error()
+    {
+        foreach (Transform transform in transform)
+        {
+            if (transform.gameObject != ErrorDialog)
+            {
+                transform.gameObject.SetActive(false);
+            }
+        }
+    }
+    
 
     // Update is called once per frame
     void Update()

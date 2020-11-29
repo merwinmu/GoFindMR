@@ -55,7 +55,18 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         model.OnResultVisibility += ResultStatusVisibility;
         model.OnUpdatePictures += HandleUpdatePicture;
         model.OnReset += HandleReset;
+        model.OnEDialog += ShowDialog;
         //model.OnMapPinGenerate += GenerateMapPins;
+    }
+
+    private void ShowDialog(object sender, BackEventArgs e)
+    {
+        view.setAllResultMenuVisibility(false);
+        IQueryMenuController controller = gameObject.GetComponent<QueryMenuController>();
+        controller.getview().setVisibility(true);
+        controller.getview().error();
+        controller.getview().setErrorDialogVisibility(true);
+        Debug.Log("Error Window showing");
     }
 
     private void DeleteFromQueryMenu(object sender, ResetObject e)
@@ -107,6 +118,9 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
         model.ChangeResultVisibility(false);
         mainMenuModel.ChangeVisibility(true);
+        IMainMenuView mainMenuView = transform.GetComponent<MainMenuController>().GETMainMenuView();
+        mainMenuView.activateShow(true);
+        
         Debug.Log("Search clicked");
     }
 
