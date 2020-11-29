@@ -168,8 +168,6 @@ public class ResultPanelModel : IResultPanelModel
 
     public void renderDebugPicture()
     {
-        
-        
         pictureDataList = new List<PictureData>();
         
         pictureDataList.Add(new PictureData(0,"https://cdn.pixabay.com/photo/2016/10/18/21/22/california-1751455__340.jpg",21.42039,24.28500,0));
@@ -210,12 +208,16 @@ public class ResultPanelModel : IResultPanelModel
         this.lowerbound = lowerbound;
         this.activate_temp = activate_temp;
         parseToPictureData(list,poilist);
+        Debug.Log("COunt"+list.Count);
 
+        
         if (pictureDataList.Count != 0)
         {
             Debug.Log("Parsed the mmo Object to PictureData");
             var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
             // Dispatch the 'Result changed' event
+            
+            
             OnUpdatePictures(this, eventArgs);
         }
         else
@@ -251,7 +253,7 @@ public class ResultPanelModel : IResultPanelModel
             lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);
             hea = Convert.ToSingle(MetadataUtils.GetBearing(VARIABLE.Metadata));
             
-            if (upperbound != null && lowerbound != null && time != "" && activate_temp)
+            if (time != "" && activate_temp)
             {
                 DateTime dateTime = DateTime.Parse(MetadataUtils.GetDateTime(VARIABLE.Metadata));
                 
@@ -303,15 +305,14 @@ public class ResultPanelModel : IResultPanelModel
         }
 
         return filterdList;
-
     }
     
 
     public void reset()
     {
         activate_temp = false;
-        OnReset(this,new ResetEventArgs());
         pictureDataList.Clear();
+        OnReset(this,new ResetEventArgs());
     }
 
     public void ChangeResultVisibility(bool flag)

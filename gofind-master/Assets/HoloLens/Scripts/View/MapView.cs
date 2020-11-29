@@ -38,7 +38,7 @@ namespace Assets.HoloLens.Scripts.View
         void RenderGenerateMapPins();
         void ZoomMap(float data);
         void setCurrentPositionPin(double latitude, double longitude, float heading);
-        void removeLocationPins(GameObject gameObject);
+        void removeLocationPins(MapPin gameObject);
         void ZoomIntoPoint(double lat, double lon);
         void EnableRadial();
         void DisableRadial();
@@ -66,8 +66,10 @@ namespace Assets.HoloLens.Scripts.View
 
         private GameObject Map;
         private MapRenderer renderer;
+        private MapPinLayer mapPinLayer;
         private Camera camera;
         private MapInteractionController mapInteractionController;
+        
 
         private void Start()
         {
@@ -77,6 +79,7 @@ namespace Assets.HoloLens.Scripts.View
             
             CurrentPositionInit();
             renderer = GetComponent<MapRenderer>();
+            mapPinLayer = GetComponent<MapPinLayer>();
             mapInteractionController = GetComponent<MapInteractionController>();
             mapInteractionController.OnDoubleTap.AddListener(((data ) => GenerateLatLonObject(data)));
         }
@@ -87,7 +90,7 @@ namespace Assets.HoloLens.Scripts.View
             mapPin.Location = data.LatLon;
             _mapPinLayer.MapPins.Add(mapPin);
             POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(data.LatitudeInDegrees,data.LongitudeInDegrees,0);
-            poiCoordinatesObject.setMapPin(mapPin.gameObject);
+            poiCoordinatesObject.setMapPin(mapPin);
             poiCoordinatesObject.setName(data.LatLon.LatitudeInDegrees.ToString()+" "+data.LongitudeInDegrees);
             var EventArgs = new POIEventArgs(poiCoordinatesObject);
             OnPOI(this, EventArgs);
@@ -136,17 +139,17 @@ namespace Assets.HoloLens.Scripts.View
             throw new NotImplementedException();
         }
 
-        public void removeLocationPins(GameObject gameObject)
+        public void removeLocationPins(MapPin mapPin)
         {
-            foreach (Transform transform in transform.GetChild(1))
-            {
-                if (transform.gameObject == gameObject)
-                {
-                    Debug.Log("Removed MapPin "+transform.gameObject);
-                    Destroy(transform.gameObject);
-                    break;
-                }
-            }
+            mapPinLayer.MapPins.Remove(mapPin);
+            // foreach (Transform transform in transform.GetChild(1))
+            // {
+            //     if (transform.gameObject == gameObject)
+            //     {
+            //         Debug.Log("Removed MapPin "+transform.gameObject);
+            //         break;
+            //     }
+            // }
         }
 
 

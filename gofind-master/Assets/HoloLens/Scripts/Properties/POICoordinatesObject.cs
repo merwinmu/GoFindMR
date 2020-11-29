@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Microsoft.Maps.Unity;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -11,18 +12,19 @@ namespace Assets.HoloLens.Scripts.Properties
         private double latitude;
         private double longitude;
         private string name;
-        private GameObject MapPin;
+        private GameObject gameObject;
         private Coordinates coordinates;
         private string url;
         private Texture texture;
         private float upperbound;
         private float lowerbound;
+        private MapPin mapPin;
 
         public POICoordinatesObject(double latitude, double longitude, string name, GameObject gameObject, string url)
         {
             this.coordinates = new Coordinates(latitude, longitude);
             this.name = name;
-            this.MapPin = gameObject;
+            this.gameObject = gameObject;
             this.url = url;
         }
 
@@ -32,7 +34,7 @@ namespace Assets.HoloLens.Scripts.Properties
             this.longitude = longitude;
             this.heading = heading;
             this.coordinates = new Coordinates(latitude,longitude);
-            this.MapPin = gameObject;
+            this.gameObject = gameObject;
         }
 
         public POICoordinatesObject(double latitude, double longitude, float heading)
@@ -61,7 +63,7 @@ namespace Assets.HoloLens.Scripts.Properties
 
         public GameObject GETGameObject()
         {
-            return this.MapPin;
+            return this.gameObject;
         }
 
         public float getHeading()
@@ -84,10 +86,22 @@ namespace Assets.HoloLens.Scripts.Properties
             this.name = name;
         }
 
-        public void setMapPin(GameObject gameObject)
+        public void setGameObject(GameObject gameObject)
         {
-            MapPin = gameObject;
+            this.gameObject = gameObject;
         }
+
+        public void setMapPin(MapPin mapPin)
+        {
+            this.mapPin = mapPin;
+        }
+
+        public MapPin getMapPin()
+        {
+            return this.mapPin;
+        }
+        
+        
 
         public void setMyLocation(bool flag)
         {

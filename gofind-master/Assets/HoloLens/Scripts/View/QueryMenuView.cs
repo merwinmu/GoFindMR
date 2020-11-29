@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
+using Microsoft.Maps.Unity;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
@@ -20,7 +21,7 @@ public class QueryCompleteEventArgs : EventArgs
 
 public class QueryRemoveEventArgs : EventArgs
 {
-    public GameObject RemoveObject;
+    public MapPin RemoveObject;
 }
 public interface IQueryMenuView
 {
@@ -113,7 +114,7 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
         scrollingObjectCollection.UpdateCollection();
 
         var eventArgs = new QueryRemoveEventArgs();
-        eventArgs.RemoveObject = poiCoordinatesObject.GETGameObject();
+        eventArgs.RemoveObject = poiCoordinatesObject.getMapPin();
         OnRemove(this, eventArgs);
         
         

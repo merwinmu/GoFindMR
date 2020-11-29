@@ -87,6 +87,11 @@ namespace Assets.HoloLens.Scripts.Controller
             ResultPanelController controller = GetComponent<ResultPanelController>();
             controller.GETResultPanelView().reset();
             view.activateShow(false);
+            controller.GETResultPanelModel().reset();
+
+            QueryMenuController queryMenuController = GetComponent<QueryMenuController>();
+            queryMenuController.Reset();
+
         }
 
         private void HandleTemporalSelect(object sender, TemporalEventArgs e)

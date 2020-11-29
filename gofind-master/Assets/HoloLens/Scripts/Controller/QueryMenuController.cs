@@ -18,7 +18,7 @@ namespace Assets.HoloLens.Scripts.Controller
     {
         void addQuery(POICoordinatesObject poiCoordinatesObject);
         IQueryMenuView getview();
-
+        void Reset();
         void setTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp);
 
     }
@@ -29,10 +29,12 @@ namespace Assets.HoloLens.Scripts.Controller
         
         private static  IQueryMenuView view;
         private List<POICoordinatesObject> querylist;
-        private static IResultPanelModel resultmodel;
-        private List<ObjectData> activeMmos;
-        private Coordinates myLocation;
         private List<Coordinates> PointOfInterests;
+        private List<ObjectData> activeMmos;
+        
+        private static IResultPanelModel resultmodel;
+        private Coordinates myLocation;
+       
         private DateTime  upperBound;
         private DateTime lowerbound;
         private float dist_radius;
@@ -192,7 +194,10 @@ namespace Assets.HoloLens.Scripts.Controller
 
         public void Reset()
         {
-            //TODO
+            querylist.Clear();
+            activate_temp = false;
+            activeMmos.Clear();
+            PointOfInterests.Clear();
         }
     
         private void HandleCineastResult(List<ObjectData> list) {
@@ -231,6 +236,7 @@ namespace Assets.HoloLens.Scripts.Controller
         public void SetActiveList(List<ObjectData> mmos)
         {
             activeMmos = mmos;
+
             resultmodel.populateAndRender(mmos, upperBound, lowerbound, activate_temp,querylist);
         }
 

@@ -323,21 +323,21 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     public void  reset()
     {
-        if (picturePointerDatasList.Count != 0 || picturePointerDatasList !=null)
-        {
-            foreach (var VARIABLE in picturePointerDatasList)
-            {
-                scrollingObjectCollection.RemoveItem(VARIABLE.getGameObject());
+        if(picturePointerDatasList !=null) {
+                foreach (var VARIABLE in picturePointerDatasList)
+                {
+                    scrollingObjectCollection.RemoveItem(VARIABLE.getGameObject());
+                }
             }
-        }
-
-        ResetObject eventArgs = new ResetObject();
-        OnResetObject(this, eventArgs);
         
         this.picturePointerDatasList.Clear();
         this.textureDatas.Clear();
         this.PoiCoordinatesObjects.Clear();
         this.key = 0;
+        ResetObject eventArgs = new ResetObject();
+        OnResetObject(this, eventArgs);
+        
+        
         //Debug.Log("Deleted all Results "+transform.parent.parent.GetChild(8));
     }
 
