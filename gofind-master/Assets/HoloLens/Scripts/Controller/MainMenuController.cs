@@ -104,6 +104,10 @@ namespace Assets.HoloLens.Scripts.Controller
             model.ChangeVisibility(false);
             mapMenuModel.ChangeVisibility(true);
 
+            IMapView mapView = transform.GetComponent<MapController>().GETMapView();
+            Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y-0.6f,Camera.main.transform.position.z+1.3f);
+            mapView.setMapPosition(newpos);
+
             IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();
             model.ChangeVisibility(false);
             mapModel.ChangeVisibility(true);
@@ -119,8 +123,6 @@ namespace Assets.HoloLens.Scripts.Controller
             model.ChangeVisibility(false);
             photoModel.ChangeVisibility(true);
         }
-        
-        
 
         //Handling views
         private void UpdateQueryStatus(object sender, AddedQueryOption e)

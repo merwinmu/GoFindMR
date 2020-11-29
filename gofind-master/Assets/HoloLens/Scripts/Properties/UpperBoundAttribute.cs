@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class UpperBoundAttribute : MonoBehaviour
 {
+    public DateTime true_upperbound;
     public static event EventHandler<SliderValueEventArgs> OnUpperBoundValueChanged = (sender, e) => { };
     
     // Start is called before the first frame update
@@ -31,6 +32,7 @@ public class UpperBoundAttribute : MonoBehaviour
         double ticks = n_value;
         TimeSpan timeSpan = TimeSpan.FromMilliseconds(ticks);
         DateTime startdate = new DateTime(1500, 1, 1) + timeSpan;
+        true_upperbound = startdate;
         return startdate;
     }
 }

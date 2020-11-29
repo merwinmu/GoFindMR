@@ -61,6 +61,7 @@ public interface IResultPanelView
     event EventHandler<GetPOILocationListEventArgs> OnARClick;
     event EventHandler<ResetObject> OnResetObject;
     void Visibility(bool flag);
+    void setResultPosition(Vector3 pos);
     void reset();
     void setAllResultMenuVisibility(bool flag);
     void setTextures(List<PictureData> pictureDatasList);
@@ -313,6 +314,11 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public void Visibility(bool flag)
     {
         transform.gameObject.SetActive(flag);
+    }
+
+    public void setResultPosition(Vector3 pos)
+    {
+        transform.position = pos;
     }
 
     public void reset()

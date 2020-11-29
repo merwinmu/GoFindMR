@@ -62,6 +62,9 @@ public class GPSLoggerController : MonoBehaviour, IGPSLoggerController
         IMapMenuView mapMenuView = transform.GetComponent<MapMenuController>().GETMapMenuView();
         mapMenuView.setCurrentPositionPin(e.latitude,e.longitude,e.heading);
         mapMenuView.MiniMapRender();
+
+        IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
+        resultPanelModel.setLatLon(e.latitude,e.longitude);
     }
 
     // Called when the model's GPS data changed

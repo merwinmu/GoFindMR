@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Assets.HoloLens.Scripts.Properties;
@@ -17,6 +18,9 @@ namespace Assets.HoloLens.Scripts.Controller
     {
         void addQuery(POICoordinatesObject poiCoordinatesObject);
         IQueryMenuView getview();
+
+        void setTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp);
+
     }
        public class QueryMenuController: MonoBehaviour, IQueryMenuController
     {
@@ -29,6 +33,11 @@ namespace Assets.HoloLens.Scripts.Controller
         private List<ObjectData> activeMmos;
         private Coordinates myLocation;
         private List<Coordinates> PointOfInterests;
+        private DateTime  upperBound;
+        private DateTime lowerbound;
+        private float dist_radius;
+        private bool activate_temp;
+        private DistanceAttribute distanceAttribute;
 
         private void Awake()
         {
@@ -43,6 +52,8 @@ namespace Assets.HoloLens.Scripts.Controller
             querylist = new List<POICoordinatesObject>();
             view = transform.GetChild(7).GetComponent<QueryMenuView>();
             resultmodel = GetComponent<ResultPanelController>().GETResultPanelModel();
+            distanceAttribute = transform.GetChild(7).GetChild(6).GetChild(0).GetChild(1)
+                .GetComponent<DistanceAttribute>();
             PointOfInterests = new List<Coordinates>();
             myLocation = new Coordinates(0,0);
             
@@ -51,20 +62,33 @@ namespace Assets.HoloLens.Scripts.Controller
             view.OnReceived += SearchQuery;
             //view.OnSearch += SearchDebug;
             view.OnSearch += SearchClicked;
+            DistanceAttribute.OnDistanceChanged += UpdateDistance;
 
 
             // Listen to changes in the model
         }
 
+        private void UpdateDistance(object sender, DistanceEventArgs e)
+        {
+            dist_radius = e.distance_value;
+            resultmodel.setDistance(dist_radius);
+        }
+
         private void SearchClicked(object sender, BackEventArgs e)
         {
             Debug.Log(myLocation);
+            
             var query = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder
                 .BuildSpatialSimilarityQuery(myLocation.getLat(), myLocation.getLon());
              QueryCineastAndProcess(query);
              
              IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
              IMainMenuController menuController = GetComponent<MainMenuController>();
+
+             IResultPanelView resultPanelView = transform.GetComponent<ResultPanelController>().GETResultPanelView();
+             Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y,Camera.main.transform.position.z+1.3f);
+             resultPanelView.setResultPosition(newpos);
+             
              menuController.GETMainMenuModel().ChangeVisibility(false);
              view.setVisibility(false);
              resultPanelModel.ChangeResultVisibility(true);
@@ -140,7 +164,7 @@ namespace Assets.HoloLens.Scripts.Controller
         }
         public void DoCineastRequest(double latitude, double longitude) {
             Debug.Log("DoCineastRequest LInfo " + latitude + "," + longitude);
-        
+            
             Clean();
 
             //initialLocation = new LocationInfo(); // Why?
@@ -196,7 +220,7 @@ namespace Assets.HoloLens.Scripts.Controller
         public void SetActiveList(List<ObjectData> mmos)
         {
             activeMmos = mmos;
-            resultmodel.populateAndRender(mmos);
+            resultmodel.populateAndRender(mmos, upperBound, lowerbound, activate_temp,querylist);
         }
 
         public void RemoveFromActiveList(ObjectData mmo)
@@ -212,6 +236,14 @@ namespace Assets.HoloLens.Scripts.Controller
                 activeMmos.Add(mmo);
             }
         }
+
+        public void setTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp)
+        {
+            this.upperBound = upperBound;
+            this.lowerbound = lowerbound;
+            this.activate_temp = activate_temp;
+        }
+        
 
         public void FilterData(POICoordinatesObject poiCoordinatesObject)
         {

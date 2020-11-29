@@ -357,10 +357,18 @@ namespace Assets.HoloLens.Scripts.View
             OnZoomMap(this, eventArgs);
         }
 
-        public float CalculateBearing(float pictureheading)
+        public Vector2 CalculateBearing(float pictureheading)
         {
-            float diff = pictureheading - currentheading;
-            return diff;
+            float p_x = Mathf.Sin(pictureheading * Mathf.Deg2Rad);
+            float p_z = Mathf.Cos(pictureheading * Mathf.Deg2Rad);
+            
+            float c_x = Mathf.Sin(currentheading * Mathf.Deg2Rad);
+            float c_z = Mathf.Cos(currentheading * Mathf.Deg2Rad);
+            
+            Vector2 pic_dir = new Vector2(p_x,p_z);
+            Vector2 cur_dir = new Vector2(c_x,c_z);
+
+            return pic_dir - cur_dir;
         }
         
         public async void RenderGameObject(POICoordinatesObject poiCoordinatesObject)
@@ -368,7 +376,8 @@ namespace Assets.HoloLens.Scripts.View
             GameObject ShowPicture = poiCoordinatesObject.GETGameObject();
             ShowPicture = Instantiate(ShowPicture);
             ShowPicture.transform.localScale= new Vector3(-0.3f,-0.15f,0.004f);
-            float difference = CalculateBearing(poiCoordinatesObject.getHeading());
+            Vector2 raw_diff = CalculateBearing(poiCoordinatesObject.getHeading());
+            //Vector3 difference = new Vector3(raw_diff.x,0,raw_diff.y);
             ShowPicture.transform.rotation = Camera.main.transform.rotation;
             ShowPicture.transform.parent = transform;
             ShowPicture.transform.position = transform.GetChild(9).position;
@@ -423,18 +432,29 @@ namespace Assets.HoloLens.Scripts.View
         }
         
         
-        public double calculateRadius(double latitude1, double longitude1, double latitude2, double longitude2)
+        public static double calculateRadius(double latitude1, double longitude1, double latitude2, double longitude2)
         {
-            const double r = 6371; // meters
+            double R = 6371; // km
 
-            var sdlat = Math.Sin((latitude2 - latitude1) / 2);
-            var sdlon = Math.Sin((longitude2 - longitude1) / 2);
-            var q = sdlat * sdlat + Math.Cos(latitude1) * Math.Cos(latitude2) * sdlon * sdlon;
-            var d = 2 * r * Math.Asin(Math.Sqrt(q));
+            double sLat1 = Math.Sin(Radians(latitude1));
+            double sLat2 = Math.Sin(Radians(latitude2));
+            double cLat1 = Math.Cos(Radians(latitude1));
+            double cLat2 = Math.Cos(Radians(latitude2));
+            double cLon = Math.Cos(Radians(longitude1) - Radians(longitude2));
 
-            return d;
+            double cosD = sLat1*sLat2 + cLat1*cLat2*cLon;
+
+            double d = Math.Acos(cosD);
+
+            double dist = R * d;
+
+            return dist;
         }
         
+        private static double Radians(double val)
+        {
+            return (Math.PI / 180) * val;
+        }
 
         public void SpatialExploration()
         {

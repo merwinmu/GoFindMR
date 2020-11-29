@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.HoloLens.Scripts.Properties;
+using Assets.HoloLens.Scripts.View;
 using Assets.Scripts.Core;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
 using UnityEngine;
+using Object = System.Object;
 
 /*
 * Various EventArgs has been created so that if changes in the Model has been made, a callback can be
@@ -132,11 +135,15 @@ public interface IResultPanelModel
     void ChangeResultVisibility(bool flag);
     void renderDebugPicture();
 
-    void populateAndRender(List<ObjectData> list);
+    void populateAndRender(List<ObjectData> list, DateTime upperbound, DateTime lowerbound, bool activate, List<POICoordinatesObject> poilist);
 
     void reset();
   
     void SetCurrentPicture(PicturePointerData pointerData);
+
+    void setDistance(float value);
+
+    void setLatLon(double lat, double lon);
 }
 
 public class ResultPanelModel : IResultPanelModel
@@ -150,6 +157,10 @@ public class ResultPanelModel : IResultPanelModel
     private List<PictureData> pictureDataList;
 
     private PicturePointerData CurrentPicture;
+
+    private float distance_value;
+    private double currentlat;
+    private double currentlon;
 
 
     public void renderDebugPicture()
@@ -178,9 +189,24 @@ public class ResultPanelModel : IResultPanelModel
         OnUpdatePictures(this, eventArgs);
     }
 
-    public void populateAndRender(List<ObjectData> list)
+    public void setDistance(float value)
     {
-        parseToPictureData(list);
+        distance_value = value;
+        Debug.Log("Distance Radius set to "+value);
+    }
+
+    public void setLatLon(double lat, double lon)
+    {
+        this.currentlat = lat;
+        this.currentlon = lon;
+    }
+
+    public void populateAndRender(List<ObjectData> list, DateTime upperbound, DateTime lowerbound, bool activate_temp, List<POICoordinatesObject> poilist)
+    {
+        this.upperbound = upperbound;
+        this.lowerbound = lowerbound;
+        this.activate_temp = activate_temp;
+        parseToPictureData(list,poilist);
         Debug.Log("Parsed the mmo Object to PictureData");
         
         var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
@@ -188,29 +214,89 @@ public class ResultPanelModel : IResultPanelModel
         OnUpdatePictures(this, eventArgs);
     }
 
-    public void parseToPictureData(List<ObjectData> list)
+    private DateTime upperbound;
+    private DateTime lowerbound;
+    private bool activate_temp;
+    public void parseToPictureData(List<ObjectData> list, List<POICoordinatesObject> poilist)
     {
+        List<ObjectData> newList = FilterToDistance(list,poilist);
+        
         pictureDataList = new List<PictureData>();
 
         int id = 0;
         string url;
+        string time;
         double lat;
         double lon;
         float hea;
-        
-        foreach (var VARIABLE in list)
+
+        foreach (var VARIABLE in newList)
         {
             url = TemporaryCompatUtils.GetThumbnailUrl(VARIABLE);
+            time = MetadataUtils.GetDateTime(VARIABLE.Metadata);
             lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
             lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);
             hea = Convert.ToSingle(MetadataUtils.GetBearing(VARIABLE.Metadata));
-            pictureDataList.Add(new PictureData(id,url,lat,lon,hea));
+            
+            if (upperbound != null && lowerbound != null && time != "" && activate_temp)
+            {
+                DateTime dateTime = DateTime.Parse(MetadataUtils.GetDateTime(VARIABLE.Metadata));
+                
+                if (lowerbound < dateTime && dateTime < upperbound)
+                {
+                    Debug.Log("TIME DEBUG: "+MetadataUtils.GetDateTime(VARIABLE.Metadata) + " CURRENT: LOWER "+ lowerbound +" UP "+ upperbound );
+                    pictureDataList.Add(new PictureData(id,url,lat,lon,hea));
+                }
+
+                else
+                {
+                    continue;
+                }
+            }
+
+            else
+            {
+                pictureDataList.Add(new PictureData(id,url,lat,lon,hea));
+                Debug.Log("No Temporal set");
+            }
+
             id++;
         }
     }
 
+    public List<ObjectData> FilterToDistance(List<ObjectData> list, List<POICoordinatesObject> poilist)
+    {
+        Debug.Log("Size of POILIST:"+ poilist.Count);
+        
+        List<ObjectData> filterdList = new List<ObjectData>();
+        double lat;
+        double lon;
+        double dis;
+
+        foreach (var VARIABLE in list)
+        {
+            lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
+            lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);
+            
+            foreach (var poi in poilist)
+            {
+                dis = MapMenuView.calculateRadius(lat,lon,poi.getCoordinates().getLat(), poi.getCoordinates().getLon()) * 1000;
+                if ((dis) <= distance_value)
+                {
+                    filterdList.Add(VARIABLE);
+                    Debug.Log("ADDED    Distance to Picture: "+ dis + " " + lat + " " + lon + " MY LOC: "+ currentlat + " " + currentlon + " "+ distance_value);
+                }
+            }
+        }
+
+        return filterdList;
+
+    }
+    
+
     public void reset()
     {
+        activate_temp = false;
         OnReset(this,new ResetEventArgs());
         pictureDataList.Clear();
     }

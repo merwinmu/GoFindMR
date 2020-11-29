@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class LowerBoundAttribute : MonoBehaviour
 {
+    public DateTime true_lowerbound;
     public static event EventHandler<SliderValueEventArgs> OnLowerBoundValueChanged = (sender, e) => { };
     
     // Start is called before the first frame update
@@ -30,6 +31,7 @@ public class LowerBoundAttribute : MonoBehaviour
         double ticks = n_value;
         TimeSpan timeSpan = TimeSpan.FromMilliseconds(ticks);
         DateTime startdate = new DateTime(1500, 1, 1) + timeSpan;
+        true_lowerbound = startdate;
         return startdate;
     }
     

@@ -33,6 +33,7 @@ namespace Assets.HoloLens.Scripts.View
         
         //Use Class function using this interface functions
         void setGameObjectVisibility(bool flag);
+        void setMapPosition(Vector3 pos);
         void setLocationPins();
         void RenderGenerateMapPins();
         void ZoomMap(float data);
@@ -40,7 +41,6 @@ namespace Assets.HoloLens.Scripts.View
         void removeLocationPins(GameObject gameObject);
         void ZoomIntoPoint(double lat, double lon);
         void EnableRadial();
-
         void DisableRadial();
 
     }
@@ -124,6 +124,11 @@ namespace Assets.HoloLens.Scripts.View
         public void setGameObjectVisibility(bool flag)
         {
             transform.gameObject.SetActive(flag);
+        }
+
+        public void setMapPosition(Vector3 pos)
+        {
+            transform.position = pos;
         }
 
         public void setLocationPins()

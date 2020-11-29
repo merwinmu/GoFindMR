@@ -47,8 +47,8 @@ namespace Assets.HoloLens.Scripts.Model
 
     
         // Search Text
-        string UpperBound { get; set; }
-        string LowerBound { get; set; }
+        DateTime UpperBound { get; set; }
+        DateTime LowerBound { get; set; }
         
         void setUpperBound(float value);
         void setLowerBound(float value);
@@ -60,8 +60,8 @@ namespace Assets.HoloLens.Scripts.Model
     public class TemporalModel : ITemporalModel
     {
         // Backing field for the Years
-        private string upperBound;
-        private string lowerBound;
+        private DateTime upperBound;
+        private DateTime lowerBound;
 
         private bool showTextBox;
 
@@ -80,7 +80,7 @@ namespace Assets.HoloLens.Scripts.Model
         }
 
         // Saving Upper and Lower Bound Input
-        public string UpperBound
+        public DateTime UpperBound
         {
             get { return upperBound; }
             set
@@ -99,7 +99,7 @@ namespace Assets.HoloLens.Scripts.Model
 
         }
 
-        public string LowerBound
+        public DateTime LowerBound
         {
             get { return lowerBound; }
             set

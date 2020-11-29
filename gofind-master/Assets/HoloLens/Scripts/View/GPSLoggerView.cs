@@ -151,7 +151,7 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
         if (Input.GetMouseButtonDown(0))
         {
             //Debug
-            var eventArgs = new GPSDataReceivedEventArgs(currentLatitude,currentLongitude,12.5f);
+            var eventArgs = new GPSDataReceivedEventArgs(currentLatitude,currentLongitude,currentheading);
             OnReceived(this, eventArgs);
         }
 

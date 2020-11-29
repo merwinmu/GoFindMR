@@ -3,6 +3,7 @@ using Assets.HoloLens.Scripts.Model;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 using UnityEngine.UI;
 
 namespace Assets.HoloLens.Scripts.Controller
@@ -30,7 +31,8 @@ namespace Assets.HoloLens.Scripts.Controller
         // Keep references to the model and view
         private static  ITemporalModel model;
         private static  ITemporalView view;
-
+        private UpperBoundAttribute upperBoundAttribute;
+        private LowerBoundAttribute lowerBoundAttribute;
 
         private void Awake()
         {
@@ -44,9 +46,12 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             model = new TemporalModel();
             view = transform.GetChild(2).GetComponent<TemporalView>();
+            upperBoundAttribute = transform.GetChild(2).GetChild(0).GetChild(5).GetChild(3).gameObject.GetComponent<UpperBoundAttribute>();
+            lowerBoundAttribute = transform.GetChild(2).GetChild(0).GetChild(4).GetChild(3).gameObject.GetComponent<LowerBoundAttribute>();
+
 
             // Listen to input from the view
-            view.OnReceived += HandleInputReceived;
+            view.OnReceived += ClickOnOkButton;
             view.MapBackButton += HandleBackButtonOnPress;
             LowerBoundAttribute.OnLowerBoundValueChanged += HandleLowerBound;
             UpperBoundAttribute.OnUpperBoundValueChanged += HandleUpperBound;
@@ -90,21 +95,24 @@ namespace Assets.HoloLens.Scripts.Controller
         }
 
         //Handling models
-        private void HandleInputReceived(object sender, YearChangeEventArgs e)
+        private void ClickOnOkButton(object sender, YearChangeEventArgs e)
         {
             IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
             model.ChangeVisibility(false);
+            model.LowerBound = lowerBoundAttribute.true_lowerbound;
+            model.UpperBound = upperBoundAttribute.true_upperbound;
+            
+            Debug.Log("Sending datetime"+ model.LowerBound + " " + model.UpperBound);
             //mainMenuModel.setQueryData(model.LowerBound +" "+ model.UpperBound);
             
-            POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(model.getLowerBound(),model.getUpperBound());
-            poiCoordinatesObject.setName("From "+model.getLowerBound().ToString() +" to "+model.getUpperBound().ToString());
+            //POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(model.getLowerBound(),model.getUpperBound());
+            //poiCoordinatesObject.setName("From "+model.getLowerBound().ToString() +" to "+model.getUpperBound().ToString());
             mainMenuModel.ChangeVisibility(true);
             IQueryMenuController iqQueryMenuController = GetComponent<QueryMenuController>();
-            iqQueryMenuController.addQuery(poiCoordinatesObject);
+            iqQueryMenuController.setTemporal(model.UpperBound,model.LowerBound, true);
 
             Vector3 pos = iqQueryMenuController.getview().getInitQueryMenuPosition();
             iqQueryMenuController.getview().setQueryMenuRadialPosition(pos, true);
-            
         }
 
         public ITemporalModel GETItTemporalModel()
