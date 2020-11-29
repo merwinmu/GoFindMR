@@ -491,7 +491,7 @@ namespace Assets.HoloLens.Scripts.View
         }
         
         
-        double distance = 100; // 100km radius
+        double distance = 100; // 100m radius
         double inboundthreshold = 2;
         double outboundthreshold = 4;
 
@@ -514,7 +514,7 @@ namespace Assets.HoloLens.Scripts.View
                     lon1 = PoiCoordinatesObjects[key].getCoordinates().getLon();
                     heading1 = PoiCoordinatesObjects[key].getHeading();
 
-                    distance = calculateRadius(lat1, lon1, currentLatitude, currentLongitude);
+                    distance = calculateRadius(lat1, lon1, currentLatitude, currentLongitude)*1000;
                     DelayLoadLevel();
                     Debug.Log("Key ID: "+key+"  Current Position: "+currentLatitude+" "+currentLongitude + " Destinaton: "+lat1+" "+lon1+" Distance to Dest "+distance.ToString());
                     if (distance < inboundthreshold)
