@@ -33,7 +33,7 @@ namespace Assets.Scripts.Core
     
         public static string GetImageUrl(ObjectData mmo)
         {
-            return CineastWrapper.CineastConfig.mediaHost + "/images/"+ mmo.GetPath();
+            return CineastWrapper.CineastConfig.mediaHost + "images/"+ mmo.GetPath().Result;
         }
 
         public static string GetThumbnailUrl(ObjectData mmo)

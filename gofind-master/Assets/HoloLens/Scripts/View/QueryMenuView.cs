@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using Microsoft.Maps.Unity;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 
 public class QueryCompleteEventArgs : EventArgs
