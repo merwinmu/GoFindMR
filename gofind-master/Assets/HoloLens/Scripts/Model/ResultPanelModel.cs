@@ -216,8 +216,7 @@ public class ResultPanelModel : IResultPanelModel
             Debug.Log("Parsed the mmo Object to PictureData");
             var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
             // Dispatch the 'Result changed' event
-            
-            
+
             OnUpdatePictures(this, eventArgs);
         }
         else
@@ -226,7 +225,6 @@ public class ResultPanelModel : IResultPanelModel
             var eventArgs = new BackEventArgs();
             OnEDialog(this,eventArgs);
         }
-       
     }
 
     private DateTime upperbound;
@@ -252,6 +250,7 @@ public class ResultPanelModel : IResultPanelModel
             lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
             lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);
             hea = Convert.ToSingle(MetadataUtils.GetBearing(VARIABLE.Metadata));
+            hea = 100;
             
             if (time != "" && activate_temp)
             {

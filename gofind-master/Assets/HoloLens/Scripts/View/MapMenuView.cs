@@ -7,6 +7,7 @@ using Assets.HoloLens.Scripts.Properties;
 using Microsoft.Geospatial;
 using Microsoft.Maps.Unity;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
+using Microsoft.MixedReality.Toolkit.Experimental.UI.HandCoach;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
@@ -49,7 +50,7 @@ namespace Assets.HoloLens.Scripts.View
         void MenuVisibility(bool flag);
 
         void createSelection(POICoordinatesObject poiCoordinatesObject);
-        void RenderGameObject(POICoordinatesObject poiCoordinatesObject);
+        GameObject RenderGameObject(POICoordinatesObject poiCoordinatesObject);
         void setCurrentPositionPin(double latitude, double longitude, float heading);
         void RemoveGameObject(POICoordinatesObject poiCoordinatesObject);
 
@@ -101,6 +102,8 @@ namespace Assets.HoloLens.Scripts.View
         public double currentLongitude = 7.5888067;
 
         public float currentheading = 250;
+
+        public int angle = 45;
         
         
         
@@ -357,39 +360,35 @@ namespace Assets.HoloLens.Scripts.View
             OnZoomMap(this, eventArgs);
         }
 
-        public Vector2 CalculateBearing(float pictureheading)
-        {
-            float p_x = Mathf.Sin(pictureheading * Mathf.Deg2Rad);
-            float p_z = Mathf.Cos(pictureheading * Mathf.Deg2Rad);
-            
-            float c_x = Mathf.Sin(currentheading * Mathf.Deg2Rad);
-            float c_z = Mathf.Cos(currentheading * Mathf.Deg2Rad);
-            
-            Vector2 pic_dir = new Vector2(p_x,p_z);
-            Vector2 cur_dir = new Vector2(c_x,c_z);
-
-            return pic_dir - cur_dir;
-        }
         
-        public async void RenderGameObject(POICoordinatesObject poiCoordinatesObject)
+
+        public void GetHeading(GameObject ShowPicture, float picture_bearing)
+        {
+            float angle_dif = currentheading - picture_bearing;
+            ShowPicture.transform.RotateAround(Camera.main.transform.position, new Vector3(0,1f,0), angle_dif); //change to camera and change showpicture transform to 0.3f 
+        }
+
+        public GameObject  RenderGameObject(POICoordinatesObject poiCoordinatesObject)
         {
             GameObject ShowPicture = poiCoordinatesObject.GETGameObject();
             ShowPicture = Instantiate(ShowPicture);
-            ShowPicture.transform.localScale= new Vector3(-0.3f,-0.15f,0.004f);
-            Vector2 raw_diff = CalculateBearing(poiCoordinatesObject.getHeading());
+            ShowPicture.transform.localScale= new Vector3(0.3f,0.15f,0.004f);
+            ShowPicture.transform.position = Camera.main.transform.position + new Vector3(0, 0, 0.5f);
+            GetHeading(ShowPicture,poiCoordinatesObject.getHeading());
             //Vector3 difference = new Vector3(raw_diff.x,0,raw_diff.y);
-            ShowPicture.transform.rotation = Camera.main.transform.rotation;
-            ShowPicture.transform.parent = transform;
-            ShowPicture.transform.position = transform.GetChild(9).position;
+            //CalculateBearing(poiCoordinatesObject.getHeading(),ShowPicture);
+            ShowPicture.transform.parent = transform.parent;
+            //ShowPicture.transform.position = transform.GetChild(9).position;
             ShowPicture.SetActive(true);
             //GameObject ShowPictureOption = (GameObject)Resources.Load("Prefab/ShowResult",typeof(GameObject)) ;
             //ShowPictureOption = Instantiate(ShowPictureOption);
             //Texture texture =  await ResultPanelView.GetRemoteTexture(poiCoordinatesObject.getURL());
-
+    
             //ShowPicture.GetComponent<Renderer>().sharedMaterial.mainTexture = texture;
             //ShowPicture.transform.SetParent(transform);
           
             SpawnedObjects.Add(poiCoordinatesObject,ShowPicture);
+            return ShowPicture;
         }
 
         public void RemoveGameObject(POICoordinatesObject poiCoordinatesObject)
@@ -489,11 +488,25 @@ namespace Assets.HoloLens.Scripts.View
             }
             //PoiCoordinatesObjects.Clear();
         }
-        
+
+        public void destroyRenderedObject(GameObject activeObject, POICoordinatesObject poiCoordinatesObject)
+        {
+            SpawnedObjects.Remove(poiCoordinatesObject);
+            foreach (Transform objects in transform.parent)
+            {
+                if (objects.gameObject == activeObject)
+                {
+                    Destroy(objects.gameObject);
+                    break;
+                }
+            }
+            
+            Debug.Log("Unloaded spawned Object");
+        }
         
         double distance = 100; // 100m radius
         double inboundthreshold = 2;
-        double outboundthreshold = 4;
+        double outboundthreshold = 8;
 
         private double lat1;
         private double lon1;
@@ -504,6 +517,9 @@ namespace Assets.HoloLens.Scripts.View
 
         private int deleteKey;
         private bool arrived;
+        private bool isActive;
+        private bool dest;
+        private GameObject ActiveObject;
         private void Update()
         {
             if (journeyStart)
@@ -517,21 +533,25 @@ namespace Assets.HoloLens.Scripts.View
                     distance = calculateRadius(lat1, lon1, currentLatitude, currentLongitude)*1000;
                     DelayLoadLevel();
                     Debug.Log("Key ID: "+key+"  Current Position: "+currentLatitude+" "+currentLongitude + " Destinaton: "+lat1+" "+lon1+" Distance to Dest "+distance.ToString());
-                    if (distance < inboundthreshold)
+                    if (distance < inboundthreshold && !isActive)
                     {
                         Debug.Log("Arrived");
-                        RenderGameObject(PoiCoordinatesObjects[key]);
-                        PoiCoordinatesObjects.Remove(key);
-                        distance = 100;
+                        ActiveObject = RenderGameObject(PoiCoordinatesObjects[key]);
                         deleteKey = key;
-                        arrived = true;
+                        isActive = true;
+                    }
+
+                    if (distance > outboundthreshold && key == deleteKey)
+                    {
+                        dest = true;
                     }
                 }
-
-                if (arrived)
+                
+                if (dest)
                 {
-                    keys.Remove(deleteKey);
-                    arrived = false;
+                    destroyRenderedObject(ActiveObject,PoiCoordinatesObjects[deleteKey]);
+                    isActive = false;
+                    dest = false;
                 }
             }
         }
