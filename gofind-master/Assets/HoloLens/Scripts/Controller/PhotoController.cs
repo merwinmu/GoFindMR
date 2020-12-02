@@ -15,6 +15,7 @@ namespace Assets.HoloLens.Scripts.Controller
     public interface IPhotoController
     {
         IPhotoModel GETPhotoModel();
+        IPhotoView GETPhotoView();
     }
     public class PhotoController: MonoBehaviour, IPhotoController
     {
@@ -26,6 +27,11 @@ namespace Assets.HoloLens.Scripts.Controller
         public IPhotoModel GETPhotoModel()
         {
             return model;
+        }
+
+        public IPhotoView GETPhotoView()
+        {
+            return view;
         }
 
         //Initialize Model, view and Listeners
@@ -57,7 +63,8 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void HandleTakePhoto(object sender, TakePhotoEventArgs e)
         {
-            throw new NotImplementedException();
+            IQueryMenuController controller = GetComponent<QueryMenuController>();
+            controller.accessPhotoQuery();
         }
 
 

@@ -19,6 +19,7 @@ namespace Assets.HoloLens.Scripts.Controller
         void addQuery(POICoordinatesObject poiCoordinatesObject);
         IQueryMenuView getview();
         void Reset();
+        void accessPhotoQuery();
         void setTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp);
 
     }
@@ -112,7 +113,19 @@ namespace Assets.HoloLens.Scripts.Controller
              ITemporalController temporalController = GetComponent<TemporalController>();
              temporalController.GETItTemporalView().MenuVisibility(false);
         }
+
+        public void accessPhotoQuery()
+        {
+            IPhotoController photoController = GetComponent<PhotoController>();
+            photoController.GETPhotoView().MenuVisibility(false);
+            IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
+            resultPanelModel.ChangeResultVisibility(true);
+            var query = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder
+                .BuildSpatialSimilarityQuery(myLocation.getLat(), myLocation.getLon());
+            QueryCineastAndProcess(query);
+        }
         
+
         public async void QueryCineastAndProcess(SimilarityQuery query)
         {
             bool f = false;

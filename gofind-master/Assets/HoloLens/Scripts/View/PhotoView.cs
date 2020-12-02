@@ -47,7 +47,6 @@ namespace Assets.HoloLens.Scripts.View
         event EventHandler<PhotoChangedEventArgs> OnReceived;
         event EventHandler<TakePhotoEventArgs> OnTakePhoto;
         event EventHandler<BackEventArgs> OnBack;
-        
         void MenuVisibility(bool flag);
 
     }
