@@ -35,5 +35,22 @@ namespace Assets.HoloLens.Scripts.Properties
         {
             return this.lat.ToString() + " " + this.lon.ToString();
         }
+        
+        public override bool Equals(object obj)
+        {
+            var item = obj as Coordinates;
+
+            if (item == null)
+            {
+                return false;
+            }
+
+            return this.lat == item.getLat() && this.lon == item.getLon() && this.head == item.gethead();
+        }
+
+        public override int GetHashCode()
+        {
+            return this.lat.GetHashCode();
+        }
     }
 }

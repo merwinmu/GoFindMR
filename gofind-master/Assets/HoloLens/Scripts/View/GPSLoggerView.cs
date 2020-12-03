@@ -68,6 +68,8 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     
     private List<Coordinates> currentCoordinates;
     private int currentCoordinatesSize;
+
+    private int coo_id;
     public event EventHandler<GPSDataReceivedEventArgs> OnReceived = (sender, e) => { };
     
     
@@ -92,8 +94,10 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
         Debug.Log("Started watching");
 #endif
     }
-    
-    
+
+    private double lat;
+    private double lon;
+    private float hea;
 #if WINDOWS_UWP
     /*
      * Reading Data and translating to required values.
@@ -103,12 +107,22 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
         byte[] data = args.Advertisement.ManufacturerData[0].Data.ToArray();
         
  // Dispatch the 'OnReceived' event
-                currentLatitude = BitConverter.ToDouble(data, 0);
-                currentLongitude = BitConverter.ToDouble(data,8);
-                currentheading = BitConverter.ToSingle(data,16);
+                lat = BitConverter.ToDouble(data, 0);
+                lon = BitConverter.ToDouble(data,8);
+                hea = BitConverter.ToSingle(data,16);
                 //var eventArgs = new GPSDataReceivedEventArgs(BitConverter.ToDouble(data, 0),BitConverter.ToDouble(data,8),BitConverter.ToSingle(data,16));
                 //Debug.Log(BitConverter.ToDouble(data, 0));
-                currentCoordinates.Add(new Coordinates(currentLatitude,currentLongitude,currentheading));
+
+                if(!currentCoordinates.Contains(new Coordinates(lat,lon,hea))){
+                if(currentCoordinates.Count != 0){
+                           coo_id++;
+                        }
+                if(currentCoordinates.Count == 60){
+                    currentCoordinates.Clear();
+                            coo_id = 0;
+                }
+  currentCoordinates.Add(new Coordinates(lat,lon,hea));
+    }
     }
 #endif
 
@@ -135,7 +149,6 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
     // Start is called before the first frame update
 
     
-    
     //INPUT
     // Update is called once per frame
     void Update()
@@ -157,17 +170,13 @@ public class GPSLoggerView : MonoBehaviour, IGPSLoggerView
 
         if (currentCoordinates.Count != 0)
         {
-            this.currentLatitude = this.currentCoordinates[currentCoordinates.Count-1].getLat();
-            this.currentLongitude = this.currentCoordinates[currentCoordinates.Count-1].getLon();
-            this.currentheading = this.currentCoordinates[currentCoordinates.Count-1].gethead();
+            this.currentLatitude = this.currentCoordinates[coo_id].getLat();
+            this.currentLongitude = this.currentCoordinates[coo_id].getLon();
+            this.currentheading = this.currentCoordinates[coo_id].gethead();
 
             var eventArgs = new GPSDataReceivedEventArgs(this.currentLatitude,this.currentLongitude,this.currentheading);
             OnReceived(this, eventArgs);
-            if (currentCoordinates.Count > 2)
-            {
-                Debug.Log(currentCoordinates.ToString());
-                currentCoordinates.RemoveAt(0);
-            }
+            
         }
     }
 }
