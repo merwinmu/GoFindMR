@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Assets.HoloLens.Scripts.Properties;
 using Microsoft.Geospatial;
 using Microsoft.Maps.Unity;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using TMPro;
+using Unity.UNetWeaver;
 using UnityEngine;
 
 /*
@@ -69,6 +71,7 @@ namespace Assets.HoloLens.Scripts.View
         private MapPinLayer mapPinLayer;
         private Camera camera;
         private MapInteractionController mapInteractionController;
+        private List<MapPin> ListOfDeactivatedMapPins;
         
 
         private void Start()
@@ -82,6 +85,7 @@ namespace Assets.HoloLens.Scripts.View
             mapPinLayer = GetComponent<MapPinLayer>();
             mapInteractionController = GetComponent<MapInteractionController>();
             mapInteractionController.OnDoubleTap.AddListener(((data ) => GenerateLatLonObject(data)));
+            ListOfDeactivatedMapPins = new List<MapPin>();
         }
 
         private void GenerateLatLonObject(LatLonAlt data)
@@ -139,9 +143,32 @@ namespace Assets.HoloLens.Scripts.View
             throw new NotImplementedException();
         }
 
+        private void OnEnable()
+        {
+            if (ListOfDeactivatedMapPins.Count != 0)
+            {
+                foreach (MapPin Pin in ListOfDeactivatedMapPins)
+                {
+                    mapPinLayer.MapPins.Remove(Pin);
+                    Debug.Log("Deleting the Pins");
+                }
+                ListOfDeactivatedMapPins.Clear();
+            }
+        }
+
         public void removeLocationPins(MapPin mapPin)
         {
-            mapPinLayer.MapPins.Remove(mapPin);
+            if (!Map.activeSelf)
+            {
+                ListOfDeactivatedMapPins.Add(mapPin);
+                Debug.Log("Map not active for Pin Removal");
+            }
+            else
+            {
+                mapPinLayer.MapPins.Remove(mapPin);
+            }
+            
+            
             // foreach (Transform transform in transform.GetChild(1))
             // {
             //     if (transform.gameObject == gameObject)
