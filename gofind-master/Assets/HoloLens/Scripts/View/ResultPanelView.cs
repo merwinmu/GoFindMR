@@ -76,7 +76,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     public event EventHandler<GetPOILocationListEventArgs> OnARClick = (sender, e) => { };
     public event EventHandler<ResetObject> OnResetObject = (sender, e) => { };
 
-    private int local_resize = 500;
+    private int local_resize = 8000;
 
     public Texture2D texture;
     private GameObject backButtonObject;
@@ -267,6 +267,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                // ObjectList[listcount].GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().AddComponent<PictureAttribute>();
+                //picturePointerDatasList[listcount].getGameObject().AddComponent<ObjectManipulator>();
+                //picturePointerDatasList[listcount].getGameObject().AddComponent<NearInteractionGrabbable>();
                 picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().setlatlon(VARIABLE.getLat(), VARIABLE.getLon(),VARIABLE.gethea());
                 picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().width =
                     VARIABLE.getData().width;

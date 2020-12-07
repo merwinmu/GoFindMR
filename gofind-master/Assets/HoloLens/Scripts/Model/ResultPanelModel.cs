@@ -245,7 +245,7 @@ public class ResultPanelModel : IResultPanelModel
 
         foreach (var VARIABLE in newList)
         {
-            url = TemporaryCompatUtils.GetThumbnailUrl(VARIABLE);
+            url = TemporaryCompatUtils.GetImageUrl(VARIABLE);
             Debug.Log("THUMBNSIL: "+ url);
             Debug.Log("Get Image: "+TemporaryCompatUtils.GetImageUrl(VARIABLE));
             Debug.Log("Heading info: "+MetadataUtils.GetBearing(VARIABLE.Metadata));
