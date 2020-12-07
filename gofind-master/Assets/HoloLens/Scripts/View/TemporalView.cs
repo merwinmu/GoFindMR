@@ -76,11 +76,11 @@ namespace Assets.HoloLens.Scripts.View
             lowerboundinput = lo.GetComponent<TMP_InputField>();
             upperboundinput = up.GetComponent<TMP_InputField>();
             
-            button3 = transform.GetChild(0).GetChild(3).gameObject;
+            button3 = transform.GetChild(0).GetChild(6).GetChild(2).GetChild(1).gameObject;
             backInteractable = button3.GetComponent<Interactable>();
             Button3_AddOnClick(backInteractable);
             
-            button0 = transform.GetChild(0).GetChild(2).gameObject;
+            button0 = transform.GetChild(0).GetChild(6).GetChild(2).GetChild(0).gameObject;
             interactable = button0.GetComponent<Interactable>();
             Button0_AddOnClick(interactable);
             

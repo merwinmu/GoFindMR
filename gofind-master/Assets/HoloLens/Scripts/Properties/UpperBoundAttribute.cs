@@ -28,7 +28,7 @@ public class UpperBoundAttribute : MonoBehaviour
 
     public DateTime convertToYear(float value)
     {
-        float n_value = value * 16000000000000;
+        float n_value = value * 16450000000000;
         double ticks = n_value;
         TimeSpan timeSpan = TimeSpan.FromMilliseconds(ticks);
         DateTime startdate = new DateTime(1500, 1, 1) + timeSpan;
