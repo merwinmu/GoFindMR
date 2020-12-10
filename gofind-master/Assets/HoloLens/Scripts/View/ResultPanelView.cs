@@ -267,8 +267,6 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
                // ObjectList[listcount].GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().GetComponent<Renderer>().material.mainTexture = VARIABLE.getData();
                 picturePointerDatasList[listcount].getGameObject().AddComponent<PictureAttribute>();
-                //picturePointerDatasList[listcount].getGameObject().AddComponent<ObjectManipulator>();
-                //picturePointerDatasList[listcount].getGameObject().AddComponent<NearInteractionGrabbable>();
                 picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().setlatlon(VARIABLE.getLat(), VARIABLE.getLon(),VARIABLE.gethea());
                 picturePointerDatasList[listcount].getGameObject().GetComponent<PictureAttribute>().width =
                     VARIABLE.getData().width;
@@ -366,6 +364,8 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         OnSelectPicture(this, eventArgs);
 
         ShowObject = Instantiate(result.getGameObject());
+        ShowObject.AddComponent<ObjectManipulator>();
+        ShowObject.AddComponent<NearInteractionGrabbable>();
         ShowObject.GetComponent<PointerHandler>().enabled = false; // Disabling it otherwise other Listener will get Events
         ShowObject.transform.position = result.getGameObject().transform.position; // This position used for a smooth transition from collection to view
 

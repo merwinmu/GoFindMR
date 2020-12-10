@@ -6,7 +6,6 @@ using Microsoft.Geospatial;
 using Microsoft.Maps.Unity;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using TMPro;
-using Unity.UNetWeaver;
 using UnityEngine;
 
 /*

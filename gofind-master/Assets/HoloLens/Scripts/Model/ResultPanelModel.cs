@@ -239,15 +239,15 @@ public class ResultPanelModel : IResultPanelModel
         int id = 0;
         string url;
         string time;
-        double lat;
-        double lon;
+        double lat = 0;
+        double lon = 0;
         float hea;
 
         foreach (var VARIABLE in newList)
         {
             url = TemporaryCompatUtils.GetImageUrl(VARIABLE);
             Debug.Log("THUMBNSIL: "+ url);
-            Debug.Log("Get Image: "+TemporaryCompatUtils.GetImageUrl(VARIABLE));
+            Debug.Log("lOCATION DATA: " + lat + " " +lon);
             Debug.Log("Heading info: "+MetadataUtils.GetBearing(VARIABLE.Metadata));
             time = MetadataUtils.GetDateTime(VARIABLE.Metadata);
             lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
