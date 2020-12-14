@@ -246,9 +246,6 @@ public class ResultPanelModel : IResultPanelModel
         foreach (var VARIABLE in newList)
         {
             url = TemporaryCompatUtils.GetImageUrl(VARIABLE);
-            Debug.Log("THUMBNSIL: "+ url);
-            Debug.Log("lOCATION DATA: " + lat + " " +lon);
-            Debug.Log("Heading info: "+MetadataUtils.GetBearing(VARIABLE.Metadata));
             time = MetadataUtils.GetDateTime(VARIABLE.Metadata);
             lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
             lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);

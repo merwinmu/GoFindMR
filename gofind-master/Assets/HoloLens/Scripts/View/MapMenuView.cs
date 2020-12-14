@@ -8,6 +8,8 @@ using Microsoft.Geospatial;
 using Microsoft.Maps.Unity;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.Experimental.UI.HandCoach;
+using Microsoft.MixedReality.Toolkit.Experimental.Utilities;
+using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
@@ -146,6 +148,8 @@ namespace Assets.HoloLens.Scripts.View
         public MapRenderer MiniMapRenderer;
         public MapRenderer BigMapRenderer;
 
+        private GameObject Arrow;
+
         private bool journeyStart;
         
 
@@ -191,7 +195,9 @@ namespace Assets.HoloLens.Scripts.View
             BigMapRenderer = transform.parent.GetChild(5).GetComponent<MapRenderer>();
             mapMenu = transform.gameObject;
             mainMenuButtons = transform.GetChild(2).gameObject;
+            Arrow = transform.GetChild(11).gameObject;
             
+            ActiveList = new List<GameObject>();
             
             ZoomSliderInit();
         }
@@ -374,6 +380,10 @@ namespace Assets.HoloLens.Scripts.View
             ShowPicture = Instantiate(ShowPicture);
             ShowPicture.transform.localScale= new Vector3(0.3f,0.15f,0.004f);
             ShowPicture.transform.position = Camera.main.transform.position + new Vector3(0, 0, 0.5f);
+            ShowPicture.AddComponent<ObjectManipulator>();
+            ShowPicture.AddComponent<NearInteractionGrabbable>();
+            Arrow.SetActive(true);
+            Arrow.GetComponent<DirectionalIndicator>().DirectionalTarget = ShowPicture.transform;
             GetHeading(ShowPicture,poiCoordinatesObject.getHeading());
             //Vector3 difference = new Vector3(raw_diff.x,0,raw_diff.y);
             //CalculateBearing(poiCoordinatesObject.getHeading(),ShowPicture);
@@ -394,7 +404,8 @@ namespace Assets.HoloLens.Scripts.View
         public void RemoveGameObject(POICoordinatesObject poiCoordinatesObject)
         {
             GameObject gameObject = SpawnedObjects[poiCoordinatesObject];
-
+            Arrow.GetComponent<DirectionalIndicator>().DirectionalTarget = null;
+            Arrow.SetActive(false);
             foreach (Transform VARIABLE in transform)
             {
                 if (VARIABLE.gameObject == gameObject)
@@ -475,6 +486,18 @@ namespace Assets.HoloLens.Scripts.View
             flushPOIList();
             var EventArgs = new BackOneEventArgs();
             OnCancelJourney(this, EventArgs);
+
+            foreach (var act in ActiveList)
+            {
+                foreach (Transform activeobject in transform.parent)
+                {
+                    if (activeobject.gameObject == act)
+                    {
+                        Destroy(activeobject.gameObject);
+                        break;
+                    }
+                }
+            }
         }
 
         public void flushPOIList()
@@ -491,6 +514,7 @@ namespace Assets.HoloLens.Scripts.View
 
         public void destroyRenderedObject(GameObject activeObject, POICoordinatesObject poiCoordinatesObject)
         {
+            ActiveList.Remove(activeObject);
             SpawnedObjects.Remove(poiCoordinatesObject);
             foreach (Transform objects in transform.parent)
             {
@@ -500,6 +524,7 @@ namespace Assets.HoloLens.Scripts.View
                     break;
                 }
             }
+            
             
             Debug.Log("Unloaded spawned Object");
         }
@@ -520,6 +545,7 @@ namespace Assets.HoloLens.Scripts.View
         private bool isActive;
         private bool dest;
         private GameObject ActiveObject;
+        private List<GameObject> ActiveList;
         private void Update()
         {
             if (journeyStart)
@@ -537,6 +563,7 @@ namespace Assets.HoloLens.Scripts.View
                     {
                         Debug.Log("Arrived");
                         ActiveObject = RenderGameObject(PoiCoordinatesObjects[key]);
+                        ActiveList.Add(ActiveObject);
                         deleteKey = key;
                         isActive = true;
                     }

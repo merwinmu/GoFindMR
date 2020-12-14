@@ -187,9 +187,10 @@ namespace Assets.HoloLens.Scripts.Controller
         {
             MapController mapController = GetComponent<MapController>();
             mapController.GETMapView().removeLocationPins(e.RemoveObject);
+            querylist.Remove(e.poi);
+            PointOfInterests.Remove(e.poi.getCoordinates());
         }
         public void DoCineastRequest(double latitude, double longitude) {
-            Debug.Log("DoCineastRequest LInfo " + latitude + "," + longitude);
             
             Clean();
 

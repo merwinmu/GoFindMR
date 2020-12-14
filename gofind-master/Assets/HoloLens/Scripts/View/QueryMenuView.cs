@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using Microsoft.Maps.Unity;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -17,6 +18,7 @@ public class QueryCompleteEventArgs : EventArgs
 public class QueryRemoveEventArgs : EventArgs
 {
     public MapPin RemoveObject;
+    public POICoordinatesObject poi;
 }
 public interface IQueryMenuView
 {
@@ -110,6 +112,7 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
 
         var eventArgs = new QueryRemoveEventArgs();
         eventArgs.RemoveObject = poiCoordinatesObject.getMapPin();
+        eventArgs.poi = poiCoordinatesObject;
         OnRemove(this, eventArgs);
         
         

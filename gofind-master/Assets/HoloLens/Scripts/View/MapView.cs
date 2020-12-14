@@ -144,15 +144,27 @@ namespace Assets.HoloLens.Scripts.View
 
         private void OnEnable()
         {
-            if (ListOfDeactivatedMapPins.Count != 0)
+            if (ListOfDeactivatedMapPins.Count != 0 || ListOfDeactivatedMapPins!= null)
             {
                 foreach (MapPin Pin in ListOfDeactivatedMapPins)
                 {
                     mapPinLayer.MapPins.Remove(Pin);
                     Debug.Log("Deleting the Pins");
+                    
+                    // foreach (Transform mappintransform in transform.GetChild(1))
+                    // {
+                    //     if (mappintransform.gameObject.GetComponent<MapPin>() == Pin)
+                    //     {
+                    //         Destroy(mappintransform.gameObject);
+                    //         break;
+                    //     }
+                    // }
                 }
                 ListOfDeactivatedMapPins.Clear();
             }
+
+            
+            
         }
 
         public void removeLocationPins(MapPin mapPin)
@@ -160,7 +172,7 @@ namespace Assets.HoloLens.Scripts.View
             if (!Map.activeSelf)
             {
                 ListOfDeactivatedMapPins.Add(mapPin);
-                Debug.Log("Map not active for Pin Removal");
+                Debug.Log("Map not active for Pin Removal Count is: "+ListOfDeactivatedMapPins.Count);
             }
             else
             {

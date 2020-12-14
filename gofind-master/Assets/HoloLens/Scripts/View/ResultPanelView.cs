@@ -278,7 +278,10 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             foreach (var VARIABLE in picturePointerDatasList)
             {
                 var attribute = VARIABLE.getGameObject().GetComponent<PictureAttribute>();
-                VARIABLE.getGameObject().transform.localScale = new Vector3(attribute.width/local_resize,attribute.height/local_resize,0.01f);
+
+                VARIABLE.getGameObject().transform.localScale = rxt(attribute);
+                
+                
                 VARIABLE.getGameObject().gameObject.transform.parent = 
                     transform.GetChild(1).GetChild(0).GetChild(1).GetChild(0).transform;
                 
@@ -295,6 +298,27 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             
             scrollingObjectCollection.UpdateCollection();
             Debug.Log("Scroling Object Updated");
+    }
+
+    private Vector3 rxt(PictureAttribute attribute)
+    {
+        Vector3 res;
+
+        if (attribute.width > 1000 || attribute.height >700)
+        {
+            Debug.Log("Big 1500 "+attribute.ID);
+            local_resize = 9000;
+            res = new Vector3(attribute.width/local_resize,attribute.height/local_resize,0.01f);
+        }
+
+        else
+        {
+            local_resize = 2000;
+            Debug.Log("Else "+attribute.ID);
+            return res = new Vector3(attribute.width/local_resize,attribute.height/local_resize,0.01f);
+        }
+
+        return res;
     }
 
 
@@ -343,10 +367,13 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
     public void setAllResultMenuVisibility(bool flag)
     {
+        Vector3 cam = Camera.main.transform.position;
         transform.gameObject.SetActive(flag);
-        transform.gameObject.transform.GetChild(0).gameObject.SetActive(true);
-        transform.gameObject.transform.GetChild(1).gameObject.SetActive(true);
-        transform.gameObject.transform.GetChild(2).gameObject.SetActive(true);
+        transform.gameObject.transform.GetChild(0).gameObject.SetActive(flag);
+        transform.gameObject.transform.GetChild(1).gameObject.SetActive(flag);
+        transform.gameObject.transform.GetChild(1).position = new Vector3(cam.x+4f,cam.y,cam.z+2f); // small hack
+        transform.gameObject.transform.GetChild(2).gameObject.SetActive(flag);
+        
     }
     
     
