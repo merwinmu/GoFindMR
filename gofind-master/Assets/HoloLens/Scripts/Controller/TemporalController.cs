@@ -53,11 +53,18 @@ namespace Assets.HoloLens.Scripts.Controller
             // Listen to input from the view
             view.OnReceived += ClickOnOkButton;
             view.MapBackButton += HandleBackButtonOnPress;
+            view.OnSearch += HandleSearch;
             LowerBoundAttribute.OnLowerBoundValueChanged += HandleLowerBound;
             UpperBoundAttribute.OnUpperBoundValueChanged += HandleUpperBound;
             // Listen to changes in the model
             model.OnYearchanged += HandleYearChanged;
             model.VisibilityChange += TextBoxStatusVisibility;
+        }
+
+        private void HandleSearch(object sender, BackEventArgs e)
+        {
+            IQueryMenuController iqQueryMenuController = GetComponent<QueryMenuController>();
+            iqQueryMenuController.setAndSearchTemporal(model.UpperBound,model.LowerBound, true);
         }
 
         private void HandleUpperBound(object sender, SliderValueEventArgs e)

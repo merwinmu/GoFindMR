@@ -45,6 +45,7 @@ namespace Assets.HoloLens.Scripts.View
     {
         event EventHandler<YearChangeEventArgs> OnReceived;
         event EventHandler<MapBackEventArgs> MapBackButton;
+        event EventHandler<BackEventArgs> OnSearch;
 
         void setGameObject(GameObject gameObject);
         
@@ -64,10 +65,14 @@ namespace Assets.HoloLens.Scripts.View
         private GameObject button3;
         private Button backButton;
         private Interactable backInteractable;
+        
+        
+        private GameObject SearchButton;
+        private Button sButton;
+        private Interactable sButtonInteractable;
         public event EventHandler<YearChangeEventArgs> OnReceived  = (sender, e) => { };
         public event EventHandler<MapBackEventArgs> MapBackButton  = (sender, e) => { };
-
-
+        public event EventHandler<BackEventArgs> OnSearch = (sender, e) => { };
 
         private void Awake()
         {
@@ -84,9 +89,23 @@ namespace Assets.HoloLens.Scripts.View
             interactable = button0.GetComponent<Interactable>();
             Button0_AddOnClick(interactable);
             
+            SearchButton = transform.GetChild(0).GetChild(6).GetChild(2).GetChild(2).gameObject;
+            sButtonInteractable = SearchButton.GetComponent<Interactable>();
+            ButtonS_AddOnClick(sButtonInteractable);
+            
             this.transform.gameObject.SetActive(false);
         }
 
+        private void ButtonS_AddOnClick(Interactable sButtonInteractable1)
+        {
+            sButtonInteractable.OnClick.AddListener((() => OnSearchLogic()));
+        }
+
+        private void OnSearchLogic()
+        {
+            var eventArgs = new BackEventArgs();
+            OnSearch(this, eventArgs);
+        }
 
 
         public void setGameObject(GameObject gameObject)
@@ -108,6 +127,8 @@ namespace Assets.HoloLens.Scripts.View
         {
             interactable.OnClick.AddListener((() => debug_input_button()));
         }
+        
+        
 
         public void debug_input_button()
         {

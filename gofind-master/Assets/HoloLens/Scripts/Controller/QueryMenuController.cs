@@ -21,6 +21,7 @@ namespace Assets.HoloLens.Scripts.Controller
         void Reset();
         void accessPhotoQuery();
         void setTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp);
+        void setAndSearchTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp);
 
     }
        public class QueryMenuController: MonoBehaviour, IQueryMenuController
@@ -72,6 +73,7 @@ namespace Assets.HoloLens.Scripts.Controller
             // Listen to changes in the model
         }
 
+     
         private void HandleError(object sender, BackEventArgs e)
         {
             view.setErrorDialogVisibility(false);
@@ -274,6 +276,14 @@ namespace Assets.HoloLens.Scripts.Controller
             this.lowerbound = lowerbound;
             this.activate_temp = activate_temp;
         }
+
+        public void setAndSearchTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp)
+        {
+            this.upperBound = upperBound;
+            this.lowerbound = lowerbound;
+            this.activate_temp = activate_temp;
+            SearchClicked(null,null);
+        }
         
 
         public void FilterData(POICoordinatesObject poiCoordinatesObject)
@@ -287,6 +297,5 @@ namespace Assets.HoloLens.Scripts.Controller
                 PointOfInterests.Add(poiCoordinatesObject.getCoordinates());
             }
         }
-
     }
 }

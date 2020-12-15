@@ -297,7 +297,6 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
             }
             
             scrollingObjectCollection.UpdateCollection();
-            Debug.Log("Scroling Object Updated");
     }
 
     private Vector3 rxt(PictureAttribute attribute)
@@ -306,7 +305,6 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
 
         if (attribute.width > 1000 || attribute.height >700)
         {
-            Debug.Log("Big 1500 "+attribute.ID);
             local_resize = 9000;
             res = new Vector3(attribute.width/local_resize,attribute.height/local_resize,0.01f);
         }
@@ -314,7 +312,6 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         else
         {
             local_resize = 2000;
-            Debug.Log("Else "+attribute.ID);
             return res = new Vector3(attribute.width/local_resize,attribute.height/local_resize,0.01f);
         }
 

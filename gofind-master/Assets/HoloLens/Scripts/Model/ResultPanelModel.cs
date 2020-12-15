@@ -232,7 +232,12 @@ public class ResultPanelModel : IResultPanelModel
     private bool activate_temp;
     public void parseToPictureData(List<ObjectData> list, List<POICoordinatesObject> poilist)
     {
-        List<ObjectData> newList = FilterToDistance(list,poilist);
+        List<ObjectData> newList = list;
+        
+        if (poilist.Count!=0)
+        {
+            newList = FilterToDistance(list, poilist);
+        }
         
         pictureDataList = new List<PictureData>();
 
@@ -250,7 +255,72 @@ public class ResultPanelModel : IResultPanelModel
             lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
             lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);
             hea = Convert.ToSingle(MetadataUtils.GetBearing(VARIABLE.Metadata));
-            hea = 100;
+            hea = 0;
+            
+            Debug.Log("THESE ARE TIME: "+time);
+
+            if (url == "http://10.34.58.145/objects/Ans_05459-007-AL-FL.jpg")
+            {
+                hea = 160;
+            }
+            if (url == "http://10.34.58.145/objects/barfuesserplatz-parkplatz-lohnhof.png")
+            {
+                hea = 90;
+            }
+            if (url == "http://10.34.58.145/objects/barfuesserplatz-kohlenberg.png")
+            {
+                hea = 90;
+            }
+            if (url == "http://10.34.58.145/objects/Fel_008898-RE.jpg.png")
+            {
+                hea = 90;
+            }
+            if (url == "http://10.34.58.145/objects/Com_M06-0079-0004.jpg")
+            {
+                hea = 270;
+            }
+            if (url == "http://10.34.58.145/objects/barfuesserplatz-lohnhof-schnee.png")
+            {
+                hea = 90;
+            }
+            if (url == "http://10.34.58.145/objects/Ans_05395-02-001.jpg")
+            {
+                hea = 270;
+            }
+            if (url == "http://10.34.58.145/objects/Ans_05395-01-016.jpg")
+            {
+                hea = 0;
+            }
+            if (url == "http://10.34.58.145/objects/Barfuesserirche_ganz.jpg")
+            {
+                hea = 180;
+            }
+            if (url == "http://10.34.58.145/objects/Dia_287-01946.jpg")
+            {
+                hea = 300;
+            }
+            if (url == "http://10.34.58.145/objects/Ans_05395-01-003.jpg")
+            {
+                hea = 0;
+            }
+            if (url == "http://10.34.58.145/objects/Basel_2012-08_Mattes_1_(206).JPG")
+            {
+                hea = 90;
+            }
+            if (url == "http://10.34.58.145/objects/Ans_02112.jpg")
+            {
+                hea = 240;
+            }
+            if (url == "http://10.34.58.145/objects/Com_M06-0079-0002.jpg")
+            {
+                hea = 290;
+            }
+            if (url == "http://10.34.58.145/objects/Ans_05395-01-001.jpg")
+            {
+                hea = 200;
+            }
+            
+            //Temporary fix
             
             if (time != "" && activate_temp)
             {
