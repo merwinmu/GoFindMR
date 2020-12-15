@@ -80,6 +80,9 @@ namespace Assets.HoloLens.Scripts.Controller
             model.ChangeVisibility(false);
             //resultPanelModel.renderPicture();
             resultPanelModel.ChangeResultVisibility(true);
+            IResultPanelView resultPanelView =  transform.GetComponent<ResultPanelController>().GETResultPanelView();
+            Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y,Camera.main.transform.position.z+1.3f);
+            resultPanelView.setResultPosition(newpos);
         }
 
         public void HandleReset(object sender, SearchEventArgs e)

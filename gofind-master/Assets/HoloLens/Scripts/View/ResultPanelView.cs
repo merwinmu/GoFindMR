@@ -65,7 +65,7 @@ public interface IResultPanelView
     void reset();
     void setAllResultMenuVisibility(bool flag);
     void setTextures(List<PictureData> pictureDatasList);
-
+    
 }
 public class ResultPanelView : MonoBehaviour , IResultPanelView 
 {
@@ -101,6 +101,10 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
     private GameObject result1;
     private GameObject result2;
     private WebTextured webTextured;
+    
+
+
+    
     private void Start()
     {
         scrollObeObjectCollectionGameObject = transform.GetChild(1).GetChild(0).GetChild(1).gameObject;
@@ -126,6 +130,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         PoiCoordinatesObjects = new Dictionary<int, POICoordinatesObject>();
         webTextured = transform.gameObject.AddComponent<WebTextured>();
     }
+
 
     private void ExploreButton_AddOnClick(Interactable exploreInteractable)
     {

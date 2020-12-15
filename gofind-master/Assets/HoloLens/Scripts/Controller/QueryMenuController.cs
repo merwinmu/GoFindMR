@@ -11,6 +11,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Utilities;
 using Org.Vitrivr.CineastApi.Model;
 using UnityEngine;
+using QueryBuilder = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder;
 
 namespace Assets.HoloLens.Scripts.Controller
 {
@@ -19,7 +20,7 @@ namespace Assets.HoloLens.Scripts.Controller
         void addQuery(POICoordinatesObject poiCoordinatesObject);
         IQueryMenuView getview();
         void Reset();
-        void accessPhotoQuery();
+        void accessPhotoQuery(string base64);
         void setTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp);
         void setAndSearchTemporal(DateTime upperBound, DateTime lowerbound, bool activate_temp);
 
@@ -41,6 +42,7 @@ namespace Assets.HoloLens.Scripts.Controller
         private DateTime lowerbound;
         private float dist_radius;
         private bool activate_temp;
+        private bool alreadyfetched;
         private DistanceAttribute distanceAttribute;
 
         private void Awake()
@@ -90,13 +92,20 @@ namespace Assets.HoloLens.Scripts.Controller
         private void SearchClicked(object sender, BackEventArgs e)
         {
             Debug.Log(myLocation);
-            
-            var query = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder
-                .BuildSpatialSimilarityQuery(myLocation.getLat(), myLocation.getLon());
-             QueryCineastAndProcess(query);
-             
-             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
-             IMainMenuController menuController = GetComponent<MainMenuController>();
+
+            if (!alreadyfetched)
+            {
+                var query = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder
+                    .BuildSpatialSimilarityQuery(myLocation.getLat(), myLocation.getLon());
+                QueryCineastAndProcess(query);
+                alreadyfetched = true;
+            }
+            else
+            {
+                HandleCineastResult(ObjectRegistry.Objects);
+            }
+            IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
+            IMainMenuController menuController = GetComponent<MainMenuController>();
 
              IResultPanelView resultPanelView = transform.GetComponent<ResultPanelController>().GETResultPanelView();
              Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y,Camera.main.transform.position.z+1.3f);
@@ -116,15 +125,13 @@ namespace Assets.HoloLens.Scripts.Controller
              temporalController.GETItTemporalView().MenuVisibility(false);
         }
 
-        public void accessPhotoQuery()
+        public void accessPhotoQuery(string base64)
         {
-            IPhotoController photoController = GetComponent<PhotoController>();
-            photoController.GETPhotoView().MenuVisibility(false);
             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
             resultPanelModel.ChangeResultVisibility(true);
-            var query = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder
-                .BuildSpatialSimilarityQuery(myLocation.getLat(), myLocation.getLon());
-            QueryCineastAndProcess(query);
+
+            var simq = QueryBuilder.BuildSimpleQbEQuery(base64);
+            QueryCineastAndProcess(simq);
         }
         
 
@@ -217,7 +224,7 @@ namespace Assets.HoloLens.Scripts.Controller
         }
     
         private void HandleCineastResult(List<ObjectData> list) {
-            Debug.Log("HandleCineastResult");
+            Debug.Log("HandleCineastResult "+list.Count);
             SetActiveList(list);
             //ChangeState(State.CINEAST_RESPONSE);
             

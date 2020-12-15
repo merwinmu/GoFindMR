@@ -63,8 +63,9 @@ namespace Assets.HoloLens.Scripts.Controller
 
         private void HandleTakePhoto(object sender, TakePhotoEventArgs e)
         {
+            view.MenuVisibility(false);
             IQueryMenuController controller = GetComponent<QueryMenuController>();
-            controller.accessPhotoQuery();
+            controller.accessPhotoQuery(e.base64);
         }
 
 

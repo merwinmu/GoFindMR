@@ -61,7 +61,6 @@ namespace Assets.HoloLens.Scripts.View
         void SpatialExploration();
 
         void MiniMapRender();
-
     }
 
     public class ZoomMapEventArgs
@@ -440,8 +439,13 @@ namespace Assets.HoloLens.Scripts.View
             MiniMapRenderer.SetMapScene(mapScene);
             //
         }
-        
-        
+
+        public void setMapPosition(Vector3 pos)
+        {
+            transform.position = pos;
+        }
+
+
         public static double calculateRadius(double latitude1, double longitude1, double latitude2, double longitude2)
         {
             double R = 6371; // km

@@ -36,6 +36,7 @@ namespace Assets.HoloLens.Scripts.View
     
     public class TakePhotoEventArgs : EventArgs
     {
+        public string base64;
     }
     
     public class BackEventArgs : EventArgs
@@ -63,7 +64,8 @@ namespace Assets.HoloLens.Scripts.View
         public PhotoCapture photoCaptureObject = null;
         public GameObject Result;
         public static Texture2D data;
-        public static Queue<Vector3> vectorstack = new Queue<Vector3>(); 
+        public static Queue<Vector3> vectorstack = new Queue<Vector3>();
+        public static List<Texture2D> waitingTexture;
 
         // Start is called before the first frame update
         public bool DebugStoreImage = true;
@@ -109,6 +111,7 @@ namespace Assets.HoloLens.Scripts.View
             back_button = transform.GetChild(2).GetChild(1).gameObject;
             back_interactable = back_button.GetComponent<Interactable>();
             back_AddOnClick(back_interactable);
+            waitingTexture = new List<Texture2D>();
         }
 
         //Input actions
@@ -127,8 +130,7 @@ namespace Assets.HoloLens.Scripts.View
         private void OnTakePhotoButtonLogic()
         {
             TakePhoto();
-            var eventArgs = new TakePhotoEventArgs();
-            OnTakePhoto(this, eventArgs);
+            
         }
         
         private void OnBackButtonLogic()
@@ -196,7 +198,9 @@ namespace Assets.HoloLens.Scripts.View
                 
                 //Result.GetComponent<Renderer>().material.mainTexture = targetTexture;
                 
-                this.result = ToBase64DataUrl(targetTexture);
+                var eventArgs = new TakePhotoEventArgs();
+                eventArgs.base64 = ToBase64DataUrl(targetTexture);
+                OnTakePhoto(this, eventArgs);
             }
 
             
@@ -257,12 +261,7 @@ namespace Assets.HoloLens.Scripts.View
         private void Update()
         {
             // If the primary mouse button was pressed this frame
-            if (Input.GetMouseButtonDown(0))
-            {
-                //Debug
-                var eventArgs = new PhotoChangedEventArgs(new Texture2D(200,200));
-                OnReceived(this, eventArgs);
-            }
+        
         }
     }
     
