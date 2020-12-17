@@ -105,7 +105,6 @@ namespace Assets.HoloLens.Scripts.Controller
         private void ClickOnOkButton(object sender, YearChangeEventArgs e)
         {
             IMainMenuModel mainMenuModel = transform.GetComponent<MainMenuController>().GETMainMenuModel();
-            model.ChangeVisibility(false);
             model.LowerBound = lowerBoundAttribute.true_lowerbound;
             model.UpperBound = upperBoundAttribute.true_upperbound;
             
@@ -114,7 +113,6 @@ namespace Assets.HoloLens.Scripts.Controller
             
             //POICoordinatesObject poiCoordinatesObject = new POICoordinatesObject(model.getLowerBound(),model.getUpperBound());
             //poiCoordinatesObject.setName("From "+model.getLowerBound().ToString() +" to "+model.getUpperBound().ToString());
-            mainMenuModel.ChangeVisibility(true);
             IQueryMenuController iqQueryMenuController = GetComponent<QueryMenuController>();
             iqQueryMenuController.setTemporal(model.UpperBound,model.LowerBound, true);
 

@@ -15,16 +15,27 @@ using Object = System.Object;
 public class UpdatePicturesEventArgs : EventArgs
 {
     private List<PictureData> pictureDatas;
+    private List<int> keys;
    
 
     public UpdatePicturesEventArgs(List<PictureData> pictureDatas)
     {
         this.pictureDatas = pictureDatas;
     }
+    
+    public UpdatePicturesEventArgs(List<int> keys)
+    {
+        this.keys = keys;
+    }
 
     public List<PictureData> getPictureData()
     {
         return pictureDatas;
+    }
+
+    public List<int> getKeys()
+    {
+        return this.keys;
     }
 }
 
@@ -51,7 +62,7 @@ public class PictureData
     private double lat;
     private double lon;
     private float heading;
-
+    private string quasitime;
     public PictureData(int id, string url)
     {
         this.objectID = id;
@@ -66,7 +77,16 @@ public class PictureData
         this.lon = lon;
         this.heading = heading;
     }
-
+    
+    public PictureData(int id, string url,double lat, double lon, float heading,string quasitime)
+    {
+        this.objectID = id;
+        this.url = url;
+        this.lat = lat;
+        this.lon = lon;
+        this.heading = heading;
+        this.quasitime = quasitime;
+    }
     public void setData(Texture texture)
     {
         this.texture = texture;
@@ -77,6 +97,11 @@ public class PictureData
         this.lat = lat;
         this.lon = lon;
         this.heading = heading;
+    }
+
+    public string getQuasiTime()
+    {
+        return this.quasitime;
     }
 
     public double getLat()
@@ -145,6 +170,9 @@ public interface IResultPanelModel
     void setDistance(float value);
 
     void setLatLon(double lat, double lon);
+
+    void populateFetchedList(DateTime upperbound, DateTime lowerbound, bool activate_temp,
+        List<POICoordinatesObject> poilist);
 }
 
 public class ResultPanelModel : IResultPanelModel
@@ -227,9 +255,75 @@ public class ResultPanelModel : IResultPanelModel
         }
     }
 
+    public void populateFetchedList(DateTime upperbound, DateTime lowerbound, bool activate_temp,
+        List<POICoordinatesObject> poilist)
+    {
+        this.upperbound = upperbound;
+        this.lowerbound = lowerbound;
+        this.activate_temp = activate_temp;
+        List<int> finalkeys = parseActivePictureData(poilist);
+        
+        if (finalkeys.Count != 0)
+        {
+            Debug.Log("Parsed the keys ");
+            var eventArgs = new UpdatePicturesEventArgs(finalkeys);
+            // Dispatch the 'Result changed' event
+
+            OnUpdatePictures(this, eventArgs);
+        }
+        else
+        {
+            Debug.Log("No Results found");
+            var eventArgs = new BackEventArgs();
+            OnEDialog(this,eventArgs);
+        }
+    }
+
+    public List<int> parseActivePictureData(List<POICoordinatesObject> poilist)
+    {
+        List<int> keys = new List<int>();
+        List<int> finalkeys = new List<int>();
+        if (poilist.Count != 0)
+        {
+            keys = FilterFetchedToDistance(FetchedList,poilist);
+        }
+
+        else
+        {
+            keys = backupkeys;
+        }
+
+        foreach (var fetcheddata in FetchedList)
+        {
+            String time = fetcheddata.getQuasiTime();
+            
+            if (keys.Contains(fetcheddata.getID()))
+            {
+                
+                
+                if (time != "" && activate_temp)
+                {
+                    DateTime dateTime = DateTime.Parse(fetcheddata.getQuasiTime());
+                    
+                    if (lowerbound < dateTime && dateTime < upperbound)
+                    {
+                        finalkeys.Add(fetcheddata.getID());
+                    }
+                }
+                else
+                {
+                    finalkeys.Add(fetcheddata.getID());
+                }
+            }
+        }
+        Debug.Log("No finalkeyslist "+finalkeys.Count);
+        return finalkeys;
+    }
+
     private DateTime upperbound;
     private DateTime lowerbound;
     private bool activate_temp;
+    private List<PictureData>FetchedList = new List<PictureData>(10000);
     public void parseToPictureData(List<ObjectData> list, List<POICoordinatesObject> poilist)
     {
         List<ObjectData> newList = list;
@@ -257,7 +351,8 @@ public class ResultPanelModel : IResultPanelModel
             hea = Convert.ToSingle(MetadataUtils.GetBearing(VARIABLE.Metadata));
             hea = 0;
             
-            Debug.Log("THESE ARE TIME: "+time);
+
+                Debug.Log("THESE ARE TIME: "+time);
 
             if (url == "http://10.34.58.145/objects/Ans_05459-007-AL-FL.jpg")
             {
@@ -329,7 +424,8 @@ public class ResultPanelModel : IResultPanelModel
                 if (lowerbound < dateTime && dateTime < upperbound)
                 {
                     Debug.Log("TIME DEBUG: "+MetadataUtils.GetDateTime(VARIABLE.Metadata) + " CURRENT: LOWER "+ lowerbound +" UP "+ upperbound );
-                    pictureDataList.Add(new PictureData(id,url,lat,lon,hea));
+                    pictureDataList.Add(new PictureData(id,url,lat,lon,hea,time));
+                    FetchedList.Add(new PictureData(id,url,lat,lon,hea,time));
                 }
 
                 else
@@ -340,12 +436,44 @@ public class ResultPanelModel : IResultPanelModel
 
             else
             {
-                pictureDataList.Add(new PictureData(id,url,lat,lon,hea));
-                Debug.Log("No Temporal set");
+                pictureDataList.Add(new PictureData(id,url,lat,lon,hea,time));
+                FetchedList.Add(new PictureData(id, url, lat, lon, hea,time));
             }
 
             id++;
+            backupkeys.Add(id);
+            Debug.Log("No fetchedlid "+FetchedList.Count);
+
         }
+    }
+
+    List<int>backupkeys = new List<int>(1000);
+    public List<int> FilterFetchedToDistance(List<PictureData> fetchedList,List<POICoordinatesObject> poilist)
+    {
+        List<int> fileredKeys = new List<int>();
+        double lat;
+        double lon;
+        double dis;
+
+        foreach (var pictureData in fetchedList)
+        {
+            lat = pictureData.getLat();
+            lon = pictureData.getLon();
+
+            foreach (var poi in poilist)
+            {
+                dis = MapMenuView.calculateRadius(lat,lon,poi.getCoordinates().getLat(), poi.getCoordinates().getLon()) * 1000;
+
+                if ((dis) <= distance_value)
+                {
+                    fileredKeys.Add(pictureData.getID());
+                    Debug.Log("ADDED    Distance to Picture: "+ dis + " " + lat + " " + lon + " MY LOC: "+ currentlat + " " + currentlon + " "+ distance_value);
+                }
+            }
+        }
+
+        return fileredKeys;
+
     }
 
     public List<ObjectData> FilterToDistance(List<ObjectData> list, List<POICoordinatesObject> poilist)
@@ -372,7 +500,6 @@ public class ResultPanelModel : IResultPanelModel
                 }
             }
         }
-
         return filterdList;
     }
     
@@ -380,7 +507,7 @@ public class ResultPanelModel : IResultPanelModel
     public void reset()
     {
         activate_temp = false;
-        pictureDataList.Clear();
+        //pictureDataList.Clear();
         OnReset(this,new ResetEventArgs());
     }
 

@@ -102,13 +102,13 @@ namespace Assets.HoloLens.Scripts.Controller
             }
             else
             {
-                HandleCineastResult(ObjectRegistry.Objects);
+                setFetchedActiveList();
             }
             IResultPanelModel resultPanelModel = transform.GetComponent<ResultPanelController>().GETResultPanelModel();
             IMainMenuController menuController = GetComponent<MainMenuController>();
 
              IResultPanelView resultPanelView = transform.GetComponent<ResultPanelController>().GETResultPanelView();
-             Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y,Camera.main.transform.position.z+1.3f);
+             Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y,Camera.main.transform.position.z);
              resultPanelView.setResultPosition(newpos);
              
              menuController.GETMainMenuModel().ChangeVisibility(false);
@@ -123,6 +123,11 @@ namespace Assets.HoloLens.Scripts.Controller
 
              ITemporalController temporalController = GetComponent<TemporalController>();
              temporalController.GETItTemporalView().MenuVisibility(false);
+        }
+
+        public void setFetchedActiveList()
+        {
+            resultmodel.populateFetchedList(upperBound, lowerbound, activate_temp,querylist);
         }
 
         public void accessPhotoQuery(string base64)

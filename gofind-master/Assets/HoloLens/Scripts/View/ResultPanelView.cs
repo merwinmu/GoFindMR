@@ -65,6 +65,8 @@ public interface IResultPanelView
     void reset();
     void setAllResultMenuVisibility(bool flag);
     void setTextures(List<PictureData> pictureDatasList);
+    void setActiveTextures(List<int> keys);
+
     
 }
 public class ResultPanelView : MonoBehaviour , IResultPanelView 
@@ -193,7 +195,7 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         }
     }
 
-
+    List<PictureData> FetchedPictureData = new List<PictureData>(1000);
     public async void setTextures(List<PictureData> pictureDatasList)
     {
         textureDatas = pictureDatasList;
@@ -204,10 +206,29 @@ public class ResultPanelView : MonoBehaviour , IResultPanelView
         {
             url = VARIABLE.getURL(); 
             VARIABLE.setData(await GetRemoteTexture(url));
+            FetchedPictureData.Add(VARIABLE);
         }
+        
         createResultObjects(size);
     }
-    
+
+    public void setActiveTextures(List<int> keys)
+    {
+        List<PictureData> Newtexture = new List<PictureData>();
+
+        foreach (var VARIABLE in FetchedPictureData)
+        {
+            if (keys.Contains(VARIABLE.getID()))
+            {
+                Newtexture.Add(VARIABLE);
+            }
+        }
+
+        textureDatas = Newtexture;
+
+        createResultObjects(textureDatas.Count);
+    }
+
 
     public void createResultObjects(int v_size)
     {

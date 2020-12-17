@@ -124,7 +124,7 @@ namespace Assets.HoloLens.Scripts.Controller
             mapMenuModel.ChangeVisibility(true);
 
             IMapView mapView = transform.GetComponent<MapController>().GETMapView();
-            Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y-0.6f,Camera.main.transform.position.z+1.3f);
+            Vector3 newpos = new Vector3(Camera.main.transform.position.x ,Camera.main.transform.position.y-0.6f,Camera.main.transform.position.z);
             mapView.setMapPosition(newpos);
 
             IMapModel mapModel = transform.GetComponent<MapController>().GETMapModel();

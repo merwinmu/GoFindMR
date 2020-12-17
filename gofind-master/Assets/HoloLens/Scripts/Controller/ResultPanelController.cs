@@ -108,9 +108,20 @@ public class ResultPanelController : MonoBehaviour, IResultPanelController
         model.SetCurrentPicture(e.get());
     }
 
+    private bool second;
     private void HandleUpdatePicture(object sender, UpdatePicturesEventArgs e)
     {
-       view.setTextures(e.getPictureData());
+        if (!second)
+        {
+            view.setTextures(e.getPictureData());
+            second = true;
+        }
+        
+        else
+        {
+            view.setActiveTextures(e.getKeys());
+        }
+        
     }
 
     private void HandleBack(object sender, ResultBackEventArgs e)

@@ -534,8 +534,8 @@ namespace Assets.HoloLens.Scripts.View
         }
         
         double distance = 100; // 100m radius
-        double inboundthreshold = 2;
-        double outboundthreshold = 8;
+        double inboundthreshold = 15;
+        double outboundthreshold = 15;
 
         private double lat1;
         private double lon1;

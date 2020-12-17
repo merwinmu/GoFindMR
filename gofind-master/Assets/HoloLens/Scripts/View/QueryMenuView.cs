@@ -149,6 +149,12 @@ public class QueryMenuView : MonoBehaviour, IQueryMenuView
 
     public void setErrorDialogVisibility(bool flag)
     {
+        transform.gameObject.SetActive(true);
+        foreach (Transform transformgame in transform)
+        {
+            transformgame.gameObject.SetActive(false);
+        }
+        
         ErrorDialog.SetActive(flag);
     }
 
