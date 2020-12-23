@@ -373,6 +373,7 @@ namespace Assets.HoloLens.Scripts.View
             ShowPicture.transform.RotateAround(Camera.main.transform.position, new Vector3(0,1f,0), angle_dif); //change to camera and change showpicture transform to 0.3f 
         }
 
+        private int spawnedObject_counter = 0;
         public GameObject  RenderGameObject(POICoordinatesObject poiCoordinatesObject)
         {
             GameObject ShowPicture = poiCoordinatesObject.GETGameObject();
@@ -381,6 +382,12 @@ namespace Assets.HoloLens.Scripts.View
             ShowPicture.transform.position = Camera.main.transform.position + new Vector3(0, 0, 0.5f);
             ShowPicture.AddComponent<ObjectManipulator>();
             ShowPicture.AddComponent<NearInteractionGrabbable>();
+
+            if (spawnedObject_counter == 0)
+            {
+                Arrow.SetActive(true);
+                Arrow.GetComponent<DirectionalIndicator>().DirectionalTarget = ShowPicture.transform;
+            }
             Arrow.SetActive(true);
             Arrow.GetComponent<DirectionalIndicator>().DirectionalTarget = ShowPicture.transform;
             GetHeading(ShowPicture,poiCoordinatesObject.getHeading());
@@ -397,6 +404,7 @@ namespace Assets.HoloLens.Scripts.View
             //ShowPicture.transform.SetParent(transform);
           
             SpawnedObjects.Add(poiCoordinatesObject,ShowPicture);
+            spawnedObject_counter++;
             return ShowPicture;
         }
 
@@ -414,6 +422,11 @@ namespace Assets.HoloLens.Scripts.View
                 }
             }
             Debug.Log("Deleted Object");
+            if (spawnedObject_counter == 1)
+            {
+                Arrow.SetActive(false);
+                spawnedObject_counter--;
+            }
         }
 
         public Dictionary<int, POICoordinatesObject> PoiCoordinatesObjects;
