@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Assets.HoloLens.Scripts.Properties;
 using Assets.HoloLens.Scripts.View;
 using Assets.Scripts.Core;
+using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Model.Data;
 using CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils;
 using UnityEngine;
@@ -344,13 +345,14 @@ public class ResultPanelModel : IResultPanelModel
 
         foreach (var VARIABLE in newList)
         {
-            url = TemporaryCompatUtils.GetImageUrl(VARIABLE);
+            url = CineastWrapper.GetMediaUrlOf(VARIABLE);
             time = MetadataUtils.GetDateTime(VARIABLE.Metadata);
             lat = MetadataUtils.GetLatitude(VARIABLE.Metadata);
             lon = MetadataUtils.GetLongitude(VARIABLE.Metadata);
             hea = Convert.ToSingle(MetadataUtils.GetBearing(VARIABLE.Metadata));
             hea = 0;
             
+            Debug.Log("GET URLS "+url);
 
                 Debug.Log("THESE ARE TIME: "+time);
 

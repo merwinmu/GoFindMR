@@ -200,8 +200,8 @@ namespace Assets.HoloLens.Scripts.View
                 // Copy the raw image data into our target texture
                 photoCaptureFrame.UploadImageDataToTexture(targetTexture);
                 
-                Result  = Instantiate(Result, Camera.main.transform.position,Camera.main.transform.rotation);
-                Result.GetComponent<Renderer>().material.mainTexture = targetTexture;
+               // Result  = Instantiate(Result, Camera.main.transform.position,Camera.main.transform.rotation);
+               // Result.GetComponent<Renderer>().material.mainTexture = targetTexture;
 
                 // Do as we wish with the texture such as apply it to a material, etc.
                 

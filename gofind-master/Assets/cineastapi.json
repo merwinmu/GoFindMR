@@ -1,5 +1,6 @@
 {
-  "cineastHost": "http://10.34.58.145:1900/",
+  "cineastHost": "http://city-stories.dmi.unibas.ch:4567",
+  "cineastServesMedia":true,
   "mediaHost": "http://10.34.58.145/",
   "categoryMappings": {
     "mapping": {
