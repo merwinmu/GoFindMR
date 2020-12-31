@@ -162,7 +162,7 @@ public interface IResultPanelModel
     void ChangeResultVisibility(bool flag);
     void renderDebugPicture();
 
-    void populateAndRender(List<ObjectData> list, DateTime upperbound, DateTime lowerbound, bool activate, List<POICoordinatesObject> poilist);
+    void populateAndRender(List<ObjectData> list, DateTime upperbound, DateTime lowerbound, bool activate, List<POICoordinatesObject> poilist, bool camera);
 
     void reset();
   
@@ -231,18 +231,23 @@ public class ResultPanelModel : IResultPanelModel
         this.currentlon = lon;
     }
 
-    public void populateAndRender(List<ObjectData> list, DateTime upperbound, DateTime lowerbound, bool activate_temp, List<POICoordinatesObject> poilist)
+    public void populateAndRender(List<ObjectData> list, DateTime upperbound, DateTime lowerbound, bool activate_temp, List<POICoordinatesObject> poilist, bool camera)
     {
         this.upperbound = upperbound;
         this.lowerbound = lowerbound;
         this.activate_temp = activate_temp;
+
+        if (camera)
+        {
+            int r = list.Count - 9;
+            list.RemoveRange(9,r);
+        }
         parseToPictureData(list,poilist);
         Debug.Log("COunt"+list.Count);
 
         
         if (pictureDataList.Count != 0)
         {
-            Debug.Log("Parsed the mmo Object to PictureData");
             var eventArgs = new UpdatePicturesEventArgs(pictureDataList);
             // Dispatch the 'Result changed' event
 

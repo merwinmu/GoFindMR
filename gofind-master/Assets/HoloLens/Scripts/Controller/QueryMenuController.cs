@@ -97,7 +97,7 @@ namespace Assets.HoloLens.Scripts.Controller
             {
                 var query = CineastUnityInterface.Runtime.Vitrivr.UnityInterface.CineastApi.Utils.QueryBuilder
                     .BuildSpatialSimilarityQuery(myLocation.getLat(), myLocation.getLon());
-                QueryCineastAndProcess(query);
+                QueryCineastAndProcess(query,false);
                 alreadyfetched = true;
             }
             else
@@ -136,11 +136,11 @@ namespace Assets.HoloLens.Scripts.Controller
             resultPanelModel.ChangeResultVisibility(true);
 
             var simq = QueryBuilder.BuildSimpleQbEQuery(base64);
-            QueryCineastAndProcess(simq);
+            QueryCineastAndProcess(simq,true);
         }
         
 
-        public async void QueryCineastAndProcess(SimilarityQuery query)
+        public async void QueryCineastAndProcess(SimilarityQuery query,bool camera)
         {
             bool f = false;
             
@@ -165,7 +165,7 @@ namespace Assets.HoloLens.Scripts.Controller
             
             Debug.Log("finished");
             
-            HandleCineastResult(ObjectRegistry.Objects); // TODO more sophisticated
+            HandleCineastResult(ObjectRegistry.Objects, camera); // TODO more sophisticated
         }
 
         private void SearchDebug(object sender, BackEventArgs e)
@@ -228,44 +228,17 @@ namespace Assets.HoloLens.Scripts.Controller
             PointOfInterests.Clear();
         }
     
-        private void HandleCineastResult(List<ObjectData> list) {
+        private void HandleCineastResult(List<ObjectData> list,bool camera) {
             Debug.Log("HandleCineastResult "+list.Count);
-            SetActiveList(list);
-            //ChangeState(State.CINEAST_RESPONSE);
-            
-
-            // == SORT DISTANCE ==
-            /*
-            mmoList.Sort((mmo1, mmo2) => {
-                double dist1 = Utilities.HaversineDistance(mmo1.latitude, mmo1.longitude, initialGeoLocation.latitude,
-                    initialGeoLocation.longitude);
-                double dist2 = Utilities.HaversineDistance(mmo2.latitude, mmo2.longitude, initialGeoLocation.latitude,
-                    initialGeoLocation.longitude);
-                return dist1.CompareTo(dist2);
-            });
-            logger.Debug("Sorted mmo list");
-            */
-
-            //mapController.CreateMarkers(mmoList);
-            // mapController.ReloadAndCenter(0, 0, null, CreateMarkers());
-
-            // DEBUG
-            //InjectDebug();
-
-            //uiManager.SetInitialLocation(initialLocation);
-            //uiManager.SetInitialGeoLocation(initialGeoLocation);
-            //uiManager.panelSwitcher.SwitchToChoice();
-
-            //uiManager.panelManager.ShowPanel("choice");
-            //uiManager.viewChoiceHomeBtn.gameObject.SetActive(true);
-            //uiManager.SetAndPopulateList(activeMmos);
+            SetActiveList(list,camera);
+            Debug.Log("SIZELIST: "+list.Count);
         }
 
-        public void SetActiveList(List<ObjectData> mmos)
+        public void SetActiveList(List<ObjectData> mmos, bool camera)
         {
             activeMmos = mmos;
 
-            resultmodel.populateAndRender(mmos, upperBound, lowerbound, activate_temp,querylist);
+            resultmodel.populateAndRender(mmos, upperBound, lowerbound, activate_temp,querylist,camera);
         }
 
         public void RemoveFromActiveList(ObjectData mmo)
