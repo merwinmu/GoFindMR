@@ -1,4 +1,3 @@
-\pagenumbering{gobble}
 # Historic Image Presentation in MixedReality using HoloLens
 GoFind Mixed Reality is an GoFind application build for the Hololens. It enables users to visualize historical pictures as holograms in the real world.
 
